@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Fernando Barber — Registro de Cortes</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1c1a17">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="F. Barber">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --charcoal:#1c1a17;
+    --charcoal-2:#26221e;
+    --charcoal-3:#302b25;
+    --cream:#efe7d8;
+    --brass:#b8894f;
+    --brass-light:#d9ae76;
+    --barber-red:#9c3b34;
+    --barber-red-light:#c0564d;
+    --barber-blue:#2e4a5c;
+    --line:#3a352f;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--charcoal);
+    color:var(--cream);
+    font-family:'Karla',sans-serif;
+    min-height:100vh;
+    padding-bottom:calc(74px + env(safe-area-inset-bottom));
+  }
+  .pole{height:5px;background:repeating-linear-gradient(115deg,var(--barber-red) 0 16px,var(--cream) 16px 32px,var(--barber-blue) 32px 48px);}
+  header{padding:22px 20px 16px;text-align:center;border-bottom:1px solid var(--line);background:var(--charcoal-2);}
+  header h1{font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(1.6rem,7vw,2.4rem);letter-spacing:.02em;margin:0;color:var(--brass-light);text-transform:uppercase;}
+  header .sub{color:#c9bfa9;font-size:.85rem;margin-top:4px;}
+
+  .wrap{max-width:760px;margin:0 auto;padding:16px 14px 20px;}
+
+  .weeknav{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px;background:var(--charcoal-2);border:1px solid var(--line);padding:8px 6px;}
+  .weeknav button{background:none;border:none;color:var(--cream);width:42px;height:42px;font-size:1.3rem;cursor:pointer;flex-shrink:0;}
+  .weeknav button:active{color:var(--brass-light);}
+  .weeknav .label{font-family:'Oswald',sans-serif;font-size:.95rem;letter-spacing:.02em;text-transform:uppercase;text-align:center;flex:1;}
+
+  .summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px;}
+  .summary .card{background:var(--charcoal-2);border:1px solid var(--line);border-left:3px solid var(--brass);padding:10px 8px;}
+  .summary .card.expense{border-left-color:var(--barber-red);}
+  .summary .card.net{border-left-color:var(--barber-blue);}
+  .summary .card .num{font-family:'Oswald',sans-serif;font-size:1.15rem;color:var(--brass-light);line-height:1.1;word-break:break-word;}
+  .summary .card.expense .num{color:var(--barber-red-light);}
+  .summary .card .lbl{font-size:.65rem;color:#a89a80;text-transform:uppercase;letter-spacing:.04em;margin-top:3px;}
+
+  .days{display:flex;flex-direction:column;gap:12px;}
+  .day{background:var(--charcoal-2);border:1px solid var(--line);}
+  .day .dhead{padding:10px 12px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline;}
+  .day .dhead .dname{font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.03em;font-size:.95rem;}
+  .day .dhead .dtotal{font-size:.85rem;color:var(--brass-light);font-weight:700;}
+  .day.exp .dhead .dtotal{color:var(--barber-red-light);}
+  .cuts{list-style:none;margin:0;padding:2px 0;}
+  .cuts li{display:flex;align-items:center;gap:8px;padding:9px 12px;font-size:.95rem;border-bottom:1px dashed #34302a;}
+  .cuts li .idx{color:#8d8270;width:22px;flex-shrink:0;text-align:right;font-size:.85rem;}
+  .cuts li .val{flex:1;}
+  .cuts li .desc{color:#a89a80;font-size:.8rem;display:block;}
+  .cuts li .del{background:none;border:none;color:#7a6f5c;cursor:pointer;font-size:1.1rem;padding:4px 8px;}
+  .empty{padding:14px 12px;color:#77705f;font-size:.85rem;font-style:italic;}
+  .addrow{display:flex;gap:6px;padding:10px;border-top:1px solid var(--line);flex-wrap:wrap;}
+  .addrow input{background:var(--charcoal);border:1px solid var(--line);color:var(--cream);padding:10px;font-family:'Karla',sans-serif;font-size:.95rem;min-width:0;}
+  .addrow input.desc-input{flex:1 1 100px;}
+  .addrow input.val-input{flex:1 1 90px;}
+  .addrow input:focus{outline:2px solid var(--brass);border-color:var(--brass);}
+  .addrow button{background:var(--brass);border:none;color:var(--charcoal);font-weight:700;padding:10px 14px;cursor:pointer;font-family:'Karla',sans-serif;flex-shrink:0;}
+  .day.exp .addrow button{background:var(--barber-red-light);}
+
+  .tabbar{position:fixed;bottom:0;left:0;right:0;display:flex;background:var(--charcoal-2);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);z-index:10;}
+  .tabbar button{flex:1;background:none;border:none;color:#8d8270;padding:12px 4px 10px;font-family:'Oswald',sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:.03em;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;}
+  .tabbar button .ic{font-size:1.15rem;}
+  .tabbar button.active{color:var(--brass-light);}
+  .view{display:none;}
+  .view.active{display:block;}
+
+  .chart-card{background:var(--charcoal-2);border:1px solid var(--line);padding:14px 10px 10px;margin-bottom:16px;}
+  .chart-card h3{font-family:'Oswald',sans-serif;font-size:.9rem;text-transform:uppercase;letter-spacing:.03em;margin:0 0 10px 4px;color:var(--cream);font-weight:500;}
+  .chart-wrap{position:relative;width:100%;}
+  .chart-wrap canvas{width:100%;display:block;}
+  .legend{display:flex;gap:14px;justify-content:center;margin-top:8px;flex-wrap:wrap;}
+  .legend span{font-size:.72rem;color:#c9bfa9;display:flex;align-items:center;gap:5px;}
+  .legend .dot{width:9px;height:9px;border-radius:2px;display:inline-block;}
+  .nodata{padding:20px 10px;text-align:center;color:#77705f;font-size:.85rem;font-style:italic;}
+
+  .month-card{background:var(--charcoal-2);border:1px solid var(--line);border-left:3px solid var(--brass-light);padding:12px 14px;margin-bottom:16px;}
+  .month-card .mtitle{font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.03em;font-size:.85rem;color:#c9bfa9;margin-bottom:8px;}
+  .month-card .mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+  .month-card .mgrid .mnum{font-family:'Oswald',sans-serif;font-size:1.05rem;color:var(--brass-light);}
+  .month-card .mgrid .mnum.exp{color:var(--barber-red-light);}
+  .month-card .mgrid .mlbl{font-size:.62rem;color:#a89a80;text-transform:uppercase;letter-spacing:.03em;}
+
+  .backup{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;}
+  .backup button{flex:1;background:var(--charcoal-3);border:1px solid var(--line);color:var(--cream);padding:10px;font-size:.8rem;cursor:pointer;font-family:'Karla',sans-serif;}
+  .backup input[type=file]{display:none;}
+
+  footer{text-align:center;color:#6f6656;font-size:.72rem;margin-top:24px;padding:0 10px;}
+</style>
+</head>
+<body>
+<div class="pole"></div>
+<header>
+  <h1>Fernando Barber</h1>
+  <div class="sub">Registro semanal de cortes e saídas</div>
+</header>
+
+<div class="wrap">
+
+  <div class="weeknav">
+    <button id="prevWeek" aria-label="Semana anterior">‹</button>
+    <div class="label" id="weekLabel">—</div>
+    <button id="nextWeek" aria-label="Próxima semana">›</button>
+  </div>
+
+  <div class="summary">
+    <div class="card">
+      <div class="num" id="totalIncome">R$0</div>
+      <div class="lbl">Entradas</div>
+    </div>
+    <div class="card expense">
+      <div class="num" id="totalExpense">R$0</div>
+      <div class="lbl">Saídas</div>
+    </div>
+    <div class="card net">
+      <div class="num" id="totalNet">R$0</div>
+      <div class="lbl">Saldo</div>
+    </div>
+  </div>
+
+  <div class="view active" id="view-cortes">
+    <div class="days" id="incomeGrid"></div>
+  </div>
+
+  <div class="view" id="view-saidas">
+    <div class="days" id="expenseGrid"></div>
+  </div>
+
+  <div class="view" id="view-graficos">
+    <div class="month-card">
+      <div class="mtitle" id="monthTitle">Mês</div>
+      <div class="mgrid">
+        <div><div class="mnum" id="monthIncome">R$0</div><div class="mlbl">Entradas</div></div>
+        <div><div class="mnum exp" id="monthExpense">R$0</div><div class="mlbl">Saídas</div></div>
+        <div><div class="mnum" id="monthNet">R$0</div><div class="mlbl">Saldo</div></div>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <h3>Histórico semanal</h3>
+      <div class="chart-wrap"><canvas id="historyChart" height="200"></canvas></div>
+      <div class="legend">
+        <span><i class="dot" style="background:#d9ae76"></i>Entradas</span>
+        <span><i class="dot" style="background:#c0564d"></i>Saídas</span>
+      </div>
+    </div>
+    <div class="chart-card">
+      <h3>Semana atual vs. anterior</h3>
+      <div class="chart-wrap"><canvas id="compareChart" height="200"></canvas></div>
+      <div class="legend">
+        <span><i class="dot" style="background:#4a443b"></i>Anterior</span>
+        <span><i class="dot" style="background:#b8894f"></i>Atual</span>
+      </div>
+    </div>
+    <div class="chart-card">
+      <h3>Entradas x saídas por dia (semana atual)</h3>
+      <div class="chart-wrap"><canvas id="dayChart" height="200"></canvas></div>
+      <div class="legend">
+        <span><i class="dot" style="background:#d9ae76"></i>Entradas</span>
+        <span><i class="dot" style="background:#c0564d"></i>Saídas</span>
+      </div>
+    </div>
+    <div class="chart-card">
+      <h3>Backup dos dados</h3>
+      <div class="backup">
+        <button id="exportBtn">Exportar (.json)</button>
+        <button id="importBtnTrigger">Importar (.json)</button>
+        <input type="file" id="importInput" accept="application/json">
+      </div>
+    </div>
+  </div>
+
+  <footer>Fernando Barber · dados salvos neste navegador (armazenamento local do aparelho)</footer>
+</div>
+
+<div class="tabbar">
+  <button class="tab-btn active" data-view="cortes"><span class="ic">✂</span>Cortes</button>
+  <button class="tab-btn" data-view="saidas"><span class="ic">💸</span>Saídas</button>
+  <button class="tab-btn" data-view="graficos"><span class="ic">📊</span>Gráficos</button>
+</div>
+
+<script>
+const DAY_NAMES = ["Segunda","Terça","Quarta","Quinta","Sexta","Sábado"];
+const MESES = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+const STORAGE_KEY = 'fernando_barber_data_v1';
+let state = {};
+let currentWeekStart = getMonday(new Date());
+
+function getMonday(d){
+  const date = new Date(d);
+  const day = date.getDay();
+  const diff = (day === 0 ? -6 : 1) - day;
+  date.setDate(date.getDate() + diff);
+  date.setHours(0,0,0,0);
+  return date;
+}
+function fmtKey(d){ return d.toISOString().slice(0,10); }
+function fmtBRL(n){ return n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
+function fmtBRLshort(n){ return n.toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0}); }
+function weekRangeLabel(monday){
+  const sat = new Date(monday); sat.setDate(sat.getDate()+5);
+  const opts = {day:'2-digit',month:'2-digit'};
+  return `${monday.toLocaleDateString('pt-BR',opts)} – ${sat.toLocaleDateString('pt-BR',opts)}`;
+}
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    state = raw ? JSON.parse(raw) : {};
+  }catch(e){ state = {}; }
+}
+function saveState(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+  catch(e){ console.error('Falha ao salvar', e); }
+}
+function ensureWeek(key){
+  if(!state[key]){
+    const income = {}, expenses = {};
+    DAY_NAMES.forEach(d=>{ income[d]=[]; expenses[d]=[]; });
+    state[key] = { income, expenses };
+  }
+  if(!state[key].expenses){
+    const expenses = {}; DAY_NAMES.forEach(d=>expenses[d]=[]);
+    state[key].expenses = expenses;
+  }
+  return state[key];
+}
+function weekTotals(weekKey){
+  const w = state[weekKey];
+  if(!w) return {income:0, expense:0, cuts:0};
+  let income=0, cuts=0, expense=0;
+  DAY_NAMES.forEach(d=>{
+    (w.income[d]||[]).forEach(v=>{ income+=v; cuts++; });
+    (w.expenses[d]||[]).forEach(e=>{ expense+=e.value; });
+  });
+  return {income, expense, cuts};
+}
+
+function renderSummary(key){
+  const t = weekTotals(key);
+  document.getElementById('totalIncome').textContent = fmtBRLshort(t.income);
+  document.getElementById('totalExpense').textContent = fmtBRLshort(t.expense);
+  document.getElementById('totalNet').textContent = fmtBRLshort(t.income - t.expense);
+}
+
+function renderIncome(key){
+  const week = ensureWeek(key);
+  const grid = document.getElementById('incomeGrid');
+  grid.innerHTML = '';
+  let globalIndex = 0;
+  DAY_NAMES.forEach(dayName=>{
+    const values = week.income[dayName];
+    const dayTotal = values.reduce((a,b)=>a+b,0);
+    const dayEl = document.createElement('div');
+    dayEl.className = 'day';
+    dayEl.innerHTML = `<div class="dhead"><span class="dname">${dayName}</span><span class="dtotal">${fmtBRL(dayTotal)}</span></div>`;
+    if(values.length===0){
+      const empty = document.createElement('div');
+      empty.className='empty'; empty.textContent='Nenhum corte ainda';
+      dayEl.appendChild(empty);
+    } else {
+      const list = document.createElement('ul'); list.className='cuts';
+      values.forEach((val,i)=>{
+        globalIndex++;
+        const li = document.createElement('li');
+        li.innerHTML = `<span class="idx">${globalIndex}.</span><span class="val">${fmtBRL(val)}</span><button class="del">✕</button>`;
+        li.querySelector('.del').addEventListener('click', ()=>{ values.splice(i,1); saveState(); refreshAll(); });
+        list.appendChild(li);
+      });
+      dayEl.appendChild(list);
+    }
+    const addRow = document.createElement('div'); addRow.className='addrow';
+    addRow.innerHTML = `<input class="val-input" type="number" step="0.01" min="0" placeholder="Valor (ex: 25,00)"><button>+</button>`;
+    const input = addRow.querySelector('input'); const btn = addRow.querySelector('button');
+    function commit(){
+      const n = parseFloat(input.value.replace(',','.'));
+      if(!isNaN(n) && n>0){ values.push(n); input.value=''; saveState(); refreshAll(); }
+    }
+    btn.addEventListener('click', commit);
+    input.addEventListener('keydown', e=>{ if(e.key==='Enter') commit(); });
+    dayEl.appendChild(addRow);
+    grid.appendChild(dayEl);
+  });
+}
+
+function renderExpenses(key){
+  const week = ensureWeek(key);
+  const grid = document.getElementById('expenseGrid');
+  grid.innerHTML = '';
+  DAY_NAMES.forEach(dayName=>{
+    const items = week.expenses[dayName];
+    const dayTotal = items.reduce((a,b)=>a+b.value,0);
+    const dayEl = document.createElement('div');
+    dayEl.className = 'day exp';
+    dayEl.innerHTML = `<div class="dhead"><span class="dname">${dayName}</span><span class="dtotal">-${fmtBRL(dayTotal)}</span></div>`;
+    if(items.length===0){
+      const empty = document.createElement('div');
+      empty.className='empty'; empty.textContent='Nenhuma saída';
+      dayEl.appendChild(empty);
+    } else {
+      const list = document.createElement('ul'); list.className='cuts';
+      items.forEach((item,i)=>{
+        const li = document.createElement('li');
+        li.innerHTML = `<span class="val">${fmtBRL(item.value)}<span class="desc">${item.desc||''}</span></span><button class="del">✕</button>`;
+        li.querySelector('.del').addEventListener('click', ()=>{ items.splice(i,1); saveState(); refreshAll(); });
+        list.appendChild(li);
+      });
+      dayEl.appendChild(list);
+    }
+    const addRow = document.createElement('div'); addRow.className='addrow';
+    addRow.innerHTML = `<input class="desc-input" type="text" placeholder="Descrição (ex: produto)"><input class="val-input" type="number" step="0.01" min="0" placeholder="Valor"><button>+</button>`;
+    const descInput = addRow.querySelector('.desc-input');
+    const valInput = addRow.querySelector('.val-input');
+    const btn = addRow.querySelector('button');
+    function commit(){
+      const n = parseFloat(valInput.value.replace(',','.'));
+      if(!isNaN(n) && n>0){
+        items.push({desc:descInput.value.trim(), value:n});
+        descInput.value=''; valInput.value='';
+        saveState(); refreshAll();
+      }
+    }
+    btn.addEventListener('click', commit);
+    valInput.addEventListener('keydown', e=>{ if(e.key==='Enter') commit(); });
+    dayEl.appendChild(addRow);
+    grid.appendChild(dayEl);
+  });
+}
+
+function sortedWeekKeys(){ return Object.keys(state).sort(); }
+
+// ---------- Custom lightweight canvas charts (no external libs) ----------
+function prepCanvas(canvas, cssHeight){
+  const parentWidth = canvas.parentElement.clientWidth || 300;
+  const dpr = window.devicePixelRatio || 1;
+  canvas.style.width = parentWidth + 'px';
+  canvas.style.height = cssHeight + 'px';
+  canvas.width = Math.round(parentWidth * dpr);
+  canvas.height = Math.round(cssHeight * dpr);
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,parentWidth,cssHeight);
+  return { ctx, w: parentWidth, h: cssHeight };
+}
+function niceMax(v){
+  if(v <= 0) return 10;
+  const mag = Math.pow(10, Math.floor(Math.log10(v)));
+  const norm = v / mag;
+  let step;
+  if(norm <= 1) step = 1; else if(norm <= 2) step = 2; else if(norm <= 5) step = 5; else step = 10;
+  return step * mag;
+}
+function drawAxes(ctx, w, h, pad, maxVal){
+  ctx.strokeStyle = '#3a352f';
+  ctx.fillStyle = '#a89a80';
+  ctx.font = '10px Karla, sans-serif';
+  ctx.textAlign = 'right';
+  ctx.textBaseline = 'middle';
+  const gridLines = 4;
+  for(let i=0;i<=gridLines;i++){
+    const y = pad.top + (h - pad.top - pad.bottom) * (1 - i/gridLines);
+    const val = maxVal * (i/gridLines);
+    ctx.beginPath();
+    ctx.moveTo(pad.left, y);
+    ctx.lineTo(w - pad.right, y);
+    ctx.globalAlpha = i===0 ? 1 : 0.35;
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+    ctx.fillText(fmtBRLshort(val), pad.left - 6, y);
+  }
+}
+function drawLineChart(canvas, labels, series){
+  const cssHeight = 210;
+  const {ctx, w, h} = prepCanvas(canvas, cssHeight);
+  if(labels.length === 0){ return false; }
+  const pad = {top:14, right:14, bottom:26, left:52};
+  const maxRaw = Math.max(1, ...series.flatMap(s=>s.data));
+  const maxVal = niceMax(maxRaw);
+  drawAxes(ctx, w, h, pad, maxVal);
+  const plotW = w - pad.left - pad.right;
+  const plotH = h - pad.top - pad.bottom;
+  const stepX = labels.length > 1 ? plotW / (labels.length - 1) : 0;
+
+  series.forEach(s=>{
+    ctx.beginPath();
+    s.data.forEach((v,i)=>{
+      const x = pad.left + stepX * i;
+      const y = pad.top + plotH * (1 - v/maxVal);
+      if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    });
+    ctx.strokeStyle = s.color;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    s.data.forEach((v,i)=>{
+      const x = pad.left + stepX * i;
+      const y = pad.top + plotH * (1 - v/maxVal);
+      ctx.beginPath();
+      ctx.arc(x,y,3,0,Math.PI*2);
+      ctx.fillStyle = s.color;
+      ctx.fill();
+    });
+  });
+
+  ctx.fillStyle = '#a89a80';
+  ctx.font = '9px Karla, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  labels.forEach((lab,i)=>{
+    const x = pad.left + stepX * i;
+    ctx.fillText(lab, x, h - pad.bottom + 6);
+  });
+  return true;
+}
+function drawGroupedBarChart(canvas, labels, series){
+  const cssHeight = 210;
+  const {ctx, w, h} = prepCanvas(canvas, cssHeight);
+  if(labels.length === 0){ return false; }
+  const pad = {top:14, right:14, bottom:26, left:52};
+  const maxRaw = Math.max(1, ...series.flatMap(s=>s.data));
+  const maxVal = niceMax(maxRaw);
+  drawAxes(ctx, w, h, pad, maxVal);
+  const plotW = w - pad.left - pad.right;
+  const plotH = h - pad.top - pad.bottom;
+  const groupW = plotW / labels.length;
+  const barGap = 4;
+  const barW = Math.max(6, (groupW - barGap*(series.length+1)) / series.length);
+
+  labels.forEach((lab,i)=>{
+    const groupX = pad.left + groupW * i;
+    series.forEach((s,si)=>{
+      const v = s.data[i] || 0;
+      const barH = plotH * (v/maxVal);
+      const x = groupX + barGap + si*(barW+barGap);
+      const y = pad.top + plotH - barH;
+      ctx.fillStyle = s.color;
+      ctx.fillRect(x, y, barW, barH);
+    });
+    ctx.fillStyle = '#a89a80';
+    ctx.font = '9px Karla, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText(lab, groupX + groupW/2, h - pad.bottom + 6);
+  });
+  return true;
+}
+
+function renderCharts(currentKey){
+  let keys = sortedWeekKeys();
+  if(!keys.includes(currentKey)){ keys.push(currentKey); keys.sort(); }
+  const histKeys = keys.filter(k => weekTotals(k).income > 0 || weekTotals(k).expense > 0 || k === currentKey).slice(-8);
+
+  const histLabels = histKeys.map(k=>{
+    const d = new Date(k+'T00:00:00');
+    return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});
+  });
+  const histIncome = histKeys.map(k=>weekTotals(k).income);
+  const histExpense = histKeys.map(k=>weekTotals(k).expense);
+
+  const historyCanvas = document.getElementById('historyChart');
+  const historyWrap = historyCanvas.parentElement;
+  const hasHistData = histIncome.some(v=>v>0) || histExpense.some(v=>v>0);
+  if(hasHistData){
+    historyCanvas.style.display='';
+    drawLineChart(historyCanvas, histLabels, [
+      {data:histIncome, color:'#d9ae76'},
+      {data:histExpense, color:'#c0564d'}
+    ]);
+  } else {
+    historyCanvas.style.display='none';
+    if(!historyWrap.querySelector('.nodata')){
+      const nd = document.createElement('div'); nd.className='nodata'; nd.textContent='Sem dados suficientes ainda';
+      historyWrap.appendChild(nd);
+    }
+  }
+
+  const idx = histKeys.indexOf(currentKey);
+  const prevKey = idx > 0 ? histKeys[idx-1] : null;
+  const prevTotals = prevKey ? weekTotals(prevKey) : {income:0,expense:0};
+  const curTotals = weekTotals(currentKey);
+  const compareCanvas = document.getElementById('compareChart');
+  drawGroupedBarChart(compareCanvas, ['Entradas','Saídas','Saldo'], [
+    {data:[prevTotals.income, prevTotals.expense, prevTotals.income-prevTotals.expense], color:'#4a443b'},
+    {data:[curTotals.income, curTotals.expense, curTotals.income-curTotals.expense], color:'#b8894f'}
+  ]);
+
+  const week = ensureWeek(currentKey);
+  const dayIncome = DAY_NAMES.map(d=>(week.income[d]||[]).reduce((a,b)=>a+b,0));
+  const dayExpense = DAY_NAMES.map(d=>(week.expenses[d]||[]).reduce((a,b)=>a+b.value,0));
+  const dayCanvas = document.getElementById('dayChart');
+  drawGroupedBarChart(dayCanvas, DAY_NAMES.map(d=>d.slice(0,3)), [
+    {data:dayIncome, color:'#d9ae76'},
+    {data:dayExpense, color:'#c0564d'}
+  ]);
+}
+
+function monthTotals(monthKey){
+  let income=0, expense=0;
+  Object.keys(state).forEach(weekKey=>{
+    if(weekKey.slice(0,7) === monthKey){
+      const t = weekTotals(weekKey);
+      income += t.income;
+      expense += t.expense;
+    }
+  });
+  return {income, expense};
+}
+function renderMonth(currentKey){
+  const d = new Date(currentKey+'T00:00:00');
+  const monthKey = currentKey.slice(0,7);
+  const t = monthTotals(monthKey);
+  document.getElementById('monthTitle').textContent = `${MESES[d.getMonth()]} de ${d.getFullYear()}`;
+  document.getElementById('monthIncome').textContent = fmtBRLshort(t.income);
+  document.getElementById('monthExpense').textContent = fmtBRLshort(t.expense);
+  document.getElementById('monthNet').textContent = fmtBRLshort(t.income - t.expense);
+}
+
+function refreshAll(){
+  const key = fmtKey(currentWeekStart);
+  document.getElementById('weekLabel').textContent = weekRangeLabel(currentWeekStart);
+  renderSummary(key);
+  renderIncome(key);
+  renderExpenses(key);
+  if(document.getElementById('view-graficos').classList.contains('active')){
+    renderMonth(key);
+    renderCharts(key);
+  }
+}
+
+document.getElementById('prevWeek').addEventListener('click', ()=>{
+  currentWeekStart.setDate(currentWeekStart.getDate()-7);
+  currentWeekStart = getMonday(currentWeekStart);
+  refreshAll();
+});
+document.getElementById('nextWeek').addEventListener('click', ()=>{
+  currentWeekStart.setDate(currentWeekStart.getDate()+7);
+  currentWeekStart = getMonday(currentWeekStart);
+  refreshAll();
+});
+
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('view-'+btn.dataset.view).classList.add('active');
+    if(btn.dataset.view === 'graficos'){
+      const key = fmtKey(currentWeekStart);
+      renderMonth(key);
+      renderCharts(key);
+    }
+  });
+});
+
+window.addEventListener('resize', ()=>{
+  if(document.getElementById('view-graficos').classList.contains('active')){
+    renderCharts(fmtKey(currentWeekStart));
+  }
+});
+
+document.getElementById('exportBtn').addEventListener('click', ()=>{
+  const blob = new Blob([JSON.stringify(state,null,2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const stamp = new Date().toISOString().slice(0,10);
+  a.href = url; a.download = `fernando-barber-backup-${stamp}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+});
+document.getElementById('importBtnTrigger').addEventListener('click', ()=>{
+  document.getElementById('importInput').click();
+});
+document.getElementById('importInput').addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    try{
+      const imported = JSON.parse(reader.result);
+      state = imported;
+      saveState();
+      refreshAll();
+      alert('Backup importado com sucesso.');
+    }catch(err){ alert('Arquivo inválido.'); }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+});
+
+loadState();
+refreshAll();
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('service-worker.js').catch(()=>{});
+  });
+}
+</script>
+</body>
+</html>
