@@ -5,26 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Fernando Barber — Registro de Cortes</title>
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#1c1a17">
+<meta name="theme-color" content="#0a0a0a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="F. Barber">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --charcoal:#1c1a17;
-    --charcoal-2:#26221e;
-    --charcoal-3:#302b25;
-    --cream:#efe7d8;
-    --brass:#b8894f;
-    --brass-light:#d9ae76;
-    --barber-red:#9c3b34;
-    --barber-red-light:#c0564d;
-    --barber-blue:#2e4a5c;
-    --line:#3a352f;
+    --charcoal:#0a0a0a;
+    --charcoal-2:#161616;
+    --charcoal-3:#212121;
+    --cream:#e8e6e2;
+    --brass:#8a8a8a;
+    --brass-light:#c9c9c9;
+    --barber-red:#5a5a5a;
+    --barber-red-light:#8f8f8f;
+    --barber-blue:#707070;
+    --line:#2c2c2c;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{margin:0;padding:0;}
@@ -35,10 +35,11 @@
     min-height:100vh;
     padding-bottom:calc(74px + env(safe-area-inset-bottom));
   }
-  .pole{height:5px;background:repeating-linear-gradient(115deg,var(--barber-red) 0 16px,var(--cream) 16px 32px,var(--barber-blue) 32px 48px);}
-  header{padding:22px 20px 16px;text-align:center;border-bottom:1px solid var(--line);background:var(--charcoal-2);}
-  header h1{font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(1.6rem,7vw,2.4rem);letter-spacing:.02em;margin:0;color:var(--brass-light);text-transform:uppercase;}
-  header .sub{color:#c9bfa9;font-size:.85rem;margin-top:4px;}
+  .pole{height:1px;background:var(--line);}
+  header{padding:20px 20px 14px;text-align:center;border-bottom:1px solid var(--line);background:var(--charcoal-2);}
+  header img.logo{height:64px;width:auto;display:block;margin:0 auto 6px;}
+  header h1{font-family:'Oswald',sans-serif;font-weight:600;font-size:clamp(1.1rem,5vw,1.5rem);letter-spacing:.08em;margin:0;color:var(--cream);text-transform:uppercase;}
+  header .sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;color:#a8a5a0;font-size:1rem;margin-top:4px;letter-spacing:.01em;}
 
   .wrap{max-width:760px;margin:0 auto;padding:16px 14px 20px;}
 
@@ -53,7 +54,7 @@
   .summary .card.net{border-left-color:var(--barber-blue);}
   .summary .card .num{font-family:'Oswald',sans-serif;font-size:1.15rem;color:var(--brass-light);line-height:1.1;word-break:break-word;}
   .summary .card.expense .num{color:var(--barber-red-light);}
-  .summary .card .lbl{font-size:.65rem;color:#a89a80;text-transform:uppercase;letter-spacing:.04em;margin-top:3px;}
+  .summary .card .lbl{font-size:.65rem;color:#8a8a8a;text-transform:uppercase;letter-spacing:.04em;margin-top:3px;}
 
   .days{display:flex;flex-direction:column;gap:12px;}
   .day{background:var(--charcoal-2);border:1px solid var(--line);}
@@ -62,12 +63,12 @@
   .day .dhead .dtotal{font-size:.85rem;color:var(--brass-light);font-weight:700;}
   .day.exp .dhead .dtotal{color:var(--barber-red-light);}
   .cuts{list-style:none;margin:0;padding:2px 0;}
-  .cuts li{display:flex;align-items:center;gap:8px;padding:9px 12px;font-size:.95rem;border-bottom:1px dashed #34302a;}
-  .cuts li .idx{color:#8d8270;width:22px;flex-shrink:0;text-align:right;font-size:.85rem;}
+  .cuts li{display:flex;align-items:center;gap:8px;padding:9px 12px;font-size:.95rem;border-bottom:1px dashed #2c2c2c;}
+  .cuts li .idx{color:#787878;width:22px;flex-shrink:0;text-align:right;font-size:.85rem;}
   .cuts li .val{flex:1;}
-  .cuts li .desc{color:#a89a80;font-size:.8rem;display:block;}
-  .cuts li .del{background:none;border:none;color:#7a6f5c;cursor:pointer;font-size:1.1rem;padding:4px 8px;}
-  .empty{padding:14px 12px;color:#77705f;font-size:.85rem;font-style:italic;}
+  .cuts li .desc{color:#8a8a8a;font-size:.8rem;display:block;}
+  .cuts li .del{background:none;border:none;color:#6b6b6b;cursor:pointer;font-size:1.1rem;padding:4px 8px;}
+  .empty{padding:14px 12px;color:#6b6b6b;font-size:.85rem;font-style:italic;}
   .addrow{display:flex;gap:6px;padding:10px;border-top:1px solid var(--line);flex-wrap:wrap;}
   .addrow input{background:var(--charcoal);border:1px solid var(--line);color:var(--cream);padding:10px;font-family:'Karla',sans-serif;font-size:.95rem;min-width:0;}
   .addrow input.desc-input{flex:1 1 100px;}
@@ -77,7 +78,7 @@
   .day.exp .addrow button{background:var(--barber-red-light);}
 
   .tabbar{position:fixed;bottom:0;left:0;right:0;display:flex;background:var(--charcoal-2);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);z-index:10;}
-  .tabbar button{flex:1;background:none;border:none;color:#8d8270;padding:12px 4px 10px;font-family:'Oswald',sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:.03em;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;}
+  .tabbar button{flex:1;background:none;border:none;color:#787878;padding:12px 4px 10px;font-family:'Oswald',sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:.03em;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;}
   .tabbar button .ic{font-size:1.15rem;}
   .tabbar button.active{color:var(--brass-light);}
   .view{display:none;}
@@ -88,29 +89,30 @@
   .chart-wrap{position:relative;width:100%;}
   .chart-wrap canvas{width:100%;display:block;}
   .legend{display:flex;gap:14px;justify-content:center;margin-top:8px;flex-wrap:wrap;}
-  .legend span{font-size:.72rem;color:#c9bfa9;display:flex;align-items:center;gap:5px;}
+  .legend span{font-size:.72rem;color:#b8b8b8;display:flex;align-items:center;gap:5px;}
   .legend .dot{width:9px;height:9px;border-radius:2px;display:inline-block;}
-  .nodata{padding:20px 10px;text-align:center;color:#77705f;font-size:.85rem;font-style:italic;}
+  .nodata{padding:20px 10px;text-align:center;color:#6b6b6b;font-size:.85rem;font-style:italic;}
 
   .month-card{background:var(--charcoal-2);border:1px solid var(--line);border-left:3px solid var(--brass-light);padding:12px 14px;margin-bottom:16px;}
-  .month-card .mtitle{font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.03em;font-size:.85rem;color:#c9bfa9;margin-bottom:8px;}
+  .month-card .mtitle{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600;letter-spacing:.02em;font-size:1.1rem;color:var(--cream);margin-bottom:8px;}
   .month-card .mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
   .month-card .mgrid .mnum{font-family:'Oswald',sans-serif;font-size:1.05rem;color:var(--brass-light);}
   .month-card .mgrid .mnum.exp{color:var(--barber-red-light);}
-  .month-card .mgrid .mlbl{font-size:.62rem;color:#a89a80;text-transform:uppercase;letter-spacing:.03em;}
+  .month-card .mgrid .mlbl{font-size:.62rem;color:#8a8a8a;text-transform:uppercase;letter-spacing:.03em;}
 
   .backup{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;}
   .backup button{flex:1;background:var(--charcoal-3);border:1px solid var(--line);color:var(--cream);padding:10px;font-size:.8rem;cursor:pointer;font-family:'Karla',sans-serif;}
   .backup input[type=file]{display:none;}
 
-  footer{text-align:center;color:#6f6656;font-size:.72rem;margin-top:24px;padding:0 10px;}
+  footer{text-align:center;color:#5c5c5c;font-size:.72rem;margin-top:24px;padding:0 10px;}
 </style>
 </head>
 <body>
 <div class="pole"></div>
 <header>
+  <img class="logo" src="logo-white.png" alt="Fernando Barber">
   <h1>Fernando Barber</h1>
-  <div class="sub">Registro semanal de cortes e saídas</div>
+  <div class="sub">Registro de cortes e saídas</div>
 </header>
 
 <div class="wrap">
@@ -370,7 +372,7 @@ function niceMax(v){
 }
 function drawAxes(ctx, w, h, pad, maxVal){
   ctx.strokeStyle = '#3a352f';
-  ctx.fillStyle = '#a89a80';
+  ctx.fillStyle = '#8a8a8a';
   ctx.font = '10px Karla, sans-serif';
   ctx.textAlign = 'right';
   ctx.textBaseline = 'middle';
@@ -419,7 +421,7 @@ function drawLineChart(canvas, labels, series){
     });
   });
 
-  ctx.fillStyle = '#a89a80';
+  ctx.fillStyle = '#8a8a8a';
   ctx.font = '9px Karla, sans-serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'top';
@@ -453,7 +455,7 @@ function drawGroupedBarChart(canvas, labels, series){
       ctx.fillStyle = s.color;
       ctx.fillRect(x, y, barW, barH);
     });
-    ctx.fillStyle = '#a89a80';
+    ctx.fillStyle = '#8a8a8a';
     ctx.font = '9px Karla, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';

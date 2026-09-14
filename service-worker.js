@@ -1,5 +1,5 @@
-const CACHE_NAME = 'fernando-barber-v1';
-const ASSETS = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
+const CACHE_NAME = 'fernando-barber-v2';
+const ASSETS = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './logo-white.png'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
