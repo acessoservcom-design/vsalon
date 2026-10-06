@@ -6808,9 +6808,9 @@ onAuthStateChanged(auth, async (user) => {
 // MÓDULO: ASSINATURAS (vBarber Subscriptions) - cliente
 // ============================================================================
 const SUB_SETTINGS_DOC = 'settings';
-const SUB_PLANS_BASE = 'plans';
+const SUB_PLANS_BASE = 'subPlans';
 const SUB_MEMBERS_BASE = 'memberships';
-const SUB_PUBLIC_PLANS_KEY = 'list';
+const SUB_PUBLIC_PLANS_KEY = 'subPlans';
 
 let subSettings = null;
 let subPlans = [];
@@ -6871,7 +6871,7 @@ async function loadSubscriptionPlans(uid){
   subPlans = [];
   if(!uid) return;
   try{
-    const snap = await withTimeout(getDocs(collection(db, 'users', uid, 'subscription', SUB_PLANS_BASE)), 8000, 'sub-plans-timeout');
+    const snap = await withTimeout(getDocs(collection(db, 'users', uid, SUB_PLANS_BASE)), 8000, 'sub-plans-timeout');
     snap.forEach(d => {
       const dts = normalizeSubPlan({ ...d.data(), id: d.id });
       if(dts) subPlans.push(dts);
@@ -6916,7 +6916,7 @@ async function saveSubscriptionPlan(p){
     updatedAt: now
   };
   if(!plan.name || plan.price <= 0) return null;
-  await setDoc(doc(db, 'users', currentUser.uid, 'subscription', SUB_PLANS_BASE, id), plan);
+  await setDoc(doc(db, 'users', currentUser.uid, SUB_PLANS_BASE, id), plan);
   const idx = subPlans.findIndex(x => x.id === id);
   if(idx >= 0) subPlans[idx] = plan;
   else subPlans.push(plan);
@@ -6926,7 +6926,7 @@ async function saveSubscriptionPlan(p){
 
 async function deleteSubscriptionPlan(id){
   if(!currentUser) return;
-  await deleteDoc(doc(db, 'users', currentUser.uid, 'subscription', SUB_PLANS_BASE, id)).catch(()=>{});
+  await deleteDoc(doc(db, 'users', currentUser.uid, SUB_PLANS_BASE, id)).catch(()=>{});
   subPlans = subPlans.filter(x => x.id !== id);
   syncPublicSubPlans();
 }
@@ -6935,7 +6935,7 @@ async function loadMemberships(uid){
   memberships = [];
   if(!uid) return;
   try{
-    const snap = await withTimeout(getDocs(collection(db, 'users', uid, 'subscription', SUB_MEMBERS_BASE)), 8000, 'sub-members-timeout');
+    const snap = await withTimeout(getDocs(collection(db, 'users', uid, SUB_MEMBERS_BASE)), 8000, 'sub-members-timeout');
     snap.forEach(d => {
       const m = normalizeSubMembership({ ...d.data(), id: d.id });
       if(m) memberships.push(m);
@@ -6959,7 +6959,7 @@ function normalizeSubMembership(m){
     dueDay: (m.dueDay != null && m.dueDay >= 1 && m.dueDay <= 31) ? m.dueDay : 10,
     lastPaymentDate: (m.lastPaymentDate && /^\d{4}-\d{2}-\d{2}$/.test(m.lastPaymentDate)) ? m.lastPaymentDate : null,
     nextDueDate: (m.nextDueDate && /^\d{4}-\d{2}-\d{2}$/.test(m.nextDueDate)) ? m.nextDueDate : '',
-    cutsIncluded: (typeof m.cutsIncluded === 'number' && m.cutsIncluded > 0) ? Math.round(m.cutsIncluded) : 1,
+    cutsIncluded: (typeof m.cutsIncluded === 'number' && m.cutsIncluded > 0) ? Math.round(m.cutsIncluded) : ((typeof m.cuts === 'number' && m.cuts > 0) ? Math.round(m.cuts) : 1),
     cutsUsed: (typeof m.cutsUsed === 'number' && m.cutsUsed >= 0) ? Math.round(m.cutsUsed) : 0,
     paymentConfirmedBy: (m.paymentConfirmedBy === 'client' || m.paymentConfirmedBy === 'barber') ? m.paymentConfirmedBy : 'client',
     startedAt: String(m.startedAt || ''),
@@ -6977,7 +6977,7 @@ async function saveMembership(m){
     m.validityDays = m.validityDays != null ? m.validityDays : (plan.validityDays || 30);
   }
   m.cutsIncluded = m.cutsIncluded != null ? m.cutsIncluded : (plan ? plan.cuts : 1);
-  await setDoc(doc(db, 'users', currentUser.uid, 'subscription', SUB_MEMBERS_BASE, m.id), m);
+  await setDoc(doc(db, 'users', currentUser.uid, SUB_MEMBERS_BASE, m.id), m);
   const idx = memberships.findIndex(x => x.id === m.id);
   if(idx >= 0) memberships[idx] = m;
   else memberships.push(m);
@@ -6997,7 +6997,7 @@ function syncPublicSubPlans(){
         validityDays: p.validityDays,
         services: p.services.slice(0,10)
       }));
-    setDoc(doc(db, 'users', currentUser.uid, 'public', 'subscription', SUB_PUBLIC_PLANS_KEY), {
+    setDoc(doc(db, 'users', currentUser.uid, 'public', SUB_PUBLIC_PLANS_KEY), {
       items, updatedAt: new Date().toISOString()
     }).catch(()=>{});
   }catch(e){
@@ -7275,10 +7275,9 @@ if(subPlanAddBtn) subPlanAddBtn.addEventListener('click', ()=>{
 async function consumeMembershipCredit(membershipId, planCuts, planCarryOver){
   if(!membershipId || !currentUser) return null;
   try{
-    const memSnap = await withTimeout(getDocs(query(collection(db, 'users', currentUser.uid, 'subscription', SUB_MEMBERS_BASE), where('id','==',membershipId))), 6000, 'mem-timeout');
-    const docs = memSnap.docs;
-    if(!docs.length) return null;
-    const m = { ...(docs[0].data() || {}), id: docs[0].id };
+    const memSnap = await withTimeout(getDoc(doc(db, 'users', currentUser.uid, SUB_MEMBERS_BASE, membershipId)), 6000, 'mem-timeout');
+    if(!memSnap.exists()) return null;
+    const m = { ...(memSnap.data() || {}), id: memSnap.id };
     if(m.status !== 'active') return null;
     m.cutsUsed = (m.cutsUsed || 0) + 1;
     const plan = subPlans.find(p => p.id === (m.planId || ''));
@@ -7290,17 +7289,17 @@ async function consumeMembershipCredit(membershipId, planCuts, planCarryOver){
       if(carry){
         m.nextDueDate = next;
         m.cycleStart = fmtKey(new Date());
-        await setDoc(doc(db, 'users', currentUser.uid, 'subscription', SUB_MEMBERS_BASE, membershipId), m, { merge: true }).catch(()=>{});
+        await setDoc(doc(db, 'users', currentUser.uid, SUB_MEMBERS_BASE, membershipId), m, { merge: true }).catch(()=>{});
         return 'Créditos do ciclo atual usados (' + m.cutsUsed + '/' + cuts + '). Renovação em ' + next.slice(8,10) + '/' + next.slice(5,7) + ' (acumulado).';
       } else {
         m.status = 'expired';
         m.expiredAt = new Date().toISOString();
         m.nextDueDate = next;
-        await setDoc(doc(db, 'users', currentUser.uid, 'subscription', SUB_MEMBERS_BASE, membershipId), m, { merge: true }).catch(()=>{});
+        await setDoc(doc(db, 'users', currentUser.uid, SUB_MEMBERS_BASE, membershipId), m, { merge: true }).catch(()=>{});
         return 'Plano ' + (m.planName || '') + ' esgotado. Próxima renovação: ' + next.slice(8,10) + '/' + next.slice(5,7) + '. O cliente deve confirmar novo pagamento.';
       }
     }
-    await setDoc(doc(db, 'users', currentUser.uid, 'subscription', SUB_MEMBERS_BASE, membershipId), { cutsUsed: m.cutsUsed, updatedAt: new Date().toISOString() }, { merge: true }).catch(()=>{});
+    await setDoc(doc(db, 'users', currentUser.uid, SUB_MEMBERS_BASE, membershipId), { cutsUsed: m.cutsUsed, updatedAt: new Date().toISOString() }, { merge: true }).catch(()=>{});
     return 'Corte concluído. Restam ' + (cuts - m.cutsUsed) + '/' + cuts + ' créditos no plano ' + (m.planName || '');
   }catch(e){
     console.error('consumeMembershipCredit falhou:', e);

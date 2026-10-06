@@ -665,7 +665,7 @@ async function loadSlots(){
 }
 
 const SUB_SETTINGS_DOC = 'settings';
-const SUB_PUBLIC_PLANS_KEY = 'list';
+const SUB_PUBLIC_PLANS_KEY = 'subPlans';
 const SUB_MEMBERS_BASE = 'memberships';
 
 function nextDueDate(from, dueDay){
@@ -701,7 +701,7 @@ async function loadSubscriptionPlans(){
   subscriptionPlans = [];
   if(!linkOk) return;
   try{
-    const snap = await getDoc(doc(db, 'users', BARBER, 'public', 'subscription', SUB_PUBLIC_PLANS_KEY));
+    const snap = await getDoc(doc(db, 'users', BARBER, 'public', SUB_PUBLIC_PLANS_KEY));
     const raw = snap.exists() && snap.data().items;
     subscriptionPlans = (Array.isArray(raw) ? raw : [])
       .filter(p => p && p.id && p.name)
@@ -797,7 +797,7 @@ function setupPushListener(){
 async function loadSubscriptionMemberships(){
   if(!user || !linkOk) return;
   try{
-    const q = query(collection(db, 'users', BARBER, 'subscription', SUB_MEMBERS_BASE), where('clientUid','==',user.uid));
+    const q = query(collection(db, 'users', BARBER, SUB_MEMBERS_BASE), where('clientUid','==',user.uid));
     const snap = await getDocs(q);
     snap.forEach(d => {
       const m = { ...(d.data() || {}), id: d.id };
@@ -917,15 +917,15 @@ async function confirmSubPayment(plan){
   if(el) el.disabled = true;
   const todayStr = fmtKey(new Date());
   const dueStr = nextDueDate(subscriptionSettings.dueDay, subscriptionSettings.carryOver);
-  const q = query(collection(db, 'users', BARBER, 'subscription', SUB_MEMBERS_BASE), where('clientUid','==',user.uid), where('planId','==',plan.id));
+  const q = query(collection(db, 'users', BARBER, SUB_MEMBERS_BASE), where('clientUid','==',user.uid), where('planId','==',plan.id));
   try{
     const snap = await getDocs(q);
     for(const d of snap.docs){
       const m = { ...(d.data() || {}), id: d.id };
       if(m.status === 'cancelled') continue;
       if(m.status === 'past_due'){
-        await setDoc(doc(db, 'users', BARBER, 'subscription', SUB_MEMBERS_BASE, d.id), { status: 'past_due', confirmedBy: 'client', confirmedAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
-        await setDoc(doc(db, 'users', user.uid, 'subscription', SUB_MEMBERS_BASE, d.id), { status: 'past_due', confirmedAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
+        await setDoc(doc(db, 'users', BARBER, SUB_MEMBERS_BASE, d.id), { status: 'past_due', confirmedBy: 'client', confirmedAt: new Date().toISOString(), updatedAt: new Date().toISOString() }, { merge: true });
+        await setDoc(doc(db, 'users', user.uid, SUB_MEMBERS_BASE, d.id), { status: 'past_due', confirmedAt: new Date().toISOString(), updatedAt: new Date().toISOString() }, { merge: true });
         return;
       }
       if(m.status === 'expired' || (m.nextDueDate && m.nextDueDate < todayStr && m.status !== 'active')){
@@ -935,18 +935,20 @@ async function confirmSubPayment(plan){
         m.nextDueDate = dueStr;
         m.confirmedBy = 'client';
         m.confirmedAt = new Date().toISOString();
-        await setDoc(doc(db, 'users', BARBER, 'subscription', SUB_MEMBERS_BASE, d.id), m);
-        await setDoc(doc(db, 'users', user.uid, 'subscription', SUB_MEMBERS_BASE, d.id), { planId: plan.id, status: 'pending_payment', cutsUsed: 0, cycleStart: todayStr, nextDueDate: dueStr, confirmedBy: 'client', confirmedAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
+        await setDoc(doc(db, 'users', BARBER, SUB_MEMBERS_BASE, d.id), m, { merge: true });
+        await setDoc(doc(db, 'users', user.uid, SUB_MEMBERS_BASE, d.id), { planId: plan.id, status: 'pending_payment', cutsUsed: 0, cycleStart: todayStr, nextDueDate: dueStr, confirmedBy: 'client', confirmedAt: new Date().toISOString(), updatedAt: new Date().toISOString() }, { merge: true });
         return;
       }
       m.status = 'pending_payment';
       m.confirmedBy = 'client';
       m.confirmedAt = new Date().toISOString();
-      await setDoc(doc(db, 'users', BARBER, 'subscription', SUB_MEMBERS_BASE, d.id), m);
-      await setDoc(doc(db, 'users', user.uid, 'subscription', SUB_MEMBERS_BASE, d.id), { planId: plan.id, status: 'pending_payment', confirmedBy: 'client', confirmedAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
+      await setDoc(doc(db, 'users', BARBER, SUB_MEMBERS_BASE, d.id), m, { merge: true });
+      await setDoc(doc(db, 'users', user.uid, SUB_MEMBERS_BASE, d.id), { planId: plan.id, status: 'pending_payment', confirmedBy: 'client', confirmedAt: new Date().toISOString(), updatedAt: new Date().toISOString() }, { merge: true });
       return;
     }
-    await setDoc(doc(db, 'users', BARBER, 'subscription', SUB_MEMBERS_BASE), {
+    const newMemId = doc(collection(db, 'users', BARBER, SUB_MEMBERS_BASE)).id;
+    await setDoc(doc(db, 'users', BARBER, SUB_MEMBERS_BASE, newMemId), {
+      id: newMemId,
       planId: plan.id,
       planName: plan.name,
       planPrice: plan.price,
@@ -956,6 +958,7 @@ async function confirmSubPayment(plan){
       clientPhone: (myClient?.phone || '').trim(),
       status: 'pending_payment',
       cuts: plan.cuts,
+      cutsIncluded: plan.cuts,
       validityDays: plan.validityDays,
       carryOver: plan.carryOver,
       cycleStart: todayStr,
@@ -966,7 +969,8 @@ async function confirmSubPayment(plan){
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     });
-    await setDoc(doc(db, 'users', user.uid, 'subscription', SUB_MEMBERS_BASE), {
+    await setDoc(doc(db, 'users', user.uid, SUB_MEMBERS_BASE, newMemId), {
+      id: newMemId,
       planId: plan.id,
       planName: plan.name,
       status: 'pending_payment',
@@ -1517,6 +1521,7 @@ $('sendBtn').addEventListener('click', async ()=>{
     if(currentMembership){
       ap.fromMembership = true;
       ap.membershipId = currentMembership.id;
+      ap.planId = currentMembership.planId || '';
       ap.planName = currentMembership.planName || (subscriptionPlans.find(p => p.id === currentMembership.planId)?.name || '');
     }
     await setDoc(doc(db, 'users', BARBER, 'appointments', id), ap);

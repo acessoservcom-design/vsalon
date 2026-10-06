@@ -21,7 +21,11 @@ service cloud.firestore {
         && (!('servico' in d) || (d.servico is string && d.servico.size() <= 200))
         && (!('barberId' in d) || (d.barberId is string && d.barberId.size() <= 20))
         && (!('barbeiro' in d) || (d.barbeiro is string && d.barbeiro.size() <= 40))
-        && d.keys().hasOnly(['date', 'time', 'client', 'phone', 'note', 'servico', 'status', 'requested', 'requestedBy', 'createdAt', 'barberId', 'barbeiro']);
+        && (!('fromMembership' in d) || (d.fromMembership is bool))
+        && (!('membershipId' in d) || (d.membershipId is string && d.membershipId.size() <= 60))
+        && (!('planId' in d) || (d.planId is string && d.planId.size() <= 60))
+        && (!('planName' in d) || (d.planName is string && d.planName.size() <= 60))
+        && d.keys().hasOnly(['date', 'time', 'client', 'phone', 'note', 'servico', 'status', 'requested', 'requestedBy', 'createdAt', 'barberId', 'barbeiro', 'fromMembership', 'membershipId', 'planId', 'planName']);
     }
 
     // Dono: acesso total aos próprios dados
@@ -101,10 +105,22 @@ service cloud.firestore {
       allow read, write: if isOwner(uid);
     }
 
-    // Planos de assinatura públicos: leitura livre para a página de agendamento; gravação só do dono
-    match /users/{uid}/public/subscription/{doc=**} {
+    // Configurações de assinatura: leitura livre (a página de agendamento precisa saber se o clube está ativo e a chave PIX)
+    match /users/{uid}/subscription/settings {
       allow read: if true;
-      allow write: if isOwner(uid);
+    }
+
+    // Vínculo de assinatura: dono total; o cliente autenticado lê/grava apenas o próprio vínculo e nunca se auto-ativa (status active é exclusivo do barbeiro)
+    match /users/{uid}/memberships/{membershipId} {
+      allow read: if isOwner(uid) || (signedIn() && resource.data.get('clientUid', '') == request.auth.uid);
+      allow create: if signedIn()
+        && request.resource.data.get('clientUid', '') == request.auth.uid
+        && request.resource.data.status in ['pending_payment', 'past_due'];
+      allow update: if isOwner(uid) || (signedIn()
+        && resource.data.get('clientUid', '') == request.auth.uid
+        && request.resource.data.get('clientUid', '') == resource.data.get('clientUid', '')
+        && request.resource.data.status in ['pending_payment', 'past_due']);
+      allow delete: if isOwner(uid);
     }
 
     match /{document=**} {
