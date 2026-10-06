@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">vBarber</string>
+    <string name="title_activity_main">vBarber</string>
+    <string name="package_name">com.vbarber.painel</string>
+    <string name="custom_url_scheme">com.vbarber.painel</string>
+</resources>

@@ -1,0 +1,114 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+    function validBooking() {
+      let d = request.resource.data;
+      return d.status == 'done'
+        && d.requested == true
+        && d.requestedBy == request.auth.uid
+        && d.client is string && d.client.size() > 0 && d.client.size() <= 80
+        && d.date is string && d.date.size() == 10
+        && d.time is string && d.time.size() == 5
+        && d.createdAt is string && d.createdAt.size() <= 40
+        && (!('phone' in d) || (d.phone is string && d.phone.size() <= 30))
+        && (!('note' in d) || (d.note is string && d.note.size() <= 120))
+        && (!('servico' in d) || (d.servico is string && d.servico.size() <= 200))
+        && (!('barberId' in d) || (d.barberId is string && d.barberId.size() <= 20))
+        && (!('barbeiro' in d) || (d.barbeiro is string && d.barbeiro.size() <= 40))
+        && d.keys().hasOnly(['date', 'time', 'client', 'phone', 'note', 'servico', 'status', 'requested', 'requestedBy', 'createdAt', 'barberId', 'barbeiro']);
+    }
+
+    // Dono: acesso total aos próprios dados
+    match /users/{uid}/{doc=**} {
+      allow read, write: if isOwner(uid);
+    }
+
+    // Página pública de agendamento: leitura livre de marca e horários ocupados
+    match /users/{uid}/public/{docId} {
+      allow read: if true;
+      allow write: if isOwner(uid);
+    }
+
+    // Agendamentos: dono lê/edita; cidadão autenticado lista os próprios; qualquer autenticado cria pedido
+    match /users/{uid}/appointments/{apptId} {
+      allow read, update, delete: if isOwner(uid);
+      allow list: if signedIn() && resource.data.get('requestedBy', '') == request.auth.uid;
+      allow create: if isOwner(uid) || (signedIn() && validBooking());
+      allow update: if signedIn()
+        && resource.data.get('requestedBy', '') == request.auth.uid
+        && resource.data.get('status', '') in ['pending', 'done']
+        && request.resource.data.status == 'cancelled'
+        && request.resource.data.cancelledAt is string
+        && request.resource.data.cancelledAt.size() <= 40
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['status', 'cancelledAt']);
+    }
+
+    // Clientes: dono total; cidadão lê/edita apenas o próprio registro (id g_<uid>)
+    match /users/{uid}/clients/{clientId} {
+      allow read: if isOwner(uid)
+        || (signedIn() && (resource == null || resource.data.get('googleUid', '') == request.auth.uid));
+      allow create: if isOwner(uid) || (signedIn()
+        && request.resource.data.googleUid == request.auth.uid
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 80
+        && request.resource.data.phone is string
+        && request.resource.data.phone.size() <= 30
+        && request.resource.data.keys().hasOnly(['name', 'phone', 'note', 'email', 'googleUid', 'source', 'createdAt']));
+      allow update: if isOwner(uid) || (signedIn()
+        && resource.data.get('googleUid', '') == request.auth.uid
+        && request.resource.data.googleUid == request.auth.uid
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 80
+        && request.resource.data.phone is string
+        && request.resource.data.phone.size() <= 30);
+      allow delete: if isOwner(uid);
+    }
+
+    // Link público curto: código de 6 caracteres -> UID do barbeiro (só get, sem list)
+    function isOperator() {
+    return signedIn() && request.auth.uid == 'DxNbft8KjoVIxDbZaaEFhtCY99t2';
+  }
+
+  match /barbers/{email} {
+    allow read, write: if isOperator();
+    allow get: if signedIn() && request.auth.token.email == email;
+    allow update: if signedIn() && request.auth.token.email == email
+      && request.resource.data.diff(resource.data).affectedKeys()
+        .hasOnly(['uid', 'lastLogin', 'bookingCode']);
+  }
+
+  match /slugs/{code} {
+      allow get: if true;
+      allow create: if signedIn()
+        && code.matches('[A-Z0-9]{6}')
+        && request.resource.data.barberUid is string
+        && request.resource.data.barberUid == request.auth.uid
+        && request.resource.data.keys().hasOnly(['barberUid', 'createdAt']);
+      allow update, delete: if signedIn() && resource.data.get('barberUid', '') == request.auth.uid;
+    }
+
+    // Assinaturas: acesso total do barbeiro (dono do uid)
+    match /users/{uid}/subscription/{doc=**} {
+      allow read, write: if isOwner(uid);
+    }
+
+    // Planos de assinatura públicos: leitura livre para a página de agendamento; gravação só do dono
+    match /users/{uid}/public/subscription/{doc=**} {
+      allow read: if true;
+      allow write: if isOwner(uid);
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

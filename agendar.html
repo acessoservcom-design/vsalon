@@ -1,0 +1,1698 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Agendamento online</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="vBarber">
+<meta property="og:title" content="Agendamento online">
+<meta property="og:description" content="Escolha o dia e o horário e confirme seu atendimento.">
+<meta property="og:image" content="https://vbarber-app.web.app/favicon.png">
+<meta property="og:image:width" content="512">
+<meta property="og:image:height" content="512">
+<meta property="og:locale" content="pt_BR">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Agendamento online">
+<meta name="twitter:image" content="https://vbarber-app.web.app/icon-512.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Cormorant+Garamond:ital,wght@1,500&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --charcoal:#0a0a0a; --charcoal-2:#161616; --charcoal-3:#212121;
+    --cream:#e8e6e2; --brass:#b8894f; --brass-light:#d9ae76;
+    --line:#2c2c2c; --muted:#8a8a8a; --error:#c0564d; --pos:#3ecf8e;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+  body{ background:var(--charcoal); color:var(--cream); font-family:'Karla',sans-serif; min-height:100dvh; display:flex; flex-direction:column; }
+  header{ background:var(--charcoal-2); border-bottom:1px solid var(--line); text-align:center; padding:22px 16px 16px; }
+  header img{ height:56px; display:block; margin:0 auto 6px; }
+  header h1{ font-family:'Oswald',sans-serif; font-weight:600; font-size:1.3rem; letter-spacing:.08em; text-transform:uppercase; }
+  header .sub{ font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:500; color:#a8a5a0; font-size:1rem; margin-top:4px; }
+  main{ flex:1; width:100%; max-width:520px; margin:0 auto; padding:18px 14px 30px; }
+  body.bar-on main{ padding-bottom:116px; }
+  .card{ background:var(--charcoal-2); border:1px solid var(--line); border-left:3px solid var(--brass); border-radius:14px; padding:16px 14px; margin-bottom:14px; }
+  .st{ font-family:'Oswald',sans-serif; font-size:.8rem; text-transform:uppercase; letter-spacing:.1em; color:var(--brass-light); margin-bottom:10px; }
+  p.desc{ font-size:.92rem; color:#a8a5a0; line-height:1.5; margin-bottom:14px; }
+  button{ font-family:'Karla',sans-serif; cursor:pointer; }
+  .g-btn{ display:flex; align-items:center; justify-content:center; gap:10px; width:100%; background:#fff; color:#3c4043; border:none; padding:13px; font-size:.95rem; font-weight:700; border-radius:12px; }
+  .g-btn svg{ width:18px; height:18px; }
+  .main-btn{ width:100%; background:var(--brass); color:#0a0a0a; border:none; padding:14px; font-family:'Oswald',sans-serif; font-size:.95rem; letter-spacing:.06em; text-transform:uppercase; margin-top:14px; border-radius:12px; min-height:48px; }
+  .main-btn:disabled{ opacity:.4; cursor:not-allowed; }
+  .who{ display:flex; align-items:center; gap:10px; background:var(--charcoal-3); border:1px solid var(--line); padding:9px 12px; margin-bottom:14px; font-size:.85rem; border-radius:12px; }
+  .who .mail{ flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#c9c6c0; }
+  .who button{ background:none; border:1px solid var(--line); color:var(--muted); font-size:.75rem; padding:5px 10px; text-transform:uppercase; font-family:'Oswald',sans-serif; letter-spacing:.06em; border-radius:8px; }
+  .step-top{ display:flex; align-items:center; gap:11px; margin-bottom:9px; }
+  .back-b{ width:42px; height:42px; flex-shrink:0; background:var(--charcoal-3); border:1px solid var(--line); color:var(--cream); border-radius:12px; font-size:1.35rem; line-height:1; padding-bottom:3px; }
+  .back-b:active{ border-color:var(--brass); color:var(--brass-light); }
+  .step-title{ font-family:'Oswald',sans-serif; font-size:1.12rem; letter-spacing:.05em; text-transform:uppercase; color:var(--cream); line-height:1.2; }
+  .step-sub{ font-size:.82rem; color:#a8a5a0; margin-top:2px; }
+  .prog{ height:2px; background:linear-gradient(90deg, transparent, var(--brass), transparent); margin-bottom:14px; }
+  .p-card{ background:var(--charcoal-2); border:1px solid var(--line); border-radius:16px; padding:14px 13px; margin-bottom:13px; }
+  .p-card.gold{ border:1px solid rgba(184,137,79,.4); }
+  .p-head{ display:flex; align-items:center; gap:9px; font-family:'Oswald',sans-serif; font-size:.82rem; letter-spacing:.08em; text-transform:uppercase; color:var(--brass-light); margin-bottom:12px; }
+  .p-ico{ width:34px; height:34px; flex-shrink:0; display:flex; align-items:center; justify-content:center; background:rgba(184,137,79,.16); border-radius:10px; font-size:1rem; }
+  .svc-list{ display:flex; flex-direction:column; gap:9px; }
+  .svc-btn{ display:flex; align-items:center; gap:12px; width:100%; background:var(--charcoal-3); border:1px solid var(--line); color:var(--cream); padding:11px 12px; text-align:left; border-radius:14px; min-height:64px; }
+  .svc-btn:active{ border-color:rgba(184,137,79,.6); }
+  .svc-ico{ width:42px; height:42px; flex-shrink:0; display:flex; align-items:center; justify-content:center; background:rgba(184,137,79,.14); border:1px solid rgba(184,137,79,.3); border-radius:12px; font-family:'Oswald',sans-serif; font-size:1.05rem; color:var(--brass-light); text-transform:uppercase; }
+  .svc-tx{ flex:1; min-width:0; display:flex; flex-direction:column; gap:3px; }
+  .svc-tx b{ font-size:.98rem; font-weight:700; line-height:1.25; }
+  .svc-tx i{ font-style:normal; font-family:'Oswald',sans-serif; font-size:.82rem; letter-spacing:.04em; color:var(--brass-light); }
+  .svc-tx i em{ font-style:normal; color:#8a8a8a; margin-left:6px; }
+  .svc-tog{ width:28px; height:28px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border:2px solid var(--line); border-radius:50%; color:transparent; font-size:.85rem; font-weight:700; }
+  .svc-btn.on{ border-color:var(--brass); background:rgba(184,137,79,.08); box-shadow:0 0 0 1px var(--brass); }
+  .svc-btn.on .svc-tog{ background:var(--brass); border-color:var(--brass); color:#0a0a0a; }
+  .svc-btn.on .svc-ico{ background:var(--brass); border-color:var(--brass); color:#0a0a0a; }
+  .pros{ display:flex; flex-direction:column; gap:9px; }
+  .pro-btn{ display:flex; align-items:center; gap:12px; width:100%; background:var(--charcoal-3); border:1px solid var(--line); color:var(--cream); padding:10px 12px; border-radius:14px; text-align:left; }
+  .pro-btn.on{ border-color:var(--brass); background:rgba(184,137,79,.08); }
+  .pro-av{ width:44px; height:44px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:50%; font-family:'Oswald',sans-serif; font-size:.95rem; letter-spacing:.04em; color:#fff; }
+  .pro-nm{ flex:1; min-width:0; font-size:.98rem; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .pro-nm i{ display:block; font-style:normal; font-size:.76rem; font-weight:400; color:#8a8a8a; }
+  .pro-check{ width:24px; height:24px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border:2px solid var(--line); border-radius:50%; color:transparent; font-size:.8rem; font-weight:700; }
+  .pro-btn.on .pro-check{ background:var(--brass); border-color:var(--brass); color:#0a0a0a; }
+  .pro-hint{ font-size:.84rem; color:var(--brass-light); margin-top:9px; }
+  .cal-nav{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:10px; }
+  .cal-nav button{ width:40px; height:40px; background:var(--charcoal-3); border:1px solid var(--line); color:var(--cream); border-radius:12px; font-size:1.15rem; line-height:1; }
+  .cal-nav button:disabled{ opacity:.3; cursor:not-allowed; }
+  .cal-lbl{ font-family:'Oswald',sans-serif; font-size:1rem; letter-spacing:.07em; text-transform:uppercase; color:var(--cream); text-align:center; flex:1; }
+  .cal-lbl i{ display:block; font-style:normal; font-size:.72rem; color:#8a8a8a; letter-spacing:.12em; margin-top:1px; }
+  .cal-dow{ display:grid; grid-template-columns:repeat(7,1fr); gap:5px; margin-bottom:6px; }
+  .cal-dow span{ text-align:center; font-family:'Oswald',sans-serif; font-size:.62rem; letter-spacing:.08em; text-transform:uppercase; color:#8a8a8a; }
+  .cal-grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:5px; }
+  .cal-grid .empty{ aspect-ratio:1; }
+  .cal-grid button{ aspect-ratio:1; background:var(--charcoal-3); border:1px solid var(--line); color:var(--cream); border-radius:12px; font-family:'Oswald',sans-serif; font-size:.92rem; letter-spacing:.02em; display:flex; align-items:center; justify-content:center; }
+  .cal-grid button.today{ box-shadow:inset 0 0 0 2px rgba(184,137,79,.55); }
+  .cal-grid button.on{ background:linear-gradient(160deg, var(--brass-light), var(--brass)); border-color:var(--brass-light); color:#0a0a0a; font-weight:600; box-shadow:0 0 14px rgba(184,137,79,.4); }
+  .cal-grid button:disabled{ background:transparent; border-color:transparent; color:#3a3a3a; cursor:not-allowed; }
+  .slots{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+  @media(min-width:430px){ .slots{ grid-template-columns:repeat(4,1fr); } }
+  .slots button{ background:var(--charcoal-3); border:1px solid var(--line); color:var(--cream); min-height:46px; font-family:'Oswald',sans-serif; font-size:.92rem; letter-spacing:.05em; border-radius:12px; }
+  .slots button:active{ transform:scale(.97); }
+  .slots button.on{ background:linear-gradient(160deg, var(--brass-light), var(--brass)); border-color:var(--brass-light); color:#0a0a0a; box-shadow:0 0 14px rgba(184,137,79,.4); }
+  .slots button:disabled{ opacity:.3; cursor:not-allowed; }
+  .muted{ grid-column:1/-1; color:var(--muted); font-size:.85rem; text-align:center; padding:8px; }
+  .hist-row{ background:var(--charcoal-3); border:1px solid var(--line); padding:8px 10px; margin-bottom:6px; font-size:.85rem; border-radius:10px; }
+  .hist-when{ font-family:'Oswald',sans-serif; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--brass-light); }
+  .hist-svc{ margin-top:2px; color:var(--cream); }
+  .hist-st{ margin-top:2px; font-size:.76rem; color:#a8a5a0; }
+  .hist-st.ok{ color:var(--pos); }
+  .hist-st.wait{ color:var(--brass-light); }
+  .hist-st.cx{ color:var(--error); }
+  .hist-cancel{ display:block; width:100%; margin-top:8px; background:none; border:1px solid var(--error); color:var(--error); padding:7px; font-family:'Oswald',sans-serif; font-size:.74rem; letter-spacing:.08em; text-transform:uppercase; border-radius:8px; }
+  .hist-cancel:disabled{ opacity:.5; cursor:not-allowed; }
+  .sumrow{ display:flex; gap:7px; margin-bottom:14px; }
+  .sumchip{ flex:1; min-width:0; background:var(--charcoal-2); border:1px solid var(--line); border-top:2px solid var(--brass); border-radius:0 0 10px 10px; padding:8px 4px; text-align:center; }
+  .sumchip b{ display:block; font-family:'Oswald',sans-serif; font-weight:500; font-size:1.05rem; color:var(--brass-light); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .sumchip b.small{ font-size:.78rem; padding-top:4px; }
+  .sumchip span{ font-size:.62rem; text-transform:uppercase; letter-spacing:.05em; color:#8a8a8a; }
+  input{ width:100%; background:var(--charcoal-3); border:1px solid var(--line); color:var(--cream); padding:13px 12px; font-family:'Karla',sans-serif; font-size:.95rem; margin-bottom:9px; border-radius:12px; }
+  input::placeholder{ color:#6a6a6a; }
+  input:focus{ outline:none; border-color:var(--brass); }
+  .err{ color:var(--error); font-size:.85rem; margin-top:9px; min-height:1em; }
+  .ok-box{ text-align:center; border-left-color:var(--pos); }
+  .ok-box .big{ font-size:2.2rem; color:var(--pos); margin-bottom:8px; }
+  .ok-box h3{ font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:.06em; font-size:1.05rem; margin-bottom:8px; }
+  .ok-box p{ color:#a8a5a0; font-size:.92rem; line-height:1.5; }
+  .ok-box .sum{ background:var(--charcoal-3); border:1px solid var(--line); padding:10px; margin:12px 0; font-size:.92rem; color:var(--cream); border-radius:10px; }
+  .link-btn{ background:none; border:none; color:var(--brass-light); font-size:.88rem; text-decoration:underline; margin-top:10px; }
+  .pay-box{ text-align:left; border:1px dashed var(--brass); background:rgba(184,137,79,.08); padding:11px 12px; margin-top:4px; margin-bottom:10px; border-radius:12px; }
+  .pay-t{ font-family:'Oswald',sans-serif; font-size:.78rem; letter-spacing:.07em; text-transform:uppercase; color:var(--brass-light); }
+  .pay-p{ color:#a8a5a0; font-size:.85rem; line-height:1.45; margin:6px 0; }
+  .pay-pix{ font-size:.9rem; color:var(--cream); word-break:break-all; }
+  .pay-pix b{ color:var(--brass-light); font-weight:600; }
+  .pay-copy{ background:none; border:1px solid var(--line); color:#8a8a8a; font-family:'Oswald',sans-serif; font-size:.68rem; letter-spacing:.06em; text-transform:uppercase; padding:6px 12px; margin-top:8px; border-radius:8px; }
+  .pay-copy:active{ border-color:var(--brass); color:var(--brass-light); }
+  .rf-row{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .proof-btn{ flex:1; background:#2d6a4f; color:#fff; border:none; padding:13px; font-size:.95rem; font-weight:700; border-radius:12px; display:flex; align-items:center; justify-content:center; gap:8px; }
+  .proof-box{ background:var(--charcoal-2); border:1px solid var(--line); border-radius:16px; padding:20px; }
+  .proof-box h4{ margin:0 0 8px; color:var(--brass-light); font-size:1.05rem; }
+  .proof-box p{ margin:0 0 14px; font-size:.85rem; color:#c9c6c0; }
+  .proof-box input{ width:100%; background:var(--charcoal); border:1px solid var(--line); color:var(--cream); padding:12px; border-radius:10px; font-size:.95rem; box-sizing:border-box; margin-bottom:14px; }
+  .proof-box input::placeholder{ color:#7a7a7a; }
+  .botbar{ position:fixed; left:0; right:0; bottom:0; z-index:50; background:rgba(10,10,10,.96); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-top:1px solid var(--line); padding:12px 14px calc(12px + env(safe-area-inset-bottom,0px)); }
+  .botbar .inner{ width:100%; max-width:520px; margin:0 auto; display:flex; align-items:center; gap:12px; }
+  .bot-sum{ flex:1; min-width:0; }
+  .bot-line{ font-size:.86rem; color:var(--cream); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .bot-total{ font-family:'Oswald',sans-serif; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--brass-light); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .bot-cta{ background:var(--brass); color:#0a0a0a; border:none; border-radius:12px; padding:13px 20px; font-family:'Oswald',sans-serif; font-size:.88rem; letter-spacing:.06em; text-transform:uppercase; min-height:48px; white-space:nowrap; }
+  .bot-cta:disabled{ opacity:.42; cursor:not-allowed; }
+  footer{ text-align:center; font-family:'Oswald',sans-serif; font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:#5a5a5a; padding:16px; border-top:1px solid var(--line); }
+  .footer-link{ color:#a8a5a0; margin-right:8px; transition:color .2s; font-family:inherit; }
+  .footer-link:hover{ color:var(--brass-light); }
+  .hidden{ display:none !important; }
+
+  @media(min-width:1024px){
+    html{ font-size:17px; }
+    header{ padding:36px 20px 26px; }
+    header img{ height:68px; margin-bottom:8px; }
+    header h1{ font-size:1.7rem; letter-spacing:.1em; }
+    header .sub{ font-size:1.15rem; margin-top:6px; }
+    main{ max-width:780px; padding:32px 20px 64px; }
+    .card{ padding:24px 24px; border-radius:18px; margin-bottom:18px; }
+    .p-card{ padding:20px 20px; border-radius:18px; }
+    .svc-list{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+    .pros{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+    .pro-hint{ grid-column:1/-1; }
+    .slots{ grid-template-columns:repeat(6,1fr); gap:10px; }
+    .slots button{ min-height:52px; font-size:1rem; }
+    .cal-grid button{ font-size:1.05rem; min-height:46px; border-radius:14px; }
+    .cal-dow span{ font-size:.68rem; }
+    .sumchip{ padding:11px 6px; border-radius:0 0 12px 12px; }
+    .sumchip b{ font-size:1.2rem; }
+    .botbar{ padding:16px 20px calc(16px + env(safe-area-inset-bottom,0px)); }
+    .botbar .inner{ max-width:780px; }
+    .bot-line{ font-size:.95rem; }
+    .bot-cta{ padding:13px 32px; }
+    footer{ padding:24px; }
+  }
+  .sub-modal-overlay{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.85); z-index:2000; }
+  .sub-modal-overlay.on{ display:flex; align-items:flex-end; justify-content:center; }
+  .sub-modal-card{ width:100%; max-width:520px; background:var(--charcoal-2); border:1px solid var(--line); border-top-left-radius:18px; border-top-right-radius:18px; padding:20px 18px; box-shadow:0 -4px 24px rgba(0,0,0,.5); }
+  .sub-modal-card .st{ font-family:'Oswald',sans-serif; font-size:.85rem; letter-spacing:.08em; text-transform:uppercase; color:var(--brass-light); margin-bottom:12px; }
+  .sub-plan-head{ font-size:1.15rem; font-weight:700; color:var(--cream); }
+  .sub-plan-head b{ font-family:'Oswald',sans-serif; }
+  .sub-plan-head i{ color:var(--brass-light); font-style:normal; }
+  .sub-plan-head i.em{ margin-left:6px; }
+  .sub-plan-head .plan-due{ font-size:.85rem; color:#a8a5a0; }
+  .sub-plan-ul{ list-style:none; margin:12px 0; padding:0; font-size:.92rem; color:#c9c6c0; }
+  .sub-plan-ul li{ padding:4px 0; }
+  .sub-plan-ul li::before{ content:'✓ '; color:var(--brass); margin-right:6px; }
+  .sub-modal-close{ background:none; border:none; color:#8a8a8a; font-size:.88rem; margin-top:12px; cursor:pointer; text-decoration:underline; font-family:inherit; }
+  .mem-badge{ background:linear-gradient(135deg, var(--charcoal), var(--charcoal-2)); border:1px solid var(--brass); border-radius:10px; padding:10px 12px; font-size:.85rem; color:var(--cream); margin:10px 0 6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .mem-badge .st{ color:var(--brass-light); }
+</style>
+  <style>
+    html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;}
+  </style>
+  <script>
+    (function(){
+      var block=function(e){e.preventDefault();};
+      document.addEventListener('gesturestart',block,{passive:false});
+      document.addEventListener('gesturechange',block,{passive:false});
+      document.addEventListener('gestureend',block,{passive:false});
+      window.addEventListener('wheel',function(e){ if(e.ctrlKey) e.preventDefault(); },{passive:false});
+      window.addEventListener('keydown',function(e){
+        if(!e.ctrlKey && !e.metaKey) return;
+        var k=e.key;
+        if(k==='+'||k==='-'||k==='='||k==='0'||k==='Add'||k==='Subtract') e.preventDefault();
+      });
+    })();
+  </script>
+</head>
+<body>
+
+<header>
+  <img id="bkLogo" class="hidden" alt="">
+  <h1 id="bkTitle">Agendamento online</h1>
+  <div class="sub" id="bkTagline">Escolha o dia e o horário</div>
+</header>
+
+<main>
+  <div class="who hidden" id="whoBar">
+    <span class="mail" id="whoMail"></span>
+    <button type="button" id="editDataBtn" title="Editar meus dados" aria-label="Editar meus dados">⚙</button>
+    <button type="button" id="signOutBtn">Sair</button>
+  </div>
+
+  <div class="card hidden" id="subCard">
+    <div class="st">🎫 Clube de Assinantes ✨</div>
+    <p class="desc">Pare de pagar corte por corte. Assine o plano da barbearia e tenha direito a cortes mensais.</p>
+    <div id="subCards" class="pros"></div>
+    <div class="muted hidden" id="subPlanEmpty">A barbearia ainda não cadastrou planos. Agende um horário avulso abaixo.</div>
+  </div>
+
+  <div class="sub-modal-overlay hidden" id="subModalOverlay">
+    <div class="sub-modal-card">
+      <div class="st" id="subModalTitle">Assinar plano</div>
+      <div id="subModalBody"></div>
+    </div>
+  </div>
+
+  <div class="sumrow hidden" id="sumBar">
+    <div class="sumchip"><b id="sumWait">0</b><span>Pendentes</span></div>
+    <div class="sumchip"><b id="sumDone">0</b><span>Confirmados</span></div>
+    <div class="sumchip"><b id="sumNext">—</b><span>Próximo</span></div>
+  </div>
+
+  <div class="card" id="authBox">
+    <div class="st">Entrar</div>
+    <p class="desc">Entre com sua conta Google para agendar seu horário. Assim você acompanha seus agendamentos por aqui mesmo.</p>
+    <button type="button" class="g-btn" id="googleBtn">
+      <svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+      Entrar com Google
+    </button>
+    <div class="err" id="authErr"></div>
+  </div>
+
+  <div class="card hidden" id="linkBox">
+    <div class="st">Link inválido</div>
+    <p class="desc">Este link de agendamento não existe, foi desativado ou está incompleto. Para agendar, use o link oficial da barbearia (com o código da barbearia).</p>
+  </div>
+
+  <div class="card hidden" id="checkBox">
+    <div class="st">Verificando seu cadastro…</div>
+  </div>
+
+  <div class="card hidden" id="cadBox">
+    <div class="st">Complete seu cadastro</div>
+    <p class="desc">Preencha seus dados para a barbearia já te ter na lista de clientes. Na próxima visita não será preciso preencher de novo.</p>
+    <input type="text" id="cadName" placeholder="Seu nome" maxlength="80" autocomplete="name">
+    <input type="tel" id="cadPhone" inputmode="numeric" placeholder="Telefone — (99) 99999-9999" maxlength="30" autocomplete="tel">
+    <button type="button" class="main-btn" id="cadSave">Salvar e continuar</button>
+    <div class="err" id="cadErr"></div>
+  </div>
+
+  <div class="card hidden" id="userBox">
+    <div class="step-top">
+      <button type="button" class="back-b hidden" id="backBtn" aria-label="Voltar">‹</button>
+      <div class="step-tx">
+        <div class="step-title" id="stepTitle">Escolha os serviços</div>
+        <div class="step-sub" id="stepSub"></div>
+      </div>
+    </div>
+    <div class="prog"></div>
+
+    <div class="step hidden" id="stepW1">
+      <div class="svc-list" id="svcRow"></div>
+      <div class="muted hidden" id="svcHint">Selecione pelo menos um serviço para continuar.</div>
+    </div>
+
+    <div class="step hidden" id="stepW2">
+      <div class="p-card gold hidden" id="barbCard">
+        <div class="p-head"><span class="p-ico">💈</span><span id="barbCardTitle">Escolha o barbeiro</span></div>
+        <div class="pros" id="barbRow"></div>
+        <div class="pro-hint hidden" id="barbHint">Escolha quem vai te atender.</div>
+      </div>
+      <div class="p-card">
+        <div class="cal-nav">
+          <button type="button" id="calPrev" aria-label="Mês anterior">‹</button>
+          <div class="cal-lbl" id="calLbl"></div>
+          <button type="button" id="calNext" aria-label="Próximo mês">›</button>
+        </div>
+        <div class="cal-dow"><span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span></div>
+        <div class="cal-grid" id="calGrid"></div>
+      </div>
+      <div class="p-card">
+        <div class="p-head"><span class="p-ico">🕒</span><span>Horários disponíveis</span></div>
+        <div class="slots" id="slotsRow"><div class="muted">Escolha um dia no calendário</div></div>
+      </div>
+    </div>
+
+    <div class="step hidden" id="stepW3">
+      <div class="who hidden" id="whoInfo">
+        <span class="mail" id="whoInfoTxt"></span>
+        <button type="button" id="editWho">Alterar</button>
+      </div>
+      <div id="dataFields">
+        <input type="text" id="inName" placeholder="Seu nome" maxlength="80" autocomplete="name">
+        <input type="tel" id="inPhone" inputmode="numeric" placeholder="Telefone — (99) 99999-9999" maxlength="30">
+      </div>
+      <div class="mem-badge hidden" id="memBadge"></div>
+      <input type="text" id="inNote" placeholder="Observação (opcional)" maxlength="120">
+      <div class="pay-box hidden" id="payBox">
+        <div class="pay-t">⚠️ Agendamento mediante pagamento</div>
+        <p class="pay-p">Após confirmar, pague e envie o comprovante pelo WhatsApp para garantir o horário.</p>
+        <div class="pay-pix"><b>Chave PIX:</b> <span id="payPixTxt"></span></div>
+        <button type="button" class="pay-copy" id="payCopyBtn">Copiar</button>
+      </div>
+      <button type="button" class="main-btn" id="sendBtn" disabled>Confirmar agendamento</button>
+      <div class="rf-row">
+        <button type="button" class="proof-btn" id="sendProofBtn">📸 Enviar comprovante</button>
+      </div>
+      <div class="err" id="sendErr"></div>
+    </div>
+  </div>
+
+  <div class="card hidden" id="proofModal">
+    <div class="proof-box">
+      <h4>Enviar comprovante</h4>
+      <p>Seu comprovante do PIX será aberto no WhatsApp com os dados do agendamento. Anexe a foto do comprovante na conversa.</p>
+      <input type="tel" id="proofPhone" placeholder="(99) 99999-9999" inputmode="tel" maxlength="15">
+      <div class="rf-row">
+        <button type="button" class="main-btn" id="proofSendBtn">Abrir WhatsApp</button>
+        <button type="button" class="pay-copy" id="proofCloseBtn">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card ok-box hidden" id="okBox">
+    <div class="big">✓</div>
+    <h3>Agendamento confirmado!</h3>
+    <div class="sum" id="okSum"></div>
+    <div class="pay-box hidden" id="payBoxOk">
+      <div class="pay-t">⚠️ Agendamento mediante pagamento</div>
+      <p class="pay-p">Pague e envie o comprovante pelo WhatsApp para confirmar seu horário.</p>
+      <div class="pay-pix"><b>Chave PIX:</b> <span id="payPixTxtOk"></span></div>
+      <button type="button" class="pay-copy" id="payCopyBtnOk">Copiar</button>
+    </div>
+    <p>Seu agendamento está confirmado — sem esperar por resposta. Em caso de imprevisto, fale com a barbearia pelo WhatsApp. Você pode acompanhar seus horários logo abaixo.</p>
+    <button type="button" class="link-btn" id="againBtn">Fazer outro agendamento</button>
+  </div>
+
+  <div class="card hidden" id="histBox">
+    <div class="st">Seus agendamentos</div>
+    <div id="histList"></div>
+  </div>
+</main>
+
+<footer>
+  <a id="footerBenefits" href="#" class="footer-link">Benefícios · Clube</a> · Agendamento online · Feito por Acesso ServCom
+</footer>
+
+<div class="botbar hidden" id="botBar">
+  <div class="inner">
+    <div class="bot-sum">
+      <div class="bot-line" id="botSum">Nenhum serviço selecionado</div>
+      <div class="bot-total" id="botTotal"></div>
+    </div>
+    <button type="button" class="bot-cta" id="nextBtn" disabled>Continuar</button>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+import {
+  getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect,
+  getRedirectResult, onAuthStateChanged, signOut
+} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+import {
+  initializeFirestore, memoryLocalCache,
+  getDoc, setDoc, collection, doc, query, where, getDocs
+} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+import {
+  getMessaging, requestPermission, requestSubscription, onMessage
+} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-messaging.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC3wdNbFtVKbA3EWyQN_NUL1xdwna_BWsk",
+  authDomain: "vbarber-app.firebaseapp.com",
+  projectId: "vbarber-app",
+  storageBucket: "vbarber-app.firebasestorage.app",
+  messagingSenderId: "405900517551",
+  appId: "1:405900517551:web:440c8901794cb14a1db45a"
+};
+
+const params = new URLSearchParams(location.search);
+const BOOK_CODE = String(params.get('k') || '').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6);
+let BARBER = '';
+let linkOk = true;
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+auth.useDeviceLanguage();
+let db;
+try{ db = initializeFirestore(app, { localCache: memoryLocalCache() }); }
+catch(e){ db = initializeFirestore(app, { localCache: memoryLocalCache() }); }
+const provider = new GoogleAuthProvider();
+
+const $ = id => document.getElementById(id);
+let branding = { title:'', tagline:'', logo:'', workdays:null, open:'', close:'', lunchA:'', lunchB:'', slotMode:'time', payReq:false, payPix:'' };
+let slotMsg = '';
+let busy = {};
+let selDate = '';
+let selTime = '';
+let user = null;
+let myClient = null;
+let services = [];
+let selServices = [];
+let team = [];
+let selBarber = '';
+let step = 1;
+let forceData = false;
+let histItems = [];
+let subscribePlan = '';
+let subscribeModalOpened = false;
+let vapidPublicKey = '';
+let pushSubscription = null;
+
+(function(){
+  const params = new URLSearchParams(window.location.search);
+  const k = (params.get('k') || '').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6);
+  if(k) BOOK_CODE = k;
+  subscribePlan = (params.get('subscribe') || '').slice(0,40);
+  const fl = document.getElementById('footerBenefits');
+  if(fl && BOOK_CODE) fl.href = 'beneficios.html?k=' + BOOK_CODE;
+})();
+let subscriptionPlans = [];
+let subscriptionSettings = {};
+let subMemberships = [];
+let currentMembership = null;
+
+function pad(n){ return String(n).padStart(2,'0'); }
+function fmtKey(d){ return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; }
+function maskPhone(v){
+  const d = String(v || '').replace(/\D/g,'').slice(0,11);
+  if(!d) return '';
+  if(d.length <= 2) return '(' + d;
+  if(d.length <= 6) return '(' + d.slice(0,2) + ') ' + d.slice(2);
+  if(d.length <= 10) return '(' + d.slice(0,2) + ') ' + d.slice(2,6) + '-' + d.slice(6);
+  return '(' + d.slice(0,2) + ') ' + d.slice(2,7) + '-' + d.slice(7);
+}
+const SLOT_STEP = 30;
+function toMin(t){
+  const m = /^([01]\d|2[0-3]):([0-5]\d)$/.exec(String(t || ''));
+  return m ? (parseInt(m[1],10) * 60 + parseInt(m[2],10)) : null;
+}
+function fromMin(v){ return pad(Math.floor(v / 60)) + ':' + pad(v % 60); }
+function daySlots(){
+  const out = [];
+  let open = toMin(branding.open); if(open === null || open < 0) open = 9 * 60;
+  let close = toMin(branding.close); if(close === null || close <= open) close = 20 * 60;
+  for(let t = open; t + SLOT_STEP <= close; t += SLOT_STEP) out.push(fromMin(t));
+  return out;
+}
+function serviceMin(s){
+  return (s && Number(s.min) > 0) ? Math.min(720, Math.round(Number(s.min))) : 15;
+}
+function selectedDuration(){
+  if(!services.length) return 15;
+  if(!selServices.length){
+    const mins = services.map(serviceMin);
+    return Math.min.apply(null, mins);
+  }
+  let t = 0;
+  selServices.forEach(nm => {
+    const s = services.filter(x => x.name === nm)[0];
+    t += serviceMin(s);
+  });
+  return Math.max(5, Math.min(720, t));
+}
+function activeTeam(){
+  return team.filter(m => m && m.active !== false && m.name);
+}
+function barbeiroName(id){
+  const m = team.filter(x => x.id === id)[0];
+  return m ? m.name : '';
+}
+function proInitials(name){
+  const parts = String(name || '').trim().split(/\s+/);
+  const a = parts[0] ? parts[0][0] : '';
+  const b = parts.length > 1 ? parts[parts.length - 1][0] : '';
+  return (a + b).toUpperCase() || '?';
+}
+const PRO_COLORS = ['#b8894f','#6d86a8','#7c9a6d','#a8756d','#8a6da8','#4d90a8','#a89a6d','#c0564d'];
+function renderBarbers(){
+  const card = $('barbCard');
+  const row = $('barbRow');
+  const hint = $('barbHint');
+  if(!row) return;
+  const act = activeTeam();
+  if(act.length <= 1){
+    selBarber = act.length === 1 ? act[0].id : '';
+    if(card) card.classList.add('hidden');
+    row.innerHTML = '';
+    return;
+  }
+  if(card) card.classList.remove('hidden');
+  if(hint) hint.classList.toggle('hidden', !!selBarber);
+  row.innerHTML = '';
+  act.forEach((m, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'pro-btn' + (selBarber === m.id ? ' on' : '');
+    const av = document.createElement('span');
+    av.className = 'pro-av';
+    av.style.background = PRO_COLORS[i % PRO_COLORS.length];
+    av.textContent = proInitials(m.name);
+    const nm = document.createElement('span');
+    nm.className = 'pro-nm';
+    nm.textContent = m.name;
+    const ck = document.createElement('span');
+    ck.className = 'pro-check';
+    ck.textContent = '✓';
+    b.appendChild(av);
+    b.appendChild(nm);
+    b.appendChild(ck);
+    b.addEventListener('click', ()=>{
+      selBarber = m.id;
+      if(selDate && selTime && !slotOK(selTime, selDate, effDuration(), selBarber)){
+        selTime = '';
+        slotMsg = 'Esse horário está ocupado para ' + m.name + '. Escolha outro.';
+      }
+      renderBarbers(); renderSlots(); renderSteps();
+    });
+    row.appendChild(b);
+  });
+}
+function effDuration(){
+  return branding.slotMode === 'slot' ? SLOT_STEP : selectedDuration();
+}
+function busyOverlaps(date, start, dur, barber){
+  const raw = busy[date];
+  if(!Array.isArray(raw)) return false;
+  for(let i = 0; i < raw.length; i++){
+    const it = raw[i];
+    let bs = null, bm = 15, eb = '';
+    if(typeof it === 'string') bs = toMin(it);
+    else if(it && typeof it === 'object'){
+      bs = toMin(it.s);
+      bm = Math.max(5, parseInt(it.m, 10) || 15);
+      eb = (typeof it.b === 'string') ? it.b.slice(0,20) : '';
+    }
+    if(bs === null || bs < 0) continue;
+    const mine = !eb || !barber || eb === barber;
+    if(mine && start < bs + bm && start + dur > bs) return true;
+  }
+  return false;
+}
+function slotOK(t, date, dur, barber){
+  const s = toMin(t);
+  if(s === null) return false;
+  let open = toMin(branding.open); if(open === null || open < 0) open = 9 * 60;
+  let close = toMin(branding.close); if(close === null || close <= open) close = 20 * 60;
+  if(s < open || s + dur > close) return false;
+  const la = toMin(branding.lunchA), lb = toMin(branding.lunchB);
+  if(la !== null && lb !== null && lb > la && s < lb && s + dur > la) return false;
+  return !busyOverlaps(date, s, dur, barber);
+}
+
+async function loadBranding(){
+  try{
+    const snap = await getDoc(doc(db, 'users', BARBER, 'public', 'branding'));
+    if(snap.exists()){
+      const b = snap.exists() ? snap.data() : {};
+      const HHMM = /^([01]\d|2[0-3]):[0-5]\d$/;
+      const bh = (b.hours && typeof b.hours === 'object') ? b.hours : {};
+      const pick = (k, def) => {
+        if(typeof bh[k] === 'string' && HHMM.test(bh[k])) return bh[k];
+        if(typeof b[k] === 'string' && HHMM.test(b[k])) return b[k];
+        return def;
+      };
+      const bOpen = pick('open', '09:00');
+      const bClose = pick('close', '20:00');
+      const bLunchA = pick('lunchA', '');
+      const bLunchB = pick('lunchB', '');
+      branding = {
+        title: String(b.title || '').slice(0,40),
+        tagline: String(b.tagline || '').slice(0,60),
+        logo: (typeof b.logo === 'string' && b.logo.startsWith('data:image/')) ? b.logo : '',
+        workdays: Array.isArray(b.workdays) && b.workdays.length ? b.workdays.filter(n => Number.isInteger(n) && n >= 0 && n <= 6) : null,
+        open: (toMin(bOpen) !== null && toMin(bOpen) >= 0 && toMin(bClose) > toMin(bOpen)) ? bOpen : '09:00',
+        close: (toMin(bClose) !== null && toMin(bClose) > toMin(bOpen)) ? bClose : '20:00',
+        lunchA: bLunchA,
+        lunchB: (bLunchA && bLunchB && toMin(bLunchB) > toMin(bLunchA)) ? bLunchB : ''
+      };
+      if(!branding.lunchB) branding.lunchA = '';
+      branding.slotMode = (b.slotMode === 'slot') ? 'slot' : 'time';
+      const pay = (b.pay && typeof b.pay === 'object') ? b.pay : {};
+      branding.payPix = (typeof pay.pixKey === 'string') ? pay.pixKey.trim().slice(0,100) : '';
+      branding.payReq = pay.req === true && !!branding.payPix;
+      if(/^#[0-9a-fA-F]{6}$/.test(b.primary || '')) document.documentElement.style.setProperty('--brass', b.primary);
+      if(/^#[0-9a-fA-F]{6}$/.test(b.light || '')) document.documentElement.style.setProperty('--brass-light', b.light);
+      applyBranding();
+    }
+  }catch(e){}
+}
+function applyBranding(){
+  if(branding.title){ $('bkTitle').textContent = branding.title; document.title = branding.title + ' — Agendamento'; }
+  if(branding.tagline) $('bkTagline').textContent = branding.tagline;
+  if(branding.logo){ const img = $('bkLogo'); img.src = branding.logo; img.classList.remove('hidden'); }
+  applyPay();
+}
+function applyPay(){
+  const on = branding.payReq === true && !!branding.payPix;
+  const box = $('payBox');
+  if(box) box.classList.toggle('hidden', !on);
+  const boxOk = $('payBoxOk');
+  if(boxOk) boxOk.classList.toggle('hidden', !on);
+  ['payPixTxt', 'payPixTxtOk'].forEach(id => {
+    const el = $(id);
+    if(el) el.textContent = on ? branding.payPix : '';
+  });
+}
+function fallbackCopy(txt, done){
+  try{
+    const ta = document.createElement('textarea');
+    ta.value = txt;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    done();
+  }catch(e){}
+}
+function copyPix(btn){
+  const txt = String(branding.payPix || '').trim();
+  if(!txt || !btn) return;
+  const done = ()=>{
+    const old = btn.textContent;
+    btn.textContent = 'Copiado ✓';
+    setTimeout(()=>{ btn.textContent = old; }, 1600);
+  };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(done).catch(()=> fallbackCopy(txt, done));
+  } else {
+    fallbackCopy(txt, done);
+  }
+}
+['payCopyBtn', 'payCopyBtnOk'].forEach(id => {
+  const btn = $(id);
+  if(btn) btn.addEventListener('click', ()=> copyPix(btn));
+});
+async function loadSlots(){
+  try{
+    const snap = await getDoc(doc(db, 'users', BARBER, 'public', 'slots'));
+    const raw = snap.exists() && snap.data().busy;
+    busy = (raw && typeof raw === 'object') ? raw : {};
+  }catch(e){ busy = {}; }
+}
+
+const SUB_SETTINGS_DOC = 'settings';
+const SUB_PUBLIC_PLANS_KEY = 'list';
+const SUB_MEMBERS_BASE = 'memberships';
+
+function nextDueDate(from, dueDay){
+  const d = new Date(from);
+  d.setDate(dueDay);
+  if(d < from) d.setMonth(d.getMonth() + 1);
+  return fmtKey(d);
+}
+
+async function loadSubscriptionSettings(){
+  subscriptionSettings = {};
+  try{
+    const snap = await getDoc(doc(db, 'users', BARBER, 'subscription', SUB_SETTINGS_DOC));
+    if(snap.exists()){
+      const d = snap.data();
+       subscriptionSettings = {
+         enabled: d.enabled === true,
+         pixKey: (d.pixKey || '').trim(),
+         dueDay: (d.dueDay != null && d.dueDay >= 1 && d.dueDay <= 31) ? d.dueDay : 10,
+         carryOver: d.carryOver === true,
+         vapidKey: (d.vapidKey || '').trim(),
+         pushEnabled: d.pushEnabled === true,
+         createdAt: String(d.createdAt || ''),
+         updatedAt: String(d.updatedAt || new Date().toISOString())
+       };
+    }
+  }catch(e){
+    console.warn('loadSubscriptionSettings falhou:', e);
+  }
+}
+
+async function loadSubscriptionPlans(){
+  subscriptionPlans = [];
+  if(!linkOk) return;
+  try{
+    const snap = await getDoc(doc(db, 'users', BARBER, 'public', 'subscription', SUB_PUBLIC_PLANS_KEY));
+    const raw = snap.exists() && snap.data().items;
+    subscriptionPlans = (Array.isArray(raw) ? raw : [])
+      .filter(p => p && p.id && p.name)
+      .map(p => ({
+        id: String(p.id).slice(0,40),
+        name: String(p.name).slice(0,60),
+        price: Number(p.price) || 0,
+        cycle: String(p.cycle || 'month'),
+        cuts: Number(p.cuts) || 1,
+        validityDays: Number(p.validityDays) || 30,
+        services: Array.isArray(p.services) ? p.services.slice(0,10) : [],
+        carryOver: p.carryOver === true
+      }))
+      .slice(0,20);
+  }catch(e){
+    subscriptionPlans = [];
+  }
+  renderSubscriptionPlans();
+}
+
+function updateMembershipBadge(){
+  const badge = $('memBadge');
+  if(!badge) return;
+  const active = currentMembership && currentMembership.status === 'active';
+  if(!active){
+    badge.classList.add('hidden');
+    return;
+  }
+  const plan = subscriptionPlans.find(p => p.id === currentMembership.planId);
+  const planName = plan ? plan.name : currentMembership.planName || 'Plano';
+  const due = currentMembership.nextDueDate;
+  const parts = [planName, due ? 'vence em ' + due.slice(8,10) + '/' + due.slice(5,7) : ''];
+  if(currentMembership.cuts != null && currentMembership.cutsIncluded != null){
+    parts.push(currentMembership.cutsUsed + '/' + currentMembership.cutsIncluded + ' cortes usados');
+  }
+  badge.textContent = '🎫 ' + parts.join(' · ');
+  badge.classList.remove('hidden');
+}
+
+async function loadVapidKey(){
+  vapidPublicKey = subscriptionSettings?.vapidKey || '';
+}
+
+async function registerPush(){
+  if(!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+  if(!user || !vapidPublicKey) return;
+  try{
+    const messaging = getMessaging();
+    await requestPermission(messaging);
+    const sub = await requestSubscription(messaging, { vapidKey: vapidPublicKey });
+    pushSubscription = { endpoint: sub.endpoint, keys: sub.keys };
+    await setDoc(doc(db, 'users', user.uid, 'pushSubs', 'default'), {
+      endpoint: sub.endpoint,
+      keys: sub.keys,
+      clientUid: user.uid,
+      clientName: (user.displayName || '').trim(),
+      clientEmail: (user.email || '').trim(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }, { merge: true });
+    toast('🔔 Notificações de vencimento ativadas');
+  }catch(e){
+    console.warn('registerPush falhou:', e);
+  }
+}
+
+async function unregisterPush(){
+  try{
+    const messaging = getMessaging();
+    if(pushSubscription){
+      await messaging.deleteSubscription(pushSubscription).catch(()=>{});
+      pushSubscription = null;
+    }
+    await setDoc(doc(db, 'users', user.uid, 'pushSubs', 'default'), { deletedAt: new Date().toISOString() }, { merge: true }).catch(()=>{});
+  }catch(e){
+    console.warn('unregisterPush falhou:', e);
+  }
+}
+
+function setupPushListener(){
+  try{
+    const messaging = getMessaging();
+    onMessage(messaging, (payload) => {
+      const title = payload.notification?.title || 'Seu plano vence hoje 💳';
+      const body = payload.notification?.body || 'Envie o comprovante do PIX para liberar seu próximo corte.';
+      new Notification(title, { body, tag: 'sub-reminder', requireInteraction: true });
+    });
+  }catch(e){
+    console.warn('setupPushListener falhou:', e);
+  }
+}
+
+async function loadSubscriptionMemberships(){
+  if(!user || !linkOk) return;
+  try{
+    const q = query(collection(db, 'users', BARBER, 'subscription', SUB_MEMBERS_BASE), where('clientUid','==',user.uid));
+    const snap = await getDocs(q);
+    snap.forEach(d => {
+      const m = { ...(d.data() || {}), id: d.id };
+      m.status = ['active','pending_payment','expired','cancelled','past_due'].includes(m.status) ? m.status : 'pending_payment';
+      subMemberships.push(m);
+      if(m.status === 'active' && !currentMembership){
+        currentMembership = m;
+      }
+    });
+  }catch(e){
+    console.warn('loadSubscriptionMemberships falhou:', e);
+  }
+  if(currentMembership && currentMembership.services && currentMembership.services.length){
+    const matches = currentMembership.services.filter(s => services.some(sv => sv.name === s));
+    if(matches.length === currentMembership.services.length && !selServices.length){
+      selServices = currentMembership.services.slice();
+      const svcRow = document.getElementById('svcRow');
+      if(svcRow){ renderSvc(); }
+      setTimeout(() => toast('Seus cortes do plano já estão selecionados. Escolha o dia e horário.'), 300);
+    }
+  }
+}
+
+function renderSubscriptionPlans(){
+  const cards = $('subCards');
+  const empty = $('subPlanEmpty');
+  const card = $('subCard');
+  if(!cards || !empty) return;
+  if(!subscriptionPlans.length || !subscriptionSettings.enabled){
+    card.classList.add('hidden');
+    empty?.classList.remove('hidden');
+    return;
+  }
+  card.classList.remove('hidden');
+  empty?.classList.add('hidden');
+  const now = new Date();
+  const cycleLabel = (cycle, cuts) => {
+    if(cycle.toLowerCase() === 'month') return `/ ${cuts} cortes por mês`;
+    if(cycle.toLowerCase() === 'week') return `/ ${cuts} cortes por semana`;
+    if(cycle.toLowerCase() === '30days') return `/ ${cuts} cortes a cada 30 dias`;
+    return `/ ${cuts} usos`;
+  };
+  const validStr = (d, carry) => {
+    const days = Number(d.validityDays) || 30;
+    let s = `Válido por ${days} dias`;
+    if(carry) s += ' (acumula usos não usados)';
+    return s;
+  };
+  const activeCount = subMemberships.filter(m => m.status === 'active').length;
+  let html = '';
+  subscriptionPlans.forEach(p => {
+    let desc = `Plano ${p.name}`;
+    if(activeCount > 0) desc += ` · ${activeCount} assinantes ativos`;
+    html += `<div class="pro" data-id="${p.id}"><div class="st">${desc}</div>`;
+    html += `<div class="pr">${p.price > 0 ? 'R$ ' + p.price.toFixed(2).replace('.',',') : 'A combinar'} <i class="sub-pln-fee">${cycleLabel(p.cycle, p.cuts)}</i></div>`;
+    html += `<ul class="sub-plan-ul"><li><b>Preço:</b> ${p.price > 0 ? 'R$ ' + p.price.toFixed(2).replace('.',',') : 'A combinar'} por ciclo</li>`;
+    html += `<li><b>Usos:</b> ${p.cuts} cortes por ciclo</li>`;
+    html += `<li><b>Validade:</b> ${validStr(p, p.carryOver)}</li>`;
+    if(services.length){
+      html += `<li><b>Serviços incluídos:</b> ${p.services.map(s => services.find(x => x.name === s)?.name || s).join(', ')}</li>`;
+    }
+    html += `</ul><button class="btn-pro" data-plan="${p.id}">Assinar agora</button>`;
+    html += '</div>';
+  });
+  cards.innerHTML = html;
+}
+
+function openSubModal(planId){
+  const plan = subscriptionPlans.find(p => p.id === planId);
+  if(!plan || !subscriptionSettings.enabled) return;
+  const activeM = subMemberships.find(m => m.status === 'active' && m.planId === plan.id);
+  const nextDue = activeM ? activeM.nextDueDate : '—';
+  const cycleLabel = (cycle, cuts) => {
+    if(cycle.toLowerCase() === 'month') return `${cuts} cortes/mês`;
+    if(cycle.toLowerCase() === 'week') return `${cuts} cortes/semana`;
+    if(cycle.toLowerCase() === '30days') return `${cuts} cortes/30 dias`;
+    return `${cuts} usos`;
+  };
+  const html = `<div class="sub-plan-head"><b>R$ ${plan.price.toFixed(2).replace('.',',')}</b> <span class="plan-due">${cycleLabel(plan.cycle, plan.cuts)}</span></div>`;
+  html += `<div class="st" style="margin-top:8px;">O que você ganha</div>`;
+  html += `<ul class="sub-plan-ul"><li>${plan.cuts} cortes por ciclo</li>`;
+  html += `<li>Validade de ${(plan.validityDays || 30)} dias a cada ciclo</li>`;
+  if(plan.carryOver) html += '<li>Usos não utilizados se acumulam no próximo ciclo</li>';
+  if(services.length) html += `<li>Válido para ${plan.services.map(s => services.find(x => x.name === s)?.name || s).join(', ')}</li>`;
+  html += `</ul>`;
+  if(subscriptionSettings.pixKey){
+    html += `<div class="st" style="margin-top:8px;">Pagamento via PIX</div>`;
+    html += `<div style="background:var(--charcoal);padding:10px 12px;border-radius:8px;font-size:.85rem;color:#d8d5cf;margin-bottom:8px;">Chave PIX: <b style="font-size:.95rem">${subscriptionSettings.pixKey.slice(0,60)}</b></div>`;
+    html += `<p style="font-size:.92rem;color:#c9c6c0;margin:8px 0;">Após o pagamento, clique em "Confirmar pagamento" para o barbeiro aprovar sua liberação.</p>`;
+  } else {
+    html += `<p style="font-size:.92rem;color:#c9c6c0;margin:8px 0;">A barbearia receberá seu pagamento de forma manual. Clique abaixo para se inscrever no clube.</p>`;
+  }
+  html += `<button class="btn-pro" id="confirmPayBtn" style="width:100%;margin-top:8px;">Confirmar pagamento</button>`;
+  if(activeM) html += `<p style="font-size:.92rem;color:var(--green-4);margin-top:8px;">Você já tem o plano ${plan.name} ativo. Próxima renovação: ${nextDue === '—' ? '—' : nextDue.split('-').reverse().slice(0,3).join('/')}</p>`;
+  $('subModalTitle').textContent = 'Assinar: ' + plan.name;
+  $('subModalBody').innerHTML = html;
+  $('subModalOverlay').classList.remove('hidden');
+  $('subModalOverlay').classList.add('on');
+  setTimeout(() => {
+    const cb = $('confirmPayBtn');
+    if(cb) cb.addEventListener('click', () => confirmSubPayment(plan));
+  }, 0);
+}
+
+function closeSubModal(){
+  const ov = $('subModalOverlay');
+  if(!ov) return;
+  ov.classList.remove('on');
+  setTimeout(() => ov.classList.add('hidden'), 150);
+  const cb = $('confirmPayBtn');
+  if(cb) cb.removeEventListener('click', confirmSubPayment);
+}
+
+async function confirmSubPayment(plan){
+  if(!user) return;
+  const el = $('confirmPayBtn');
+  if(el) el.disabled = true;
+  const todayStr = fmtKey(new Date());
+  const dueStr = nextDueDate(subscriptionSettings.dueDay, subscriptionSettings.carryOver);
+  const q = query(collection(db, 'users', BARBER, 'subscription', SUB_MEMBERS_BASE), where('clientUid','==',user.uid), where('planId','==',plan.id));
+  try{
+    const snap = await getDocs(q);
+    for(const d of snap.docs){
+      const m = { ...(d.data() || {}), id: d.id };
+      if(m.status === 'cancelled') continue;
+      if(m.status === 'past_due'){
+        await setDoc(doc(db, 'users', BARBER, 'subscription', SUB_MEMBERS_BASE, d.id), { status: 'past_due', confirmedBy: 'client', confirmedAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
+        await setDoc(doc(db, 'users', user.uid, 'subscription', SUB_MEMBERS_BASE, d.id), { status: 'past_due', confirmedAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
+        return;
+      }
+      if(m.status === 'expired' || (m.nextDueDate && m.nextDueDate < todayStr && m.status !== 'active')){
+        m.status = 'pending_payment';
+        m.cutsUsed = 0;
+        m.cycleStart = todayStr;
+        m.nextDueDate = dueStr;
+        m.confirmedBy = 'client';
+        m.confirmedAt = new Date().toISOString();
+        await setDoc(doc(db, 'users', BARBER, 'subscription', SUB_MEMBERS_BASE, d.id), m);
+        await setDoc(doc(db, 'users', user.uid, 'subscription', SUB_MEMBERS_BASE, d.id), { planId: plan.id, status: 'pending_payment', cutsUsed: 0, cycleStart: todayStr, nextDueDate: dueStr, confirmedBy: 'client', confirmedAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
+        return;
+      }
+      m.status = 'pending_payment';
+      m.confirmedBy = 'client';
+      m.confirmedAt = new Date().toISOString();
+      await setDoc(doc(db, 'users', BARBER, 'subscription', SUB_MEMBERS_BASE, d.id), m);
+      await setDoc(doc(db, 'users', user.uid, 'subscription', SUB_MEMBERS_BASE, d.id), { planId: plan.id, status: 'pending_payment', confirmedBy: 'client', confirmedAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
+      return;
+    }
+    await setDoc(doc(db, 'users', BARBER, 'subscription', SUB_MEMBERS_BASE), {
+      planId: plan.id,
+      planName: plan.name,
+      planPrice: plan.price,
+      clientUid: user.uid,
+      clientName: (user.displayName || '').trim(),
+      clientEmail: (user.email || '').trim(),
+      clientPhone: (myClient?.phone || '').trim(),
+      status: 'pending_payment',
+      cuts: plan.cuts,
+      validityDays: plan.validityDays,
+      carryOver: plan.carryOver,
+      cycleStart: todayStr,
+      nextDueDate: dueStr,
+      cutsUsed: 0,
+      confirmedBy: 'client',
+      confirmedAt: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    });
+    await setDoc(doc(db, 'users', user.uid, 'subscription', SUB_MEMBERS_BASE), {
+      planId: plan.id,
+      planName: plan.name,
+      status: 'pending_payment',
+      confirmedAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    });
+  }catch(e){
+    console.error('confirmSubPayment falhou:', e);
+    alert('Não foi possível registrar seu pagamento. Entre em contato com a barbearia.');
+  }finally{
+    if(el) el.disabled = false;
+    closeSubModal();
+    await loadSubscriptionMemberships();
+    loadSubscriptionPlans();
+  }
+}
+
+$('subModalOverlay')?.addEventListener('click', e => {
+  if(e.target === e.currentTarget) closeSubModal();
+});
+
+async function loadTeam(){
+  try{
+    const snap = await getDoc(doc(db, 'users', BARBER, 'public', 'team'));
+    const raw = snap.exists() && snap.data().items;
+    team = (Array.isArray(raw) ? raw : [])
+      .filter(m => m && typeof m === 'object' && typeof m.id === 'string' && typeof m.name === 'string' && m.name.trim())
+      .map(m => ({ id: m.id.slice(0,20), name: m.name.trim().slice(0,40), active: m.active !== false }))
+      .slice(0,10);
+  }catch(e){ team = []; }
+}
+
+async function loadServices(){
+  try{
+    const snap = await getDoc(doc(db, 'users', BARBER, 'public', 'services'));
+    const raw = snap.exists() && snap.data().items;
+    services = (Array.isArray(raw) ? raw : [])
+      .filter(s => s && typeof s === 'object' && typeof s.name === 'string' && s.name.trim())
+      .map(s => ({ name: s.name.trim().slice(0,40), price: Number(s.price) || 0, min: (Number(s.min) > 0) ? Math.min(720, Math.round(Number(s.min))) : 0 }))
+      .slice(0,20);
+  }catch(e){ services = []; }
+  selServices = [];
+  renderSvc();
+}
+function renderSvc(){
+  const row = $('svcRow');
+  const hint = $('svcHint');
+  if(!row) return;
+  if(!services.length){
+    selServices = [];
+    row.innerHTML = '';
+    if(hint) hint.classList.add('hidden');
+    $('inNote').placeholder = 'Serviço/observação (opcional)';
+    return;
+  }
+  $('inNote').placeholder = 'Observação (opcional)';
+  row.innerHTML = '';
+  services.forEach(s => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'svc-btn';
+    const ic = document.createElement('span');
+    ic.className = 'svc-ico';
+    ic.textContent = (s.name || '?').trim()[0] || '?';
+    const tx = document.createElement('span');
+    tx.className = 'svc-tx';
+    const nmB = document.createElement('b');
+    nmB.textContent = s.name;
+    const pr = document.createElement('i');
+    pr.textContent = (s.price > 0 ? 'R$ ' + s.price.toFixed(2).replace('.',',') : 'A combinar');
+    const dur = document.createElement('em');
+    dur.textContent = serviceMin(s) + ' min';
+    pr.appendChild(dur);
+    tx.appendChild(nmB);
+    tx.appendChild(pr);
+    const tog = document.createElement('span');
+    tog.className = 'svc-tog';
+    tog.textContent = '✓';
+    b.appendChild(ic);
+    b.appendChild(tx);
+    b.appendChild(tog);
+    if(selServices.indexOf(s.name) !== -1) b.classList.add('on');
+    b.addEventListener('click', ()=>{
+      const i = selServices.indexOf(s.name);
+      if(i !== -1) selServices.splice(i, 1);
+      else selServices.push(s.name);
+      if(!selServices.length && step === 3 && !forceData) step = 1;
+      if(selDate && selTime && !slotOK(selTime, selDate, effDuration(), selBarber)){
+        selTime = '';
+        slotMsg = 'O horário escolhido não comporta mais. Escolha outro horário.';
+        step = 2;
+        renderSlots();
+      }
+      renderSvc();
+      renderSteps();
+      updateSend();
+    });
+    row.appendChild(b);
+  });
+  const has = selServices.length > 0;
+  if(hint) hint.classList.toggle('hidden', has);
+}
+function updateBot(){
+  const on = !$('userBox').classList.contains('hidden');
+  const showBar = on && stepVisible(step) && step !== 3;
+  $('botBar').classList.toggle('hidden', !showBar);
+  document.body.classList.toggle('bar-on', showBar);
+  if(!showBar) return;
+  const n = selServices.length;
+  let total = 0;
+  selServices.forEach(nm2 => {
+    const s = services.filter(x => x.name === nm2)[0];
+    if(s && s.price > 0) total += s.price;
+  });
+  const totTxt = n ? (total > 0 ? 'R$ ' + total.toFixed(2).replace('.',',') : 'A combinar') + ' · ' + selectedDuration() + ' min' : '';
+  $('botTotal').textContent = totTxt;
+  const cta = $('nextBtn');
+  if(step === 1){
+    $('botSum').textContent = n ? n + (n === 1 ? ' serviço selecionado' : ' serviços selecionados') : 'Nenhum serviço selecionado';
+    cta.disabled = !n;
+    cta.textContent = n ? 'Continuar' : 'Escolha os serviços';
+  } else {
+    const parts = [];
+    if(selDate) parts.push(friendlyDate(selDate) === selDate ? selDate.slice(8,10) + '/' + selDate.slice(5,7) : friendlyDate(selDate));
+    if(selTime) parts.push(selTime);
+    if(activeTeam().length > 1 && selBarber) parts.push(barbeiroName(selBarber));
+    $('botSum').textContent = parts.length ? parts.join(' · ') : 'Escolha o dia e o horário';
+    const ready = !!selDate && !!selTime;
+    cta.disabled = !ready;
+    cta.textContent = ready ? 'Continuar' : (selDate ? 'Escolha o horário' : 'Escolha o dia');
+  }
+}
+$('nextBtn').addEventListener('click', ()=>{
+  if(step === 1){
+    if(!selServices.length) return;
+    step = 2;
+  } else if(step === 2){
+    if(!selDate || !selTime) return;
+    step = 3;
+    updateSend();
+  } else return;
+  renderSteps();
+  try{ window.scrollTo({ top:0, behavior:'smooth' }); }catch(e){}
+});
+$('backBtn').addEventListener('click', ()=>{
+  if(step === 3) step = 2;
+  else if(step === 2) step = 1;
+  else return;
+  forceData = false;
+  renderSteps();
+  try{ window.scrollTo({ top:0, behavior:'smooth' }); }catch(e){}
+});
+
+function friendlyDate(iso){
+  const today = fmtKey(new Date());
+  const tmr = fmtKey(new Date(Date.now() + 86400000));
+  if(iso === today) return 'Hoje';
+  if(iso === tmr) return 'Amanhã';
+  try{
+    const d = new Date(iso + 'T00:00:00');
+    if(isNaN(d)) return iso;
+    return d.toLocaleDateString('pt-BR', { weekday:'short', day:'2-digit', month:'2-digit' }).replace(/\./g,'');
+  }catch(e){ return iso; }
+}
+
+async function loadHistory(){
+  const list = $('histList');
+  if(!list) return;
+  if(!user) return;
+  list.innerHTML = '<div class="muted">Carregando…</div>';
+  try{
+    const q = query(collection(db, 'users', BARBER, 'appointments'), where('requestedBy', '==', user.uid));
+    const snap = await getDocs(q);
+    let items = snap.docs.map(d => ({ ...(d.data() || {}), id: d.id })).filter(a => a && a.date && a.time);
+    items.sort((a,b)=> (b.date + 'T' + b.time).localeCompare(a.date + 'T' + a.time));
+    items = items.slice(0,20);
+    histItems = items.slice();
+    const todayK = fmtKey(new Date());
+    const nowDt = new Date();
+    const nowHM = pad(nowDt.getHours()) + ':' + pad(nowDt.getMinutes());
+    let wait = 0, done = 0;
+    items.forEach(a => { if(a.status === 'done') done++; else if(a.status !== 'cancelled') wait++; });
+    let next = null;
+    for(let i = items.length - 1; i >= 0; i--){
+      const a = items[i];
+      if(a.status === 'cancelled') continue;
+      if(a.date > todayK || (a.date === todayK && a.time >= nowHM)){ next = a; break; }
+    }
+    $('sumWait').textContent = String(wait);
+    $('sumDone').textContent = String(done);
+    if(next){
+      const tmrK = fmtKey(new Date(Date.now() + 86400000));
+      $('sumNext').textContent = (next.date === todayK ? 'Hoje ' : next.date === tmrK ? 'Amanhã ' : next.date.slice(8,10) + '/' + next.date.slice(5,7) + ' ') + next.time;
+      $('sumNext').classList.add('small');
+    } else {
+      $('sumNext').textContent = '—';
+      $('sumNext').classList.remove('small');
+    }
+    if(!items.length){
+      list.innerHTML = '<div class="muted">Você ainda não fez agendamentos por aqui.</div>';
+      return;
+    }
+    list.innerHTML = '';
+    items.forEach(a => {
+      const row = document.createElement('div');
+      row.className = 'hist-row';
+      const when = document.createElement('div');
+      when.className = 'hist-when';
+      when.textContent = friendlyDate(a.date) + ' · ' + a.time;
+      row.appendChild(when);
+      const svc = document.createElement('div');
+      svc.className = 'hist-svc';
+      const svcTxt = String(a.servico || '').slice(0,80);
+      svc.textContent = svcTxt || String(a.note || '').slice(0,60) || 'Agendamento';
+      row.appendChild(svc);
+      const st = document.createElement('div');
+      st.className = 'hist-st ' + (a.status === 'done' ? 'ok' : a.status === 'cancelled' ? 'cx' : 'wait');
+      st.textContent = a.status === 'done' ? '✓ Confirmado'
+        : a.status === 'cancelled' ? '✕ Cancelado'
+        : 'Agendado';
+      row.appendChild(st);
+      if((a.status === 'pending' || a.status === 'done') && a.id){
+        const cb = document.createElement('button');
+        cb.type = 'button';
+        cb.className = 'hist-cancel';
+        cb.textContent = 'Cancelar agendamento';
+        cb.dataset.id = a.id;
+        row.appendChild(cb);
+      }
+      list.appendChild(row);
+    });
+  }catch(e){
+    list.innerHTML = '<div class="muted">Não foi possível carregar seu histórico agora.</div>';
+  }
+}
+
+function isWorkday(dow){
+  if(!branding.workdays) return true;
+  return branding.workdays.includes((dow + 6) % 7);
+}
+const MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+let calMonth = new Date();
+function renderCalendar(){
+  const grid = $('calGrid');
+  const lbl = $('calLbl');
+  if(!grid || !lbl) return;
+  const y = calMonth.getFullYear();
+  const m = calMonth.getMonth();
+  lbl.innerHTML = MONTHS[m] + '<i>' + y + '</i>';
+  grid.innerHTML = '';
+  const firstDow = new Date(y, m, 1).getDay();
+  const daysInMonth = new Date(y, m + 1, 0).getDate();
+  const todayKey = fmtKey(new Date());
+  const nowMid = new Date();
+  const todayMid = new Date(nowMid.getFullYear(), nowMid.getMonth(), nowMid.getDate());
+  const maxD = new Date(Date.now() + 90 * 86400000);
+  for(let i = 0; i < firstDow; i++){
+    const e = document.createElement('div');
+    e.className = 'empty';
+    grid.appendChild(e);
+  }
+  for(let d = 1; d <= daysInMonth; d++){
+    const dt = new Date(y, m, d);
+    const key = fmtKey(dt);
+    const off = dt < todayMid || dt > maxD || !isWorkday(dt.getDay());
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = String(d);
+    b.disabled = off;
+    if(key === todayKey) b.classList.add('today');
+    if(selDate === key) b.classList.add('on');
+    b.addEventListener('click', ()=>{
+      selDate = key;
+      selTime = '';
+      slotMsg = '';
+      renderCalendar();
+      renderSlots();
+      renderSteps();
+      updateSend();
+    });
+    grid.appendChild(b);
+  }
+  const minM = new Date(todayMid.getFullYear(), todayMid.getMonth(), 1);
+  const maxM = new Date(maxD.getFullYear(), maxD.getMonth(), 1);
+  $('calPrev').disabled = new Date(y, m, 1) <= minM;
+  $('calNext').disabled = new Date(y, m, 1) >= maxM;
+}
+$('calPrev').addEventListener('click', ()=>{
+  calMonth = new Date(calMonth.getFullYear(), calMonth.getMonth() - 1, 1);
+  renderCalendar();
+});
+$('calNext').addEventListener('click', ()=>{
+  calMonth = new Date(calMonth.getFullYear(), calMonth.getMonth() + 1, 1);
+  renderCalendar();
+});
+function renderSlots(){
+  const row = $('slotsRow');
+  renderBarbers();
+  row.innerHTML = '';
+  if(!selDate){ row.innerHTML = '<div class="muted">Escolha um dia no calendário</div>'; return; }
+  if(activeTeam().length > 1 && !selBarber){
+    row.innerHTML = '<div class="muted">Escolha o barbeiro acima para ver os horários.</div>';
+    return;
+  }
+  const dur = effDuration();
+  const now = new Date();
+  const isToday = selDate === fmtKey(now);
+  const minTime = new Date(now.getTime() + 45 * 60000);
+  if(slotMsg){
+    const msg = document.createElement('div');
+    msg.className = 'muted';
+    msg.style.color = '#e06b6b';
+    msg.textContent = slotMsg;
+    row.appendChild(msg);
+  }
+  const slots = daySlots();
+  let any = false;
+  slots.forEach(t => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = t;
+    let off = !slotOK(t, selDate, dur, selBarber);
+    if(!off && isToday){
+      const [hh, mm] = t.split(':').map(Number);
+      const dt = new Date(now); dt.setHours(hh, mm, 0, 0);
+      if(dt < minTime) off = true;
+    }
+    if(!off) any = true;
+    b.disabled = off;
+    if(selTime === t && !off) b.classList.add('on');
+    b.addEventListener('click', ()=>{ slotMsg = ''; selTime = t; renderSlots(); renderSteps(); updateSend(); });
+    row.appendChild(b);
+  });
+  if(!any){
+    const msg = document.createElement('div');
+    msg.className = 'muted';
+    msg.textContent = 'Nenhum horário disponível para este dia';
+    row.appendChild(msg);
+  }
+}
+function updateSend(){
+  const ok = !!user && !!selDate && !!selTime && $('inName').value.trim().length > 0
+    && (!services.length || selServices.length > 0);
+  $('sendBtn').disabled = !ok;
+}
+function stepVisible(n){
+  if(n === 1) return services.length > 0;
+  if(n === 2) return !services.length || selServices.length > 0;
+  return forceData || (!!selDate && !!selTime && (!services.length || selServices.length > 0));
+}
+function renderSteps(){
+  if(!stepVisible(step)){
+    let n = 1;
+    while(n <= 3 && !stepVisible(n)) n++;
+    step = n <= 3 ? n : 1;
+  }
+  const manyBarbers = activeTeam().length > 1;
+  const titles = ['Escolha os serviços', manyBarbers ? 'Barbeiro e horário' : 'Escolha o Horário', 'Seus dados'];
+  const n = selServices.length;
+  let sub = '';
+  if(step === 1){
+    sub = n ? n + (n === 1 ? ' serviço selecionado' : ' serviços selecionados') : 'Você pode selecionar vários serviços';
+  } else if(step === 2){
+    if(selDate && selTime){
+      sub = friendlyDate(selDate) + ' às ' + selTime + (manyBarbers && selBarber ? ' · ' + barbeiroName(selBarber) : '');
+    } else if(selDate){
+      sub = friendlyDate(selDate) + ' · escolha o horário';
+    } else if(n){
+      sub = n + (n === 1 ? ' serviço' : ' serviços') + ' · ' + selectedDuration() + ' min';
+    } else {
+      sub = 'Escolha o dia e o horário';
+    }
+  } else {
+    const parts = [];
+    if(selDate) parts.push(friendlyDate(selDate) + (selTime ? ' às ' + selTime : ''));
+    if(manyBarbers && selBarber) parts.push(barbeiroName(selBarber));
+    if(n) parts.push(selServices.join(', '));
+    sub = parts.join(' · ') || 'Confira seus dados';
+  }
+  $('stepTitle').textContent = titles[step - 1];
+  $('stepSub').textContent = sub;
+  $('backBtn').classList.toggle('hidden', step === 1 || !stepVisible(step - 1));
+  for(let k = 1; k <= 3; k++){
+    const wrap = document.getElementById('stepW' + k);
+    if(wrap) wrap.classList.toggle('hidden', !(k === step && stepVisible(k)));
+  }
+  if(step > 1){ $('subCard')?.classList.add('hidden'); $('subPlanEmpty')?.classList.add('hidden'); }
+  updateBot();
+}
+
+function show(which){
+  ['authBox','cadBox','checkBox','userBox','okBox','linkBox'].forEach(id => $(id).classList.add('hidden'));
+  const authed = (which === 'user' || which === 'ok');
+  ['whoBar','sumBar','histBox'].forEach(id => $(id).classList.toggle('hidden', !authed));
+  const map = { auth:'authBox', cad:'cadBox', check:'checkBox', user:'userBox', ok:'okBox', link:'linkBox' };
+  if(map[which]) $(map[which]).classList.remove('hidden');
+  if(which === 'user'){ renderWhoInfo(); renderSteps(); }
+  updateBot();
+}
+function renderWhoInfo(){
+  const name = ($('inName').value || '').trim();
+  const phone = maskPhone($('inPhone').value);
+  const digits = phone.replace(/\D/g,'');
+  const complete = name.length > 0 && digits.length >= 10;
+  $('whoInfo').classList.toggle('hidden', !complete);
+  $('dataFields').classList.toggle('hidden', complete);
+  if(complete) $('whoInfoTxt').textContent = '👤 ' + name + ' · 📞 ' + phone;
+}
+$('editWho').addEventListener('click', ()=>{
+  $('dataFields').classList.remove('hidden');
+  $('whoInfo').classList.add('hidden');
+  $('inName').focus();
+});
+$('editDataBtn').addEventListener('click', ()=>{
+  if(!user || $('userBox').classList.contains('hidden')) return;
+  forceData = true;
+  step = 3;
+  renderSteps();
+  $('dataFields').classList.remove('hidden');
+  $('whoInfo').classList.add('hidden');
+  const w = $('stepW3');
+  if(w){ try{ w.scrollIntoView({ behavior:'smooth', block:'center' }); }catch(e){} }
+  const f = ($('inName').value || '').trim() ? $('inPhone') : $('inName');
+  if(f) f.focus();
+});
+function err(el, msg){ $(el).textContent = msg || ''; }
+
+$('inName').addEventListener('input', updateSend);
+$('inPhone').addEventListener('input', e=>{ e.target.value = maskPhone(e.target.value); });
+$('cadPhone').addEventListener('input', e=>{ e.target.value = maskPhone(e.target.value); });
+
+$('cadSave').addEventListener('click', async ()=>{
+  if(!user) return;
+  const name = $('cadName').value.trim().slice(0,80);
+  const phone = maskPhone($('cadPhone').value).slice(0,30);
+  err('cadErr','');
+  if(!name){ err('cadErr','Informe seu nome.'); return; }
+  const digits = phone.replace(/\D/g,'');
+  if(digits.length < 10 || digits.length > 11){ err('cadErr','Informe um telefone válido com DDD.'); return; }
+  const btn = $('cadSave');
+  btn.disabled = true;
+  try{
+    const data = {
+      name, phone,
+      email: String(user.email || '').slice(0,100),
+      googleUid: user.uid,
+      source: 'site',
+      createdAt: new Date().toISOString()
+    };
+    await setDoc(doc(db, 'users', BARBER, 'clients', 'g_' + user.uid), data);
+    myClient = { name, phone };
+    try{ localStorage.setItem('vbarber.cad:' + BARBER + ':' + user.uid, JSON.stringify({ name, phone })); }catch(e){}
+    $('inName').value = name;
+    $('inPhone').value = phone;
+    await loadSlots();
+    show('user');
+    renderCalendar(); renderSlots(); updateSend();
+    loadHistory();
+  }catch(e){
+    const code = (e && e.code) || '';
+    if(code === 'permission-denied'){
+      err('cadErr','Cadastro temporariamente indisponível. Tente mais tarde.');
+    } else {
+      err('cadErr','Não foi possível salvar. Verifique sua conexão e tente novamente.');
+    }
+  }finally{
+    btn.disabled = false;
+  }
+});
+
+async function doGoogle(){
+  err('authErr','');
+  try{
+    await signInWithPopup(auth, provider);
+  }catch(e){
+    const code = (e && e.code) || '';
+    if(code === 'auth/popup-blocked' || code === 'auth/popup-closed-by-user'){
+      try{ await signInWithRedirect(auth, provider); return; }catch(e2){}
+    }
+    if(code === 'auth/cancelled-popup-request' || code === 'auth/popup-closed-by-user'){ return; }
+    if(code === 'auth/operation-not-allowed'){
+      err('authErr','Login com Google ainda não foi ativado. Avise o suporte.');
+    } else if(code === 'auth/unauthorized-domain'){
+      err('authErr','Este domínio não está autorizado. Avise o suporte.');
+    } else if(code !== 'auth/network-request-failed'){
+      err('authErr','Não foi possível entrar. Tente novamente.');
+    }
+  }
+}
+$('googleBtn').addEventListener('click', doGoogle);
+$('signOutBtn').addEventListener('click', ()=>{
+  unregisterPush().catch(()=>{});
+  signOut(auth).catch(()=>{});
+});
+$('histList').addEventListener('click', async e => {
+  const b = e.target && e.target.closest ? e.target.closest('.hist-cancel') : null;
+  if(!b || !b.dataset.id) return;
+  if(!window.confirm('Cancelar este agendamento?')) return;
+  b.disabled = true;
+  try{
+    await setDoc(doc(db, 'users', BARBER, 'appointments', b.dataset.id), {
+      status: 'cancelled',
+      cancelledAt: new Date().toISOString()
+    }, { merge:true });
+    loadHistory();
+  }catch(ex){
+    b.disabled = false;
+    window.alert('Não foi possível cancelar agora. Tente novamente.');
+  }
+});
+
+$('sendBtn').addEventListener('click', async ()=>{
+  if(!user || !selDate || !selTime) return;
+  const name = $('inName').value.trim().slice(0,80);
+  if(!name){ err('sendErr','Informe seu nome.'); return; }
+  if(services.length && !selServices.length){
+    err('sendErr','Selecione pelo menos um serviço.');
+    return;
+  }
+  const phone = maskPhone($('inPhone').value).slice(0,30);
+  const note = $('inNote').value.trim().slice(0,120);
+  const btn = $('sendBtn');
+  btn.disabled = true;
+  err('sendErr','');
+  try{
+    await loadSlots();
+    if(!slotOK(selTime, selDate, effDuration(), selBarber)){
+      selTime = '';
+      slotMsg = 'Esse horário não está mais disponível (expediente ou outro agendamento). Escolha outro.';
+      step = 2;
+      renderSlots();
+      renderSteps();
+      updateSend();
+      return;
+    }
+    if(histItems.some(a => a.status !== 'cancelled' && a.date === selDate && a.time === selTime)){
+      err('sendErr','Você já tem um agendamento nesse horário. Escolha outro.');
+      return;
+    }
+    const id = crypto.randomUUID ? crypto.randomUUID() : 'x' + Date.now() + Math.random().toString(36).slice(2,8);
+    const ap = {
+      date: selDate, time: selTime, client: name,
+      phone, note, servico: selServices.join(', ').slice(0,200), status: 'done',
+      requested: true, requestedBy: user.uid,
+      barberId: selBarber || '', barbeiro: selBarber ? (barbeiroName(selBarber) || '') : '',
+      createdAt: new Date().toISOString()
+    };
+    if(currentMembership){
+      ap.fromMembership = true;
+      ap.membershipId = currentMembership.id;
+      ap.planName = currentMembership.planName || (subscriptionPlans.find(p => p.id === currentMembership.planId)?.name || '');
+    }
+    await setDoc(doc(db, 'users', BARBER, 'appointments', id), ap);
+    if(myClient && (name !== myClient.name || phone !== myClient.phone)){
+      setDoc(doc(db, 'users', BARBER, 'clients', 'g_' + user.uid), { name, phone }, { merge:true }).catch(()=>{});
+      myClient = { name, phone };
+      try{ localStorage.setItem('vbarber.cad:' + BARBER + ':' + user.uid, JSON.stringify({ name, phone })); }catch(e){}
+    }
+    const d = new Date(selDate + 'T00:00:00');
+    const svcTxt = selServices.length ? ' · ' + selServices.join(', ') : '';
+    const bbTxt = selBarber ? ' · ' + (barbeiroName(selBarber) || '') : '';
+    $('okSum').innerHTML = `<b>${d.toLocaleDateString('pt-BR',{ weekday:'long', day:'2-digit', month:'2-digit' })}</b> às <b>${selTime}</b>${svcTxt} · ${selectedDuration()} min${bbTxt}`;
+    loadHistory();
+    show('ok');
+    forceData = false;
+    step = 1;
+    selDate = ''; selTime = '';
+    selServices = [];
+    renderSvc();
+    $('inNote').value = '';
+  }catch(e){
+    const code = (e && e.code) || '';
+    if(code === 'permission-denied'){
+      err('sendErr','Envio temporariamente indisponível. Tente mais tarde.');
+    } else {
+      err('sendErr','Não foi possível enviar. Verifique sua conexão e tente novamente.');
+    }
+  }finally{
+    updateSend();
+  }
+});
+$('againBtn').addEventListener('click', ()=>{
+  forceData = false;
+  step = 1;
+  show(user ? 'user' : 'auth');
+  renderCalendar(); renderSlots(); updateSend();
+  if(user) loadHistory();
+});
+
+if(!BOOK_CODE || BOOK_CODE.length !== 6){
+  linkOk = false;
+} else {
+  try{
+    const s = await getDoc(doc(db, 'slugs', BOOK_CODE));
+    const u = (s.exists() && s.data() && s.data().barberUid)
+      ? String(s.data().barberUid).replace(/[^A-Za-z0-9]/g,'').slice(0,40) : '';
+    if(u) BARBER = u; else linkOk = false;
+  }catch(e){ linkOk = false; }
+}
+if(!linkOk){
+  show('link');
+} else {
+  try{ sessionStorage.setItem('vbarber.lastBookCode', BOOK_CODE); }catch(e){}
+  await loadBranding();
+  await loadServices();
+  await loadTeam();
+  await loadSubscriptionSettings();
+  await loadVapidKey();
+  await loadSubscriptionPlans();
+  renderCalendar(); renderSlots();
+  if(subscribePlan && user && !subscribeModalOpened){
+    openSubModal(subscribePlan); subscribeModalOpened = true;
+  }
+}
+
+getRedirectResult(auth).catch(()=>{});
+onAuthStateChanged(auth, async u => {
+  if(!linkOk) return;
+  user = u;
+  if(u){
+    $('whoMail').textContent = u.displayName || u.email || '';
+    show('check');
+    let snap = null;
+    let readFailed = false;
+    try{ snap = await getDoc(doc(db, 'users', BARBER, 'clients', 'g_' + u.uid)); }
+    catch(e){ snap = null; readFailed = true; }
+    let cached = null;
+    try{
+      const raw = localStorage.getItem('vbarber.cad:' + BARBER + ':' + u.uid);
+      cached = raw ? JSON.parse(raw) : null;
+      if(cached && cached.name && cached.phone){
+        cached = { name: String(cached.name).slice(0,80), phone: String(cached.phone).slice(0,30) };
+      } else { cached = null; }
+    }catch(e){ cached = null; }
+    if(snap && snap.exists()){
+      const c = snap.data() || {};
+      myClient = { name: String(c.name || '').slice(0,80), phone: String(c.phone || '').slice(0,30) };
+      if(myClient.name && myClient.phone){
+        try{ localStorage.setItem('vbarber.cad:' + BARBER + ':' + u.uid, JSON.stringify(myClient)); }catch(e){}
+      }
+      $('inName').value = myClient.name || String(u.displayName || '').slice(0,80);
+      $('inPhone').value = maskPhone(myClient.phone);
+      await loadSlots();
+      show('user');
+      renderCalendar(); renderSlots(); updateSend();
+      loadHistory();
+      updateMembershipBadge();
+      await loadSubscriptionSettings();
+      await loadSubscriptionPlans();
+      await loadSubscriptionMemberships();
+      setupPushListener();
+      registerPush();
+      if(subscribePlan && !subscribeModalOpened){
+        openSubModal(subscribePlan); subscribeModalOpened = true;
+      }
+    } else if(readFailed && cached){
+      myClient = cached;
+      $('inName').value = myClient.name;
+      $('inPhone').value = maskPhone(myClient.phone);
+      await loadSlots();
+      show('user');
+      renderCalendar(); renderSlots(); updateSend();
+      loadHistory();
+      updateMembershipBadge();
+      await loadSubscriptionSettings();
+      await loadSubscriptionPlans();
+      await loadSubscriptionMemberships();
+      setupPushListener();
+      registerPush();
+      if(subscribePlan && !subscribeModalOpened){
+        openSubModal(subscribePlan); subscribeModalOpened = true;
+      }
+    } else {
+      myClient = null;
+      $('cadName').value = String(u.displayName || '').slice(0,80);
+      $('cadPhone').value = '';
+      err('cadErr','');
+      show('cad');
+    }
+  } else {
+    show('auth');
+    await loadSubscriptionSettings();
+    await loadSubscriptionPlans();
+    loadSubscriptionMemberships();
+    if(subscribePlan){
+      toast('Faça login para assinar o plano selecionado.');
+    }
+  }
+});
+
+document.addEventListener('click', e => {
+  if(e.target.classList.contains('btn-pro') && e.target.dataset.plan){
+    openSubModal(e.target.dataset.plan);
+  }
+});
+
+function openProofModal(){
+  const saved = localStorage.getItem('vbarber.proofPhone');
+  if(saved) $('proofPhone').value = saved;
+  $('proofModal').classList.remove('hidden');
+  setTimeout(()=> $('proofPhone').focus(), 50);
+}
+function closeProofModal(){
+  $('proofModal').classList.add('hidden');
+}
+function sendProof(){
+  let phone = $('proofPhone').value.trim().replace(/\D/g,'');
+  if(phone.length < 10 || phone.length > 11){
+    alert('Informe um telefone válido com DDD (ex: 11999999999).');
+    return;
+  }
+  if(phone.length === 10) phone = phone.slice(0,9) + '9' + phone.slice(9);
+  localStorage.setItem('vbarber.proofPhone', phone);
+  closeProofModal();
+  const name = $('inName').value.trim().slice(0,80);
+  const note = $('inNote').value.trim().slice(0,120);
+  const d = selDate ? selDate.replace(/-/g,'/') : '___';
+  const t = selTime || '___';
+  const svc = selServices && selServices.length ? selServices.join(', ') : 'consulta';
+  const txt = `Olá! 👋\n\nSeus dados:\n${name}\n${d} às ${t}h\n${svc}\n${note}`.trim();
+  const msg = encodeURIComponent(txt + '\n\n📸 Segue o comprovante do PIX — aguardo confirmação do agendamento!');
+  window.open('https://wa.me/55' + phone + '?text=' + msg, '_blank');
+}
+document.getElementById('sendProofBtn').addEventListener('click', openProofModal);
+document.getElementById('proofCloseBtn').addEventListener('click', closeProofModal);
+document.getElementById('proofSendBtn').addEventListener('click', sendProof);
+</script>
+</body>
+</html>

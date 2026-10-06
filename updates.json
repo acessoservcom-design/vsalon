@@ -1,0 +1,61 @@
+{
+  "updated": "2026-10-02",
+  "updates": [
+    {
+      "id": "v19-lancamento-servico",
+      "date": "02/10/2026",
+      "tag": "Novo",
+      "title": "Lançar por serviço",
+      "text": "Em Config → Serviços escolha o modo de lançamento rápido: “Por valor” mostra os valores fixos (25, 35…) e “Por serviço” mostra seus serviços com o preço, já preenchendo o valor no lançamento do dia e nos agendamentos quitados."
+    },
+    {
+      "id": "v18-relatorios",
+      "date": "02/10/2026",
+      "tag": "Novo",
+      "title": "Relatórios no Financeiro",
+      "text": "Na seção Gráficos você vê Hoje, Resumo do Período e Agenda lado a lado, gráficos de serviços mais vendidos, produção de cada barbeiro e horários de pico — tudo comparado com o período anterior e com botão para baixar em CSV."
+    },
+    {
+      "id": "v17-agenda",
+      "date": "02/10/2026",
+      "tag": "Novo",
+      "title": "Três formas de ver a agenda",
+      "text": "Logo abaixo do atalho rápido você escolhe entre Agendados, Diário ou Semanal. No Diário, as setas avançam dia a dia. No computador, o menu lateral agora mostra também as seções do Financeiro e das Configurações."
+    },
+    {
+      "id": "v16-desktop",
+      "date": "01/10/2026",
+      "tag": "Novo",
+      "title": "Painel para computador",
+      "text": "Em telas grandes o menu vira uma barra lateral fixa e o conteúdo passa a usar duas colunas. O logo da barbearia agora aparece também na barra superior."
+    },
+    {
+      "id": "v15-comissoes",
+      "date": "01/10/2026",
+      "tag": "Novo",
+      "title": "Comissões por barbeiro",
+      "text": "Cadastre a porcentagem de cada barbeiro em Config → Equipe. Todo lançamento atribuído a ele é dividido em comissão e o resto fica com a barbearia."
+    },
+    {
+      "id": "v15-financeiro",
+      "date": "01/10/2026",
+      "tag": "Novo",
+      "title": "Aba Financeiro com relatórios",
+      "text": "O Caixa virou Financeiro: Saídas, Fiado, Comissões e Gráficos reunidos num só lugar, com busca por seção."
+    },
+    {
+      "id": "v14-sino",
+      "date": "01/10/2026",
+      "tag": "Melhoria",
+      "title": "Sino de notificações",
+      "text": "O ícone de sino na barra superior avisa quando há uma atualização nova do sistema. Toque para ver o histórico."
+    },
+    {
+      "id": "v14-login",
+      "date": "30/09/2026",
+      "tag": "Melhoria",
+      "title": "Sair da conta mais seguro",
+      "text": "O botão de sair saiu das configurações e foi para a barra superior, ao lado de compartilhar. Agora pede confirmação antes de deslogar."
+    }
+  ]
+}

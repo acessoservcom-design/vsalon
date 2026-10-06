@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clube de Assinantes · vBarber</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <style>
+    :root{--charcoal:#1a1a1a;--charcoal-2:#242424;--charcoal-3:#2b2b2b;--line:#3e3e3e;--cream:#e8e6e1;--brass:#c9a227;--brass-dark:#8f7118;--brass-light:#f0c962;--pos:#3ecf8e;--bg:#121212;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,sans-serif;background:var(--bg);color:var(--cream);line-height:1.5;}
+    .hidden{display:none!important;}
+    a{text-decoration:none;color:inherit;}
+    header{background:var(--charcoal);padding:16px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;}
+    #bkLogo{width:40px;height:40px;border-radius:8px;background:#333;}
+    #bkTitle{font-family:'Oswald','Arial',sans-serif;font-size:1.3rem;}
+    main{max-width:720px;margin:0 auto;padding:24px 20px;padding-bottom:80px;}
+    .hero{text-align:center;padding:28px 0;}
+    .hero h1{font-family:'Oswald','Arial',sans-serif;font-size:1.9rem;color:var(--brass-light);margin-bottom:8px;}
+    .hero p{color:#a8a5a0;font-size:1.05rem;}
+    .benefits{background:var(--charcoal-2);border:1px solid var(--line);border-radius:12px;padding:18px;margin:20px 0;}
+    .benefits h2{font-family:'Oswald',sans-serif;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--brass-light);margin-bottom:12px;}
+    .benefit-list{list-style:none;}
+    .benefit-list li{padding:10px 0;border-bottom:1px solid var(--line);display:flex;align-items:flex-start;gap:10px;font-size:.95rem;}
+    .benefit-list li:last-child{border-bottom:none;}
+    .benefit-list li .star{color:var(--brass);font-size:1.15rem;flex-shrink:0;}
+    .benefit-list li b{color:var(--cream);}
+    .plans{margin-top:24px;}
+    .plans h2{font-family:'Oswald',sans-serif;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--brass-light);margin-bottom:12px;}
+    .pros{display:flex;flex-direction:column;gap:10px;}
+    .pro{background:linear-gradient(135deg,var(--charcoal),var(--charcoal-2));border:1px solid var(--line);border-radius:12px;padding:14px 16px;}
+    .pro .st{font-family:'Oswald',sans-serif;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;color:var(--brass-light);margin-bottom:6px;}
+    .pro .pr{font-size:1.4rem;font-weight:700;color:var(--cream);margin-bottom:8px;}
+    .pro .pr i{font-size:.8rem;color:#a8a5a0;font-style:normal;font-weight:normal;margin-left:6px;}
+    .pro ul{list-style:none;margin:10px 0;font-size:.9rem;color:#c9c6c0;}
+    .pro ul li{padding:3px 0;}
+    .pro .btn-pro{background:linear-gradient(135deg,var(--brass),var(--brass-dark));border:none;color:#2b1d00;font-weight:700;padding:10px 16px;border-radius:8px;cursor:pointer;width:100%;font-size:.95rem;}
+    .muted{color:#a8a5a0;font-size:.9rem;text-align:center;padding:20px;}
+    .g-btn{background:var(--cream);color:#1a1a1a;border:none;padding:12px 20px;border-radius:8px;font-weight:700;width:100%;cursor:pointer;font-size:1rem;margin-top:8px;}
+    footer{text-align:center;color:#6b6863;font-size:.8rem;padding:16px;}
+  </style>
+</head>
+<body>
+  <header>
+    <img id="bkLogo" class="hidden" alt="">
+    <h1 id="bkTitle">Clube de Assinantes</h1>
+  </header>
+
+  <main>
+    <div id="loading">Carregando...</div>
+
+    <div id="content" class="hidden">
+      <div class="hero">
+        <h1 id="heroTitle">Corte ilimitado, preço de amigo</h1>
+        <p id="heroDesc">Pare de pagar corte por corte. Assine o clube da barbearia e tenha direito a cortes mensais com desconto e prioridade.</p>
+      </div>
+
+      <div class="benefits">
+        <h2>O que você ganha</h2>
+        <ul class="benefit-list">
+          <li><span class="star">✨</span> <b>Desconto especial</b> — pague menos por corte mensal</li>
+          <li><span class="star">✨</span> <b>Agendamento prioritário</b> — garanta seu horário sem espera</li>
+          <li><span class="star">✨</span> <b>Flexibilidade total</b> — cancela quando quiser</li>
+          <li><span class="star">✨</span> <b>Cortes que se acumulam</b> — planos com carryOver estendem seus créditos</li>
+          <li><span class="star">✨</span> <b>Renovação automática</b> — nunca fique de fora do seu estilo</li>
+        </ul>
+      </div>
+
+      <div class="plans">
+        <h2 id="plansTitle">Planos disponíveis</h2>
+        <div id="plansList" class="pros"></div>
+        <p class="muted hidden" id="planEmpty">Os planos desta barbearia aparecerão aqui.</p>
+      </div>
+
+      <div id="authBox" class="hidden">
+        <p class="muted" style="margin-bottom:8px;">Já é assinante ou quer assinar? Entre com sua conta Google.</p>
+        <button type="button" class="g-btn" id="googleBtn">Entrar com Google</button>
+      </div>
+    </div>
+  </main>
+
+  <footer>Feito por vBarber · Clube de Assinantes</footer>
+
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script>
+    (function(){
+      const firebaseConfig = {
+        apiKey: "AIzaSyC3wdNbFtVKbA3EWyQN_NUL1xdwna_BWsk",
+        authDomain: "vbarber-app.firebaseapp.com",
+        projectId: "vbarber-app",
+        storageBucket: "vbarber-app.firebasestorage.app",
+        messagingSenderId: "405900517551",
+        appId: "1:405900517551:web:440c8901794cb14a1db45a"
+      };
+
+      // Public plans list key
+      const PUBLIC_PLANS_KEY = 'list';
+
+      const app = firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      auth.useDeviceLanguage();
+      let db;
+      try{ db = firebase.initializeApp ? app : null; }catch(e){ db = null; }
+
+      const $ = id => document.getElementById(id);
+      let branding = { title:'', logo:'' };
+      let plans = [];
+      let user = null;
+      let BARBER = '';
+      let genericView = false;
+
+      // Carrega marca
+      async function loadBranding(){
+        try{
+          const snap = await firebase.firestore().doc('users/' + BARBER + '/public/branding').get();
+          const b = snap.exists() ? snap.data() : {};
+          branding = {
+            title: String(b.title || 'Clube de Assinantes').slice(0,40),
+            logo: String(b.logo || '')
+          };
+          $('bkTitle').textContent = branding.title;
+          const logo = $('bkLogo');
+          if(branding.logo){ logo.src = branding.logo; logo.classList.remove('hidden'); }
+        }catch(e){ console.warn('loadBranding falhou:', e); }
+      }
+
+      // Carrega planos públicos
+      async function loadPlans(){
+        plans = [];
+        try{
+          const snap = await firebase.firestore().doc('users/' + BARBER + '/public/subscription/' + PUBLIC_PLANS_KEY).get();
+          const raw = snap.exists() && snap.data().items;
+          plans = (Array.isArray(raw) ? raw : [])
+            .filter(p => p && p.id && p.name && p.price > 0)
+            .map(p => ({
+              id: String(p.id).slice(0,40),
+              name: String(p.name).slice(0,60),
+              price: Number(p.price) || 0,
+              cycle: String(p.cycle || 'month'),
+              cuts: Number(p.cuts) || 1,
+              validityDays: Number(p.validityDays) || 30,
+              services: Array.isArray(p.services) ? p.services.slice(0,10) : [],
+              carryOver: p.carryOver === true
+            }))
+            .slice(0,20);
+        }catch(e){ plans = []; }
+        renderPlans();
+      }
+
+      function cycleLabel(cycle, cuts){
+        if(cycle.toLowerCase() === 'month') return ' / ' + cuts + ' cortes/mês';
+        if(cycle.toLowerCase() === 'week') return ' / ' + cuts + ' cortes/semana';
+        if(cycle.toLowerCase() === '30days') return ' / ' + cuts + ' cortes/30 dias';
+        return ' / ' + cuts + ' cortes';
+      }
+
+      function renderPlans(){
+        const list = $('plansList');
+        const empty = $('planEmpty');
+        if(!plans.length){
+          list.innerHTML = '';
+          empty?.classList.remove('hidden');
+          return;
+        }
+        empty?.classList.add('hidden');
+        list.innerHTML = plans.map(p => {
+          const desc = p.cuts + ' cortes por ' + (p.cycle === 'month' ? 'mês' : (p.cycle === 'week' ? 'semana' : (p.cycle === '30days' ? '30 dias' : 'ciclo')));
+          const valid = p.validityDays + ' dias de validade por ciclo' + (p.carryOver ? ' — créditos se acumulam' : '');
+          return '<div class="pro"><div class="st">' + p.name + '</div>' +
+            '<div class="pr">R$ ' + p.price.toFixed(2).replace('.',',') + ' <i>' + cycleLabel(p.cycle, p.cuts) + '</i></div>' +
+            '<ul><li><b>Usos:</b> ' + desc + '</li>' +
+            '<li><b>Validade:</b> ' + valid + '</li>' +
+            (p.services.length ? '<li><b>Válido para:</b> ' + p.services.join(', ') + '</li>' : '') +
+            '</ul><button class="btn-pro" data-plan="' + p.id + '" ' + (user ? '' : 'disabled title="Entre para assinar"') + '>Assinar agora</button></div>';
+        }).join('');
+        // habilita botões se usuário logado
+        const btns = list.querySelectorAll('.btn-pro');
+        btns.forEach(b => { if(user) b.removeAttribute('disabled'); });
+      }
+
+      // Autenticação
+      firebase.auth().onAuthStateChanged(u => {
+        user = u;
+        const authBox = $('authBox');
+        if(genericView){ authBox.classList.add('hidden'); return; }
+        if(user){
+          authBox.classList.add('hidden');
+          renderPlans();
+        }else{
+          authBox.classList.remove('hidden');
+          renderPlans();
+        }
+      });
+
+      $('googleBtn').addEventListener('click', ()=>{
+        const provider = new firebase.auth.GoogleAuthProvider();
+        firebase.auth().signInWithPopup(provider).catch(e => {
+          console.error('login falhou:', e);
+          alert('Erro ao entrar. Tente novamente.');
+        });
+      });
+
+      // Inicialização
+      (async function init(){
+        const code = (new URLSearchParams(window.location.search).get('k') || '').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6);
+        BARBER = code;
+        if(!BARBER){
+          genericView = true;
+          $('loading').classList.add('hidden');
+          $('content').classList.remove('hidden');
+          const pl = document.querySelector('.plans');
+          if(pl) pl.classList.add('hidden');
+          $('authBox').classList.add('hidden');
+          const note = document.createElement('p');
+          note.className = 'muted';
+          note.textContent = 'Estes são os benefícios do Clube de Assinantes. Dono da barbearia: ative o módulo no painel, em Config ▸ Assinaturas.';
+          $('content').appendChild(note);
+          return;
+        }
+        try{ await loadBranding(); }catch(e){}
+        try{ await loadPlans(); }catch(e){}
+        $('loading').classList.add('hidden');
+        $('content').classList.remove('hidden');
+      })();
+
+      // Botões de assinar abrem o fluxo de agendamento da barbearia com plano selecionado
+      document.addEventListener('click', e => {
+        if(e.target.classList.contains('btn-pro') && e.target.dataset.plan && user){
+          const planId = e.target.dataset.plan;
+          window.location.href = 'agendar.html?k=' + BARBER + '&subscribe=' + planId;
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

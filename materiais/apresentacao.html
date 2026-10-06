@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Sistema de Gestão para Barbearias — Apresentação</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Cormorant+Garamond:ital,wght@1,500&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  @page{ size:A4; margin:0; }
+  *{ box-sizing:border-box; -webkit-print-color-adjust:exact; print-color-adjust:exact; margin:0; padding:0; }
+  body{ background:#2a2a2a; font-family:'Karla',sans-serif; color:#e8e6e2; }
+  .page{
+    width:210mm; height:296.5mm; background:#0a0a0a; position:relative;
+    page-break-after:always; overflow:hidden; padding:18mm 18mm 16mm;
+    display:flex; flex-direction:column;
+  }
+  .page:last-child{ page-break-after:auto; }
+  .brass{ color:#d9ae76; }
+  h2.sec{ font-family:'Oswald',sans-serif; font-weight:600; font-size:8.5mm; letter-spacing:.06em; text-transform:uppercase; color:#e8e6e2; margin-bottom:3mm; }
+  h2.sec .bar{ display:block; width:18mm; height:1.2mm; background:#b8894f; margin-top:2.5mm; }
+  p.lead{ font-size:3.6mm; line-height:1.55; color:#c9c6c0; }
+  .phead{ display:flex; justify-content:space-between; align-items:center; border-bottom:.3mm solid #2c2c2c; padding-bottom:3mm; margin-bottom:7mm; }
+  .phead .brand{ font-family:'Oswald',sans-serif; font-size:3.4mm; letter-spacing:.14em; text-transform:uppercase; color:#b8894f; }
+  .phead .num{ font-family:'Oswald',sans-serif; font-size:3.4mm; color:#5a5a5a; letter-spacing:.1em; }
+  .pfoot{ position:absolute; left:18mm; right:18mm; bottom:8mm; display:flex; justify-content:space-between; font-size:2.5mm; color:#5a5a5a; letter-spacing:.06em; text-transform:uppercase; font-family:'Oswald',sans-serif; }
+
+  /* ---------- Capa ---------- */
+  .cover{ justify-content:center; align-items:center; text-align:center; }
+  .cover::before{ content:''; position:absolute; inset:0; background:
+     radial-gradient(circle at 80% 15%, rgba(184,137,79,.14), transparent 45%),
+     radial-gradient(circle at 15% 85%, rgba(184,137,79,.10), transparent 40%); }
+  .cover > *{ position:relative; }
+  .cover .logo{ height:26mm; margin-bottom:9mm; }
+  .cover h1{ font-family:'Oswald',sans-serif; font-weight:600; font-size:14mm; letter-spacing:.1em; text-transform:uppercase; line-height:1.15; }
+  .cover .tag{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:5.6mm; color:#d9ae76; margin-top:4mm; }
+  .cover .desc{ font-size:3.8mm; color:#a8a5a0; line-height:1.6; margin-top:9mm; max-width:130mm; }
+  .cover .rule{ width:40mm; height:.6mm; background:#b8894f; margin:9mm auto; }
+  .cover .meta{ font-family:'Oswald',sans-serif; font-size:3mm; letter-spacing:.2em; text-transform:uppercase; color:#6a6a6a; }
+
+  /* ---------- Grids / cards ---------- */
+  .cols2{ display:grid; grid-template-columns:1fr 1fr; gap:6mm; }
+  .cols3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:5mm; }
+  .card{ background:#161616; border:.3mm solid #2c2c2c; border-left:1.2mm solid #b8894f; padding:5mm; }
+  .card h4{ font-family:'Oswald',sans-serif; font-weight:500; font-size:4mm; letter-spacing:.05em; text-transform:uppercase; color:#e8e6e2; margin-bottom:2mm; }
+  .card p{ font-size:3.1mm; line-height:1.5; color:#a8a5a0; }
+  .card .ico{ font-size:6mm; margin-bottom:2.5mm; display:block; }
+  .feat .ico{ color:#d9ae76; }
+  .pain{ background:#161616; border:.3mm solid #2c2c2c; padding:5mm 6mm; margin-bottom:4mm; }
+  .pain li{ list-style:none; font-size:3.4mm; color:#c9c6c0; line-height:1.5; padding-left:7mm; position:relative; margin-bottom:2.5mm; }
+  .pain li::before{ content:'✕'; position:absolute; left:0; color:#e0655a; font-weight:700; }
+  .pain.ok li::before{ content:'✓'; color:#3ecf8e; }
+  .stat-row{ display:grid; grid-template-columns:repeat(4,1fr); gap:4mm; margin-top:6mm; }
+  .stat{ background:#161616; border:.3mm solid #2c2c2c; text-align:center; padding:4mm 2mm; }
+  .stat b{ display:block; font-family:'Oswald',sans-serif; font-size:7mm; color:#d9ae76; }
+  .stat span{ font-size:2.6mm; color:#8a8a8a; text-transform:uppercase; letter-spacing:.05em; }
+
+  /* ---------- Telas / phones ---------- */
+  .screens{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:6mm; justify-items:center; }
+  .scap{ font-family:'Oswald',sans-serif; font-size:3.2mm; letter-spacing:.1em; text-transform:uppercase; color:#d9ae76; text-align:center; margin-bottom:3mm; }
+  .phone{ width:54mm; background:#0a0a0a; border:1mm solid #2c2c2c; border-radius:5mm; overflow:hidden; box-shadow:0 3mm 8mm rgba(0,0,0,.6); }
+  .ph-status{ display:flex; justify-content:space-between; font-size:2.2mm; color:#8a8a8a; padding:1.8mm 3mm .6mm; background:#0a0a0a; }
+  .ph-header{ background:#161616; border-bottom:.3mm solid #2c2c2c; text-align:center; padding:2mm 2mm 2.2mm; }
+  .ph-header img{ height:7mm; display:block; margin:0 auto .8mm; }
+  .ph-header .h1{ font-family:'Oswald',sans-serif; font-weight:600; font-size:3mm; letter-spacing:.1em; text-transform:uppercase; color:#e8e6e2; }
+  .ph-header .sub{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:2.4mm; color:#a8a5a0; margin-top:.4mm; }
+  .ph-body{ height:118mm; overflow:hidden; padding:2.4mm; font-size:2.4mm; position:relative; }
+  .ph-tab{ display:grid; grid-template-columns:repeat(5,1fr); background:#161616; border-top:.3mm solid #2c2c2c; padding:1.4mm 0 2.2mm; }
+  .ph-tab div{ text-align:center; font-size:1.9mm; color:#8a8a8a; }
+  .ph-tab div i{ display:block; font-style:normal; font-size:3.6mm; margin-bottom:.5mm; }
+  .ph-tab div.on{ color:#d9ae76; }
+
+  .m-nav{ display:flex; justify-content:space-between; align-items:center; background:#161616; border:.3mm solid #2c2c2c; padding:1.4mm; margin-bottom:2.4mm; }
+  .m-nav b{ font-family:'Oswald',sans-serif; font-size:2.4mm; text-transform:uppercase; letter-spacing:.06em; color:#d9ae76; }
+  .m-nav span{ color:#8a8a8a; font-size:3mm; }
+  .m-nav em{ font-style:normal; border:.3mm solid #b8894f; color:#d9ae76; font-size:1.9mm; padding:.6mm 1.6mm; text-transform:uppercase; font-family:'Oswald',sans-serif; }
+  .m-sum{ display:grid; grid-template-columns:repeat(3,1fr); gap:1.6mm; margin-bottom:2.6mm; }
+  .m-sum div{ background:#161616; border:.3mm solid #2c2c2c; border-left:1mm solid #b8894f; padding:1.6mm 1.4mm; }
+  .m-sum div.e{ border-left-color:#c0564d; } .m-sum div.n{ border-left-color:#3ecf8e; }
+  .m-sum i{ font-style:normal; display:block; font-size:1.7mm; color:#8a8a8a; text-transform:uppercase; letter-spacing:.04em; }
+  .m-sum b{ font-family:'Oswald',sans-serif; font-size:3.1mm; color:#d9ae76; font-weight:500; }
+  .m-sum div.e b{ color:#e08a82; } .m-sum div.n b{ color:#3ecf8e; }
+  .m-day{ background:#161616; border:.3mm solid #2c2c2c; margin-bottom:2mm; }
+  .m-day .dh{ display:flex; justify-content:space-between; align-items:center; padding:1.6mm 2mm; border-bottom:.3mm solid #2c2c2c; font-family:'Oswald',sans-serif; font-size:2.4mm; text-transform:uppercase; letter-spacing:.06em; color:#e8e6e2; }
+  .m-day .dh span{ color:#d9ae76; font-size:2.2mm; }
+  .m-item{ display:flex; justify-content:space-between; gap:1.5mm; padding:1.5mm 2mm; border-bottom:.3mm solid #212121; font-size:2.4mm; color:#c9c6c0; }
+  .m-item b{ color:#d9ae76; font-weight:500; white-space:nowrap; }
+  .m-item .cat{ color:#8a8a8a; font-size:2.1mm; }
+  .m-item.neg b{ color:#e08a82; }
+  .m-add{ display:flex; gap:1.4mm; margin-top:2mm; }
+  .m-add input{ flex:1; background:#0f0f0f; border:.3mm solid #2c2c2c; color:#5a5a5a; font-size:2.2mm; padding:1.6mm; font-family:'Karla',sans-serif; }
+  .m-add button{ background:#b8894f; color:#0a0a0a; border:none; font-family:'Oswald',sans-serif; font-size:2.3mm; padding:0 3mm; text-transform:uppercase; }
+  .m-chips{ display:flex; gap:1.4mm; margin-top:1.8mm; }
+  .m-chips span{ border:.3mm solid #b8894f; color:#d9ae76; font-size:2.1mm; padding:.8mm 2mm; font-family:'Oswald',sans-serif; }
+  .m-form{ background:#161616; border:.3mm solid #2c2c2c; padding:2.4mm; margin-bottom:2.6mm; }
+  .m-form .t{ font-family:'Oswald',sans-serif; font-size:2.5mm; text-transform:uppercase; letter-spacing:.06em; color:#d9ae76; margin-bottom:1.8mm; }
+  .m-form .row{ display:flex; gap:1.4mm; margin-bottom:1.4mm; }
+  .m-form input{ flex:1; background:#0f0f0f; border:.3mm solid #2c2c2c; color:#a8a5a0; font-size:2.2mm; padding:1.5mm; font-family:'Karla',sans-serif; }
+  .m-form .btn{ background:#b8894f; color:#0a0a0a; border:none; font-family:'Oswald',sans-serif; font-size:2.3mm; padding:1.6mm; text-transform:uppercase; width:100%; }
+  .m-title{ font-family:'Oswald',sans-serif; font-size:2.5mm; text-transform:uppercase; letter-spacing:.08em; color:#e8e6e2; margin:0 0 1.8mm; display:flex; justify-content:space-between; }
+  .m-title span{ color:#8a8a8a; font-size:2.1mm; }
+  .m-sec{ background:#161616; border:.3mm solid #2c2c2c; margin-bottom:2mm; }
+  .m-sec .sh{ padding:1.6mm 2mm; font-family:'Oswald',sans-serif; font-size:2.4mm; text-transform:uppercase; color:#d9ae76; border-bottom:.3mm solid #2c2c2c; display:flex; justify-content:space-between; }
+  .m-sec .sb{ padding:2mm; font-size:2.4mm; color:#c9c6c0; line-height:1.5; }
+  .m-rec{ display:flex; justify-content:space-between; align-items:center; padding:1.6mm 2mm; border-bottom:.3mm solid #212121; font-size:2.4mm; }
+  .m-rec .who b{ display:block; color:#e8e6e2; font-weight:500; }
+  .m-rec .who i{ font-style:normal; color:#8a8a8a; font-size:2mm; }
+  .m-rec .val{ text-align:right; }
+  .m-rec .val b{ display:block; color:#d9ae76; font-family:'Oswald',sans-serif; font-size:2.7mm; }
+  .m-rec .val i{ font-style:normal; font-size:1.8mm; color:#3ecf8e; text-transform:uppercase; font-family:'Oswald',sans-serif; }
+  .m-rec .pay{ background:#3ecf8e; color:#0a2a1a; font-size:1.9mm; font-family:'Oswald',sans-serif; padding:.8mm 1.6mm; text-transform:uppercase; }
+  .m-ag{ display:flex; gap:2mm; padding:1.8mm 2mm; border-bottom:.3mm solid #212121; align-items:center; }
+  .m-ag .hr{ font-family:'Oswald',sans-serif; color:#d9ae76; font-size:2.5mm; }
+  .m-ag .cl b{ display:block; font-size:2.5mm; color:#e8e6e2; font-weight:500; }
+  .m-ag .cl i{ font-style:normal; font-size:2.1mm; color:#8a8a8a; }
+  .m-ag .ck{ margin-left:auto; color:#3ecf8e; font-size:3.4mm; }
+  .m-bars{ display:flex; align-items:flex-end; gap:1.6mm; height:26mm; padding:2mm; background:#161616; border:.3mm solid #2c2c2c; margin-bottom:2.4mm; }
+  .m-bars div{ flex:1; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; gap:.8mm; height:100%; }
+  .m-bars div i{ font-style:normal; width:100%; background:linear-gradient(#d9ae76,#b8894f); }
+  .m-bars div u{ text-decoration:none; width:100%; background:linear-gradient(#e0655a,#c0564d); }
+  .m-bars div em{ font-style:normal; font-size:1.6mm; color:#8a8a8a; }
+  .m-kpi{ display:grid; grid-template-columns:1fr 1fr; gap:1.6mm; }
+  .m-kpi div{ background:#161616; border:.3mm solid #2c2c2c; border-left:1mm solid #b8894f; padding:1.6mm; }
+  .m-kpi i{ font-style:normal; display:block; font-size:1.8mm; color:#8a8a8a; text-transform:uppercase; }
+  .m-kpi b{ font-family:'Oswald',sans-serif; font-size:3mm; color:#d9ae76; font-weight:500; }
+  .m-days{ display:flex; gap:1.4mm; flex-wrap:wrap; }
+  .m-days span{ border:.3mm solid #2c2c2c; color:#8a8a8a; font-size:2.1mm; padding:1mm 1.8mm; font-family:'Oswald',sans-serif; text-transform:uppercase; }
+  .m-days span.on{ background:#b8894f; color:#0a0a0a; border-color:#b8894f; }
+  .m-colors{ display:flex; gap:2mm; margin-top:1.6mm; }
+  .m-colors i{ width:7mm; height:7mm; border-radius:50%; border:.3mm solid #2c2c2c; font-style:normal; }
+
+  /* ---------- extras ---------- */
+  .flow{ display:grid; grid-template-columns:repeat(4,1fr); gap:4mm; margin-top:5mm; }
+  .flow .st{ background:#161616; border:.3mm solid #2c2c2c; border-top:1.2mm solid #b8894f; padding:4mm; text-align:center; }
+  .flow .st b{ display:block; font-family:'Oswald',sans-serif; font-size:4.5mm; color:#d9ae76; margin-bottom:1.5mm; }
+  .flow .st span{ font-size:2.8mm; color:#a8a5a0; line-height:1.45; display:block; }
+  .flow .st em{ font-style:normal; display:inline-block; font-family:'Oswald',sans-serif; font-size:2.4mm; color:#5a5a5a; letter-spacing:.1em; }
+  .check{ list-style:none; }
+  .check li{ font-size:3.3mm; color:#c9c6c0; padding:2.6mm 0 2.6mm 9mm; border-bottom:.3mm solid #212121; position:relative; }
+  .check li::before{ content:'✓'; position:absolute; left:1mm; color:#3ecf8e; font-weight:700; }
+  .cta{ background:linear-gradient(135deg,#161616,#0f0f0f); border:.4mm solid #b8894f; padding:9mm; text-align:center; margin-top:8mm; }
+  .cta h3{ font-family:'Oswald',sans-serif; font-size:6mm; text-transform:uppercase; letter-spacing:.08em; color:#d9ae76; margin-bottom:3mm; }
+  .cta p{ font-size:3.4mm; color:#c9c6c0; line-height:1.55; }
+  .cta .contato{ margin-top:5mm; font-family:'Oswald',sans-serif; font-size:3.6mm; letter-spacing:.1em; color:#e8e6e2; line-height:1.6; }
+</style>
+</head>
+<body>
+
+<!-- ============ P1 — CAPA ============ -->
+<section class="page cover">
+  <img class="logo" src="../logo-white.png" alt="">
+  <h1>Sistema de Gestão<br>para Barbearias</h1>
+  <div class="tag">cortes, dinheiro e agenda no seu celular</div>
+  <div class="rule"></div>
+  <p class="desc">Um aplicativo completo para controlar entradas, saídas, clientes, recebíveis e agendamentos — com relatórios, meta do mês e aparência personalizada com a identidade da sua barbearia.</p>
+  <div class="rule"></div>
+  <div class="meta">Apresentação comercial · 2026 · Acesso ServCom</div>
+</section>
+
+<!-- ============ P2 — PROBLEMA / SOLUÇÃO ============ -->
+<section class="page">
+  <div class="phead"><span class="brand">Gestão para Barbearias</span><span class="num">02</span></div>
+  <h2 class="sec">O problema<span class="bar"></span></h2>
+  <div class="cols2" style="margin-bottom:7mm">
+    <ul class="pain">
+      <li>Caderno e planilha que se perdem ou corrompem</li>
+      <li>Não saber quanto entrou, quanto saiu e qual o lucro real</li>
+      <li>Esquecer cobranças pendentes e perder dinheiro</li>
+      <li>Agenda de cabeça, com encontros marcados errado</li>
+      <li>Sem histórico: não lembrar de quem é cliente fiel</li>
+    </ul>
+    <ul class="pain ok">
+      <li>Lançamentos diários em segundos, pelo celular</li>
+      <li>Entradas x saídas, ticket médio e meta do mês em gráficos</li>
+      <li>Lista de recebíveis com “marcar pago” que lança na entrada</li>
+      <li>Agenda por data e hora, com conclusão de atendimento</li>
+      <li>Banco de clientes com busca e sugestão automática</li>
+    </ul>
+  </div>
+  <h2 class="sec">O sistema<span class="bar"></span></h2>
+  <p class="lead">Aplicativo web (PWA) instalável no celular e no computador, com login próprio, dados salvos na nuvem Google e atualização automática — <b class="brass">sem instalar loja, sem mensalidade de plataforma, sem depender de internet boa o tempo todo.</b></p>
+  <div class="stat-row">
+    <div class="stat"><b>&lt;5s</b><span>para lançar um corte</span></div>
+    <div class="stat"><b>7 telas</b><span>simples e diretas</span></div>
+    <div class="stat"><b>100%</b><span>no celular</span></div>
+    <div class="stat"><b>Nuvem</b><span>dados por usuário</span></div>
+  </div>
+  <div class="pfoot"><span>Apresentação comercial</span><span>vBarber</span></div>
+</section>
+
+<!-- ============ P3 — FUNCIONALIDADES ============ -->
+<section class="page">
+  <div class="phead"><span class="brand">Gestão para Barbearias</span><span class="num">03</span></div>
+  <h2 class="sec">Funcionalidades<span class="bar"></span></h2>
+  <div class="cols2" style="gap:5mm">
+    <div class="card feat"><span class="ico">✂</span><h4>Cortes do dia</h4><p>Lançamento por dia com valores rápidos (25, 35, 50…) ou valor livre, nome do cliente salvo no lançamento e total semanal instantâneo.</p></div>
+    <div class="card feat"><span class="ico">💸</span><h4>Saídas por data</h4><p>Produtos, aluguel, luz, transporte e categorias personalizáveis. Agrupadas por dia, com navegação de mês e exclusão com confirmação.</p></div>
+    <div class="card feat"><span class="ico">💰</span><h4>Recebíveis</h4><p>Cobranças pendentes de quem deve. “Marcar pago” lança o valor automaticamente nas entradas do dia, com histórico do mês.</p></div>
+    <div class="card feat"><span class="ico">📅</span><h4>Agenda</h4><p>Agendamentos por data, hora, cliente e observação. Concluídos ou reabertos com um toque, agrupados por “Hoje / Amanhã / data”.</p></div>
+    <div class="card feat"><span class="ico">👥</span><h4>Banco de clientes</h4><p>Cadastro com telefone mascarado, busca instantânea e sugestão automática ao digitar nos lançamentos e na agenda.</p></div>
+    <div class="card feat"><span class="ico">📈</span><h4>Gráficos e relatórios</h4><p>Entradas x saídas por semana, mês e período de 2 meses, comparativo por métrica, ticket médio, faturamento diário e meta do mês.</p></div>
+    <div class="card feat"><span class="ico">🎨</span><h4>Personalização</h4><p>Nome, slogan, logo, cor principal, cor de destaque e cores de fundo da barbearia — aplicados no topo, na tela de entrada e na barra do navegador.</p></div>
+    <div class="card feat"><span class="ico">⚙️</span><h4>Dias de trabalho</h4><p>Escolha os dias da semana atendidos: só eles aparecem em Cortes e Saídas, enquanto totais e gráficos consideram tudo.</p></div>
+  </div>
+  <div class="pfoot"><span>Funcionalidades</span><span>vBarber</span></div>
+</section>
+
+<!-- ============ P4 — TELAS: CORTES / SAÍDAS ============ -->
+<section class="page">
+  <div class="phead"><span class="brand">Gestão para Barbearias</span><span class="num">04</span></div>
+  <h2 class="sec">Telas · Cortes e Saídas<span class="bar"></span></h2>
+  <div class="screens">
+    <div>
+      <div class="scap">Cortes</div>
+      <div class="phone">
+        <div class="ph-status"><span>9:41</span><span>●●● ⌁ ▮</span></div>
+        <div class="ph-header"><img src="../logo-white.png" alt=""><div class="h1">vBarber</div><div class="sub">Registro de cortes e saídas</div></div>
+        <div class="ph-body">
+          <div class="m-nav"><span>‹</span><b>15 – 21 set</b><em>Hoje</em><b>›</b></div>
+          <div class="m-sum">
+            <div><i>Entradas</i><b>R$ 1.240</b></div>
+            <div class="e"><i>Saídas</i><b>R$ 310</b></div>
+            <div class="n"><i>Saldo</i><b>R$ 930</b></div>
+          </div>
+          <div class="m-day">
+            <div class="dh">Hoje · Terça<span>3 cortes</span></div>
+            <div class="m-item"><span>Barba + corte</span><b>R$ 40,00</b></div>
+            <div class="m-item"><span>Corte</span><b>R$ 35,00</b></div>
+            <div class="m-item"><span>Corte</span><b>R$ 35,00</b></div>
+            <div class="m-add"><input value="Valor do corte" readonly><button>+</button></div>
+            <div class="m-chips"><span>25</span><span>35</span><span>50</span></div>
+          </div>
+          <div class="m-day">
+            <div class="dh">Segunda<span>2 cortes</span></div>
+            <div class="m-item"><span>Lincoln</span><b>R$ 40,00</b></div>
+            <div class="m-item"><span>Richard</span><b>R$ 35,00</b></div>
+          </div>
+        </div>
+        <div class="ph-tab"><div class="on"><i>✂</i>Cortes</div><div><i>💸</i>Saídas</div><div><i>💰</i>Receber</div><div><i>📅</i>Agenda</div><div><i>📈</i>Gráficos</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="scap">Saídas</div>
+      <div class="phone">
+        <div class="ph-status"><span>9:41</span><span>●●● ⌁ ▮</span></div>
+        <div class="ph-header"><img src="../logo-white.png" alt=""><div class="h1">vBarber</div><div class="sub">Registro de cortes e saídas</div></div>
+        <div class="ph-body">
+          <div class="m-form">
+            <div class="t">Nova saída</div>
+            <div class="row"><input value="17/09/2026" readonly><input value="85,00" readonly></div>
+            <div class="row"><input value="Shampoo" readonly></div>
+            <div class="btn">+ Adicionar saída</div>
+          </div>
+          <div class="m-title">Saídas · Setembro <span>‹ ›</span></div>
+          <div class="m-day">
+            <div class="dh">Hoje<span>R$ 85,00</span></div>
+            <div class="m-item neg"><span>Shampoo <span class="cat">· Produtos</span></span><b>- R$ 85,00</b></div>
+          </div>
+          <div class="m-day">
+            <div class="dh">12/09<span>R$ 140,00</span></div>
+            <div class="m-item neg"><span>Aluguel <span class="cat">· Aluguel</span></span><b>- R$ 120,00</b></div>
+            <div class="m-item neg"><span>Uber <span class="cat">· Transporte</span></span><b>- R$ 20,00</b></div>
+          </div>
+          <div class="m-day">
+            <div class="dh">05/09<span>R$ 60,00</span></div>
+            <div class="m-item neg"><span>Luz <span class="cat">· Contas</span></span><b>- R$ 60,00</b></div>
+          </div>
+        </div>
+        <div class="ph-tab"><div><i>✂</i>Cortes</div><div class="on"><i>💸</i>Saídas</div><div><i>💰</i>Receber</div><div><i>📅</i>Agenda</div><div><i>📈</i>Gráficos</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="scap">Recebíveis</div>
+      <div class="phone">
+        <div class="ph-status"><span>9:41</span><span>●●● ⌁ ▮</span></div>
+        <div class="ph-header"><img src="../logo-white.png" alt=""><div class="h1">vBarber</div><div class="sub">Registro de cortes e saídas</div></div>
+        <div class="ph-body">
+          <div class="m-sum">
+            <div><i>Pendente</i><b>R$ 150</b></div>
+            <div class="n"><i>Pago no mês</i><b>R$ 420</b></div>
+            <div class="e"><i>A receber</i><b>3</b></div>
+          </div>
+          <div class="m-form">
+            <div class="t">Nova cobrança</div>
+            <div class="row"><input value="José da Silva" readonly><input value="70,00" readonly></div>
+            <div class="btn">+ Adicionar</div>
+          </div>
+          <div class="m-title">Pendentes</div>
+          <div class="m-sec">
+            <div class="m-rec"><div class="who"><b>José da Silva</b><i>14/09/2026</i></div><div class="val"><b>R$ 70,00</b></div><span class="pay">Pagar</span></div>
+            <div class="m-rec"><div class="who"><b>Carlos Souza</b><i>12/09/2026</i></div><div class="val"><b>R$ 50,00</b></div><span class="pay">Pagar</span></div>
+            <div class="m-rec"><div class="who"><b>Marcos</b><i>10/09/2026</i></div><div class="val"><b>R$ 30,00</b></div><span class="pay">Pagar</span></div>
+          </div>
+          <div class="m-title">Pagos no mês</div>
+          <div class="m-sec">
+            <div class="m-rec"><div class="who"><b>Pedro</b><i>08/09/2026</i></div><div class="val"><b>R$ 40,00</b><i>✓ pago</i></div></div>
+            <div class="m-rec"><div class="who"><b>Lucas</b><i>03/09/2026</i></div><div class="val"><b>R$ 35,00</b><i>✓ pago</i></div></div>
+          </div>
+        </div>
+        <div class="ph-tab"><div><i>✂</i>Cortes</div><div><i>💸</i>Saídas</div><div class="on"><i>💰</i>Receber</div><div><i>📅</i>Agenda</div><div><i>📈</i>Gráficos</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="pfoot"><span>Telas do sistema</span><span>vBarber</span></div>
+</section>
+
+<!-- ============ P5 — TELAS: AGENDA / GRÁFICOS / CONFIG ============ -->
+<section class="page">
+  <div class="phead"><span class="brand">Gestão para Barbearias</span><span class="num">05</span></div>
+  <h2 class="sec">Telas · Agenda, Gráficos e Configurações<span class="bar"></span></h2>
+  <div class="screens">
+    <div>
+      <div class="scap">Agenda</div>
+      <div class="phone">
+        <div class="ph-status"><span>9:41</span><span>●●● ⌁ ▮</span></div>
+        <div class="ph-header"><img src="../logo-white.png" alt=""><div class="h1">vBarber</div><div class="sub">Registro de cortes e saídas</div></div>
+        <div class="ph-body">
+          <div class="m-form">
+            <div class="t">Novo agendamento</div>
+            <div class="row"><input value="18/09/2026" readonly><input value="09:00" readonly></div>
+            <div class="row"><input value="Antônio Pereira" readonly></div>
+            <div class="row"><input value="Barba + corte" readonly></div>
+            <div class="btn">+ Agendar</div>
+          </div>
+          <div class="m-title">Agendamentos</div>
+          <div class="m-sec">
+            <div class="sh">Hoje<span>2</span></div>
+            <div class="m-ag"><span class="hr">09:00</span><div class="cl"><b>Antônio Pereira</b><i>Barba + corte</i></div><span class="ck">✓</span></div>
+            <div class="m-ag"><span class="hr">14:30</span><div class="cl"><b>Roberto</b><i>Corte</i></div><span class="ck">✓</span></div>
+          </div>
+          <div class="m-sec">
+            <div class="sh">Amanhã<span>1</span></div>
+            <div class="m-ag"><span class="hr">10:00</span><div class="cl"><b>Felipe</b><i>Corte degradê</i></div><span class="ck">✓</span></div>
+          </div>
+        </div>
+        <div class="ph-tab"><div><i>✂</i>Cortes</div><div><i>💸</i>Saídas</div><div><i>💰</i>Receber</div><div class="on"><i>📅</i>Agenda</div><div><i>📈</i>Gráficos</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="scap">Gráficos</div>
+      <div class="phone">
+        <div class="ph-status"><span>9:41</span><span>●●● ⌁ ▮</span></div>
+        <div class="ph-header"><img src="../logo-white.png" alt=""><div class="h1">vBarber</div><div class="sub">Registro de cortes e saídas</div></div>
+        <div class="ph-body">
+          <div class="m-nav"><span>‹</span><b>Setembro</b><em>Mês</em><b>›</b></div>
+          <div class="m-sum">
+            <div><i>Entradas</i><b>R$ 4.810</b></div>
+            <div class="e"><i>Saídas</i><b>R$ 1.120</b></div>
+            <div class="n"><i>Saldo</i><b>R$ 3.690</b></div>
+          </div>
+          <div class="m-bars">
+            <div><i style="height:45%"></i><u style="height:18%"></u><em>S</em></div>
+            <div><i style="height:70%"></i><u style="height:25%"></u><em>S</em></div>
+            <div><i style="height:55%"></i><u style="height:12%"></u><em>S</em></div>
+            <div><i style="height:85%"></i><u style="height:30%"></u><em>S</em></div>
+            <div><i style="height:62%"></i><u style="height:20%"></u><em>S</em></div>
+          </div>
+          <div class="m-kpi">
+            <div><i>Ticket médio</i><b>R$ 37,00</b></div>
+            <div><i>Faturamento/dia</i><b>R$ 241</b></div>
+            <div><i>Cortes no mês</i><b>130</b></div>
+            <div><i>Meta: R$ 5.000</i><b>96%</b></div>
+          </div>
+          <div class="m-title" style="margin-top:2.4mm">Comparativo<span>2 meses</span></div>
+          <div class="m-sec">
+            <div class="m-rec"><div class="who"><b>Entradas</b><i>ago → set</i></div><div class="val"><b>+ R$ 420</b></div></div>
+            <div class="m-rec"><div class="who"><b>Saídas</b><i>ago → set</i></div><div class="val"><b>- R$ 90</b></div></div>
+            <div class="m-rec"><div class="who"><b>Saldo</b><i>ago → set</i></div><div class="val"><b>+ R$ 510</b></div></div>
+          </div>
+        </div>
+        <div class="ph-tab"><div><i>✂</i>Cortes</div><div><i>💸</i>Saídas</div><div><i>💰</i>Receber</div><div><i>📅</i>Agenda</div><div class="on"><i>📈</i>Gráficos</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="scap">Configurações</div>
+      <div class="phone">
+        <div class="ph-status"><span>9:41</span><span>●●● ⌁ ▮</span></div>
+        <div class="ph-header"><img src="../logo-white.png" alt=""><div class="h1">vBarber</div><div class="sub">Registro de cortes e saídas</div></div>
+        <div class="ph-body">
+          <div class="m-sec">
+            <div class="sh">Perfil</div>
+            <div class="sb">barbearia@email.com<br><span style="color:#8a8a8a">Alterar senha com reautenticação</span></div>
+          </div>
+          <div class="m-sec">
+            <div class="sh">Dias de trabalho</div>
+            <div class="sb"><div class="m-days"><span class="on">Seg</span><span class="on">Ter</span><span class="on">Qua</span><span class="on">Qui</span><span class="on">Sex</span><span class="on">Sáb</span><span>Dom</span></div></div>
+          </div>
+          <div class="m-sec">
+            <div class="sh">Personalização</div>
+            <div class="sb">
+              <div class="row" style="display:flex;gap:1.4mm;margin-bottom:1.4mm"><input style="flex:1;background:#0f0f0f;border:.3mm solid #2c2c2c;color:#a8a5a0;font-size:2.2mm;padding:1.5mm" value="Minha Barbearia" readonly><input style="width:14mm;height:5.6mm;border:none;background:#b8894f" readonly></div>
+              <div class="row" style="display:flex;gap:1.4mm"><input style="flex:1;background:#0f0f0f;border:.3mm solid #2c2c2c;color:#a8a5a0;font-size:2.2mm;padding:1.5mm" value="O melhor corte da cidade" readonly><input style="width:14mm;height:5.6mm;border:none;background:#d9ae76" readonly></div>
+              <div class="m-colors"><i style="background:#b8894f"></i><i style="background:#d9ae76"></i><i style="background:#0a0a0a"></i><i style="background:#161616"></i></div>
+              <div style="margin-top:2mm"><span style="background:#b8894f;color:#0a0a0a;font-family:'Oswald',sans-serif;font-size:2.2mm;padding:1.4mm 3mm;text-transform:uppercase">Salvar aparência</span></div>
+            </div>
+          </div>
+          <div class="m-sec"><div class="sh">Clientes<span>128</span></div></div>
+          <div class="m-sec"><div class="sh" style="color:#e0655a">Sair da conta</div></div>
+        </div>
+        <div class="ph-tab"><div><i>✂</i>Cortes</div><div><i>💸</i>Saídas</div><div><i>💰</i>Receber</div><div><i>📅</i>Agenda</div><div><i>⚙</i>Config</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="pfoot"><span>Telas do sistema</span><span>vBarber</span></div>
+</section>
+
+<!-- ============ P6 — DIFERENCIAIS ============ -->
+<section class="page">
+  <div class="phead"><span class="brand">Gestão para Barbearias</span><span class="num">06</span></div>
+  <h2 class="sec">Por que funciona na prática<span class="bar"></span></h2>
+  <div class="cols2">
+    <ul class="check">
+      <li><b class="brass">Instala como aplicativo (PWA)</b> — ícone na tela inicial, sem Google Play ou App Store.</li>
+      <li><b class="brass">Dados na nuvem Google</b> — cada usuário vê apenas os próprios dados, com login e senha.</li>
+      <li><b class="brass">Funciona com internet ruim</b> — cache local e leituras com tempo limite, sem travar.</li>
+      <li><b class="brass">Atualização automática</b> — novidades chegam sozinhas, sem instalar versão nova.</li>
+    </ul>
+    <ul class="check">
+      <li><b class="brass">Segurança na troca de senha</b> — exige a senha atual antes de alterar.</li>
+      <li><b class="brass">Marca própria</b> — nome, logo e cores de cada barbearia em toda a interface.</li>
+      <li><b class="brass">Feito para o celular</b> — tudo em toques, com teclado numérico e máscaras de valor e telefone.</li>
+      <li><b class="brass">Exportação de dados</b> — backup em arquivo para guardar ou migrar.</li>
+    </ul>
+  </div>
+  <h2 class="sec" style="margin-top:8mm">Como funciona a implantação<span class="bar"></span></h2>
+  <div class="flow">
+    <div class="st"><em>01</em><b>Cadastro</b><span>Eu crio a conta exclusiva da sua barbearia e você define a senha.</span></div>
+    <div class="st"><em>02</em><b>Personalização</b><span>Logo, nome, cores e dias de trabalho aplicados em minutos.</span></div>
+    <div class="st"><em>03</em><b>Capacitação</b><span>Tour de 15 minutos pelas telas — lançar o primeiro corte é instantâneo.</span></div>
+    <div class="st"><em>04</em><b>Acompanhamento</b><span>Suporte por mensagem e melhorias contínuas baseadas no seu uso.</span></div>
+  </div>
+  <div class="pfoot"><span>Diferenciais e implantação</span><span>vBarber</span></div>
+</section>
+
+<!-- ============ P7 — CHAMADA FINAL ============ -->
+<section class="page" style="justify-content:center">
+  <div class="phead" style="position:absolute;top:18mm;left:18mm;right:18mm"><span class="brand">Gestão para Barbearias</span><span class="num">07</span></div>
+  <div style="margin-top:14mm">
+    <h2 class="sec">Leve a gestão da sua barbearia para o próximo nível<span class="bar"></span></h2>
+    <p class="lead" style="margin-bottom:6mm">Pare de perder tempo com caderno e de adivinhar o lucro do mês. Com poucos toques por dia você sabe exatamente quanto entrou, quanto saiu, quem deve e o que vem por aí.</p>
+    <div class="cols3">
+      <div class="card"><h4>Completo</h4><p>Cortes, saídas, recebíveis, agenda, clientes e relatórios em um só aplicativo.</p></div>
+      <div class="card"><h4>Simples</h4><p>Feito para usar no correr do dia, sem planilha e sem treinamento demorado.</p></div>
+      <div class="card"><h4>Da sua marca</h4><p>Sua logo, suas cores, seu nome — do ícone à tela de entrada.</p></div>
+    </div>
+    <div class="cta">
+      <h3>Solicite uma demonstração</h3>
+      <p>Agende uma visita ou uma call guiada e veja o sistema rodando com os dados da sua barbearia.</p>
+      <div class="contato">Acesso ServCom<br>(22) 99875-0345 · acessoservcom@gmail.com</div>
+    </div>
+  </div>
+  <div class="pfoot"><span>vBarber · Sistema de Gestão</span><span>Obrigado!</span></div>
+</section>
+
+</body>
+</html>
