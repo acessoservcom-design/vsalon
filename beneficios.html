@@ -3,40 +3,43 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clube de Assinantes · vBarber</title>
+  <title>Clube de Assinantes · vSalon</title>
   <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root{--charcoal:#1a1a1a;--charcoal-2:#242424;--charcoal-3:#2b2b2b;--line:#3e3e3e;--cream:#e8e6e1;--brass:#c9a227;--brass-dark:#8f7118;--brass-light:#f0c962;--pos:#3ecf8e;--bg:#121212;}
+    :root{--charcoal:#f4edf1;--charcoal-2:#ffffff;--charcoal-3:#f4edf1;--line:#e9e1e5;--cream:#241d22;--brass:#e0187f;--brass-dark:#8c0b4e;--brass-light:#b31065;--pos:#0e8554;--bg:#faf7f8;}
     *{box-sizing:border-box;margin:0;padding:0;}
     html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,sans-serif;background:var(--bg);color:var(--cream);line-height:1.5;}
     .hidden{display:none!important;}
     a{text-decoration:none;color:inherit;}
     header{background:var(--charcoal);padding:16px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;}
-    #bkLogo{width:40px;height:40px;border-radius:8px;background:#333;}
-    #bkTitle{font-family:'Oswald','Arial',sans-serif;font-size:1.3rem;}
+    #bkLogo{width:40px;height:40px;border-radius:8px;background:#f4edf1;}
+    #bkTitle{font-family:'Jost',sans-serif;font-size:1.3rem;}
     main{max-width:720px;margin:0 auto;padding:24px 20px;padding-bottom:80px;}
     .hero{text-align:center;padding:28px 0;}
-    .hero h1{font-family:'Oswald','Arial',sans-serif;font-size:1.9rem;color:var(--brass-light);margin-bottom:8px;}
-    .hero p{color:#a8a5a0;font-size:1.05rem;}
+    .hero h1{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:2rem;color:var(--brass-light);margin-bottom:8px;}
+    .hero p{color:#6f656b;font-size:1.05rem;}
     .benefits{background:var(--charcoal-2);border:1px solid var(--line);border-radius:12px;padding:18px;margin:20px 0;}
-    .benefits h2{font-family:'Oswald',sans-serif;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--brass-light);margin-bottom:12px;}
+    .benefits h2{font-family:'Jost',sans-serif;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--brass-light);margin-bottom:12px;}
     .benefit-list{list-style:none;}
     .benefit-list li{padding:10px 0;border-bottom:1px solid var(--line);display:flex;align-items:flex-start;gap:10px;font-size:.95rem;}
     .benefit-list li:last-child{border-bottom:none;}
     .benefit-list li .star{color:var(--brass);font-size:1.15rem;flex-shrink:0;}
     .benefit-list li b{color:var(--cream);}
     .plans{margin-top:24px;}
-    .plans h2{font-family:'Oswald',sans-serif;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--brass-light);margin-bottom:12px;}
+    .plans h2{font-family:'Jost',sans-serif;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--brass-light);margin-bottom:12px;}
     .pros{display:flex;flex-direction:column;gap:10px;}
     .pro{background:linear-gradient(135deg,var(--charcoal),var(--charcoal-2));border:1px solid var(--line);border-radius:12px;padding:14px 16px;}
-    .pro .st{font-family:'Oswald',sans-serif;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;color:var(--brass-light);margin-bottom:6px;}
+    .pro .st{font-family:'Jost',sans-serif;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;color:var(--brass-light);margin-bottom:6px;}
     .pro .pr{font-size:1.4rem;font-weight:700;color:var(--cream);margin-bottom:8px;}
-    .pro .pr i{font-size:.8rem;color:#a8a5a0;font-style:normal;font-weight:normal;margin-left:6px;}
-    .pro ul{list-style:none;margin:10px 0;font-size:.9rem;color:#c9c6c0;}
+    .pro .pr i{font-size:.8rem;color:#6f656b;font-style:normal;font-weight:normal;margin-left:6px;}
+    .pro ul{list-style:none;margin:10px 0;font-size:.9rem;color:#5f565b;}
     .pro ul li{padding:3px 0;}
-    .pro .btn-pro{background:linear-gradient(135deg,var(--brass),var(--brass-dark));border:none;color:#2b1d00;font-weight:700;padding:10px 16px;border-radius:8px;cursor:pointer;width:100%;font-size:.95rem;}
-    .muted{color:#a8a5a0;font-size:.9rem;text-align:center;padding:20px;}
-    .g-btn{background:var(--cream);color:#1a1a1a;border:none;padding:12px 20px;border-radius:8px;font-weight:700;width:100%;cursor:pointer;font-size:1rem;margin-top:8px;}
+    .pro .btn-pro{background:linear-gradient(135deg,var(--brass),var(--brass-dark));border:none;color:#ffffff;font-weight:700;padding:10px 16px;border-radius:8px;cursor:pointer;width:100%;font-size:.95rem;}
+    .muted{color:#6f656b;font-size:.9rem;text-align:center;padding:20px;}
+    .g-btn{background:var(--brass);color:#ffffff;border:none;padding:12px 20px;border-radius:8px;font-weight:700;width:100%;cursor:pointer;font-size:1rem;margin-top:8px;}
     footer{text-align:center;color:#6b6863;font-size:.8rem;padding:16px;}
   </style>
 </head>
@@ -52,7 +55,7 @@
     <div id="content" class="hidden">
       <div class="hero">
         <h1 id="heroTitle">Corte ilimitado, preço de amigo</h1>
-        <p id="heroDesc">Pare de pagar corte por corte. Assine o clube da barbearia e tenha direito a cortes mensais com desconto e prioridade.</p>
+        <p id="heroDesc">Pare de pagar corte por corte. Assine o clube do salão e tenha direito a cortes mensais com desconto e prioridade.</p>
       </div>
 
       <div class="benefits">
@@ -69,7 +72,7 @@
       <div class="plans">
         <h2 id="plansTitle">Planos disponíveis</h2>
         <div id="plansList" class="pros"></div>
-        <p class="muted hidden" id="planEmpty">Os planos desta barbearia aparecerão aqui.</p>
+        <p class="muted hidden" id="planEmpty">Os planos deste salão aparecerão aqui.</p>
       </div>
 
       <div id="authBox" class="hidden">
@@ -79,7 +82,7 @@
     </div>
   </main>
 
-  <footer>Feito por vBarber · Clube de Assinantes</footer>
+  <footer>Feito por vSalon · Clube de Assinantes</footer>
 
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -87,12 +90,12 @@
   <script>
     (function(){
       const firebaseConfig = {
-        apiKey: "AIzaSyC3wdNbFtVKbA3EWyQN_NUL1xdwna_BWsk",
-        authDomain: "vbarber-app.firebaseapp.com",
-        projectId: "vbarber-app",
-        storageBucket: "vbarber-app.firebasestorage.app",
-        messagingSenderId: "405900517551",
-        appId: "1:405900517551:web:440c8901794cb14a1db45a"
+        apiKey: "AIzaSyC5JO65LEs5Fl9TePF4Soh996pc9f6MtuU",
+        authDomain: "app-vsalon.firebaseapp.com",
+        projectId: "app-vsalon",
+        storageBucket: "app-vsalon.firebasestorage.app",
+        messagingSenderId: "505129693861",
+        appId: "1:505129693861:web:6c1a9af739bb8f8bc6134c"
       };
 
       // Public plans list key
@@ -215,7 +218,7 @@
           $('authBox').classList.add('hidden');
           const note = document.createElement('p');
           note.className = 'muted';
-          note.textContent = 'Estes são os benefícios do Clube de Assinantes. Dono da barbearia: ative o módulo no painel, em Config ▸ Assinaturas.';
+          note.textContent = 'Estes são os benefícios do Clube de Assinantes. Dono do salão: ative o módulo no painel, em Config ▸ Assinaturas.';
           $('content').appendChild(note);
           return;
         }
@@ -225,7 +228,7 @@
         $('content').classList.remove('hidden');
       })();
 
-      // Botões de assinar abrem o fluxo de agendamento da barbearia com plano selecionado
+      // Botões de assinar abrem o fluxo de agendamento do salão com plano selecionado
       document.addEventListener('click', e => {
         if(e.target.classList.contains('btn-pro') && e.target.dataset.plan && user){
           const planId = e.target.dataset.plan;

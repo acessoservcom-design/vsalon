@@ -1,12 +1,12 @@
 {
-  "name": "vBarber",
-  "short_name": "vBarber",
-  "description": "Registro de cortes e saídas da barbearia",
+  "name": "vSalon",
+  "short_name": "vSalon",
+  "description": "Agendamentos, clube de assinantes e gestão financeira do salão",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#0a0a0a",
-  "theme_color": "#0a0a0a",
+  "background_color": "#faf7f8",
+  "theme_color": "#faf7f8",
   "orientation": "portrait",
   "icons": [
     { "src": "favicon.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },

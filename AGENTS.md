@@ -2,12 +2,12 @@
 
 ## Deploy
 - Sempre fazer o deploy após qualquer alteração em arquivos do projeto:
-  `firebase deploy --only hosting --project vbarber-app`
-- Alterações em `functions/` ou `firestore.rules`: incluir no mesmo comando (ex.: `firebase deploy --only hosting,functions,firestore:rules --project vbarber-app`).
+  `firebase deploy --only hosting --project app-vsalon`
+- Alterações em `functions/` ou `firestore.rules`: incluir no mesmo comando (ex.: `firebase deploy --only hosting,functions,firestore:rules --project app-vsalon`).
 
 ## Comandos úteis
 - Validar JS balanceado do index.html/agendar.html: `node C:\Users\Lincoln\AppData\Local\Temp\check3.js` (recriar script se não existir).
-- Testar login/erros de console no site publicado: `node C:\Users\Lincoln\AppData\Local\Temp\opencode\test-login.js https://vbarber-app.web.app/` (puppeteer-core + Chrome).
+- Testar login/erros de console no site publicado: `node C:\Users\Lincoln\AppData\Local\Temp\opencode\test-login.js https://vsalon.web.app/` (puppeteer-core + Chrome).
 
 ## APK Android (painel do barbeiro)
 - Capacitor 8, app `com.vbarber.painel`, carrega o site ao vivo via `server.url` (sempre atualiza sem novo build).
@@ -22,5 +22,5 @@
 
 
 ## Contexto
-- Projeto Firebase: `vbarber-app` (Hosting: https://vbarber-app.web.app).
+- Projeto Firebase: `app-vsalon` (site do Hosting: `vsalon` → https://vsalon.web.app; site padrão do projeto: https://app-vsalon.web.app).
 - Perfis: operador/superadmin (`OPERATOR_UID` em `index.html`), barbeiro (`barbers/{email}`, campo `allowSubscriptions` controla o módulo de assinaturas), cliente (`agendar.html`).

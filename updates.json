@@ -13,7 +13,7 @@
       "date": "02/10/2026",
       "tag": "Novo",
       "title": "Relatórios no Financeiro",
-      "text": "Na seção Gráficos você vê Hoje, Resumo do Período e Agenda lado a lado, gráficos de serviços mais vendidos, produção de cada barbeiro e horários de pico — tudo comparado com o período anterior e com botão para baixar em CSV."
+      "text": "Na seção Gráficos você vê Hoje, Resumo do Período e Agenda lado a lado, gráficos de serviços mais vendidos, produção de cada profissional e horários de pico — tudo comparado com o período anterior e com botão para baixar em CSV."
     },
     {
       "id": "v17-agenda",
@@ -27,14 +27,14 @@
       "date": "01/10/2026",
       "tag": "Novo",
       "title": "Painel para computador",
-      "text": "Em telas grandes o menu vira uma barra lateral fixa e o conteúdo passa a usar duas colunas. O logo da barbearia agora aparece também na barra superior."
+      "text": "Em telas grandes o menu vira uma barra lateral fixa e o conteúdo passa a usar duas colunas. O logo do salão agora aparece também na barra superior."
     },
     {
       "id": "v15-comissoes",
       "date": "01/10/2026",
       "tag": "Novo",
-      "title": "Comissões por barbeiro",
-      "text": "Cadastre a porcentagem de cada barbeiro em Config → Equipe. Todo lançamento atribuído a ele é dividido em comissão e o resto fica com a barbearia."
+      "title": "Comissões por profissional",
+      "text": "Cadastre a porcentagem de cada profissional em Config → Equipe. Todo lançamento atribuído a ele é dividido em comissão e o resto fica com o salão."
     },
     {
       "id": "v15-financeiro",

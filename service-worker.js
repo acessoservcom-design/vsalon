@@ -1,5 +1,5 @@
-const CACHE_NAME = 'vbarber-v21';
-const ASSETS = ['./', './index.html', './agendar.html', './manifest.json', './favicon.png', './icon-192.png', './icon-512.png', './logo-white.png', './logo-app.png', './logo-app-white.png'];
+const CACHE_NAME = 'vsalon-v3';
+const ASSETS = ['./', './index.html', './agendar.html', './manifest.json', './favicon.png', './icon-192.png', './icon-512.png', './logo-white.png', './logo-vsalon.png', './logo-app.png', './logo-app-white.png'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(

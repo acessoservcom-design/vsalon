@@ -6,6 +6,7 @@
     "source": "functions"
   },
   "hosting": {
+    "site": "vsalon",
     "public": ".",
     "ignore": [
       "firebase.json",
@@ -14,6 +15,9 @@
       ".git/**",
       ".gitignore",
       "README.md",
+      "AGENTS.md",
+      "firestore.rules",
+      "dist/**",
       "materiais/**",
       "functions/**",
       "android/**",

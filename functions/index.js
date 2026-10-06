@@ -1,6 +1,6 @@
 const { onSchedule } = require('firebase-functions/v2/scheduler');
 const { onDocumentCreated } = require('firebase-functions/v2/firestore');
-const { onRequest } = require('firebase-functions/v2/https');
+const { onRequest, onCall, HttpsError } = require('firebase-functions/v2/https');
 const admin = require('firebase-admin');
 const webpush = require('web-push');
 
@@ -178,4 +178,61 @@ exports.processSubReminders = onSchedule('0 8 * * *', async (req, res) => {
   }
   console.log('lembretes escritos:', remindersWritten);
   res.json({ ok: true, today: todayStr, remindersWritten });
+});
+
+const OPERATOR_UID = 'pED3xfZrvdQwngJXUOeXqIl4G462';
+
+exports.manageBarberAuth = onCall({ cors: true }, async (request) => {
+  if (!request.auth || request.auth.uid !== OPERATOR_UID) {
+    throw new HttpsError('permission-denied', 'Sem permissão para gerenciar contas.');
+  }
+  const data = request.data || {};
+  const email = String(data.email || '').toLowerCase().trim();
+  const password = String(data.password || '');
+  const action = String(data.action || 'create');
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+    throw new HttpsError('invalid-argument', 'E-mail inválido.');
+  }
+  if (password.length < 6) {
+    throw new HttpsError('invalid-argument', 'A senha precisa de ao menos 6 caracteres.');
+  }
+  if (action !== 'create' && action !== 'setPassword') {
+    throw new HttpsError('invalid-argument', 'Ação inválida.');
+  }
+
+  try {
+    if (action === 'create') {
+      try {
+        await admin.auth().createUser({ email, password });
+        return { ok: true, existed: false };
+      } catch (e) {
+        if (e && e.code === 'auth/email-already-exists') {
+          const u = await admin.auth().getUserByEmail(email);
+          await admin.auth().updateUser(u.uid, { password });
+          return { ok: true, existed: true };
+        }
+        throw e;
+      }
+    }
+    let u;
+    try {
+      u = await admin.auth().getUserByEmail(email);
+    } catch (e) {
+      if (e && e.code === 'auth/user-not-found') {
+        throw new HttpsError('not-found', 'Conta de login não encontrada para este e-mail.');
+      }
+      throw e;
+    }
+    await admin.auth().updateUser(u.uid, { password });
+    return { ok: true, existed: true };
+  } catch (e) {
+    if (e instanceof HttpsError) throw e;
+    const code = e && e.code;
+    if (code === 'auth/weak-password') {
+      throw new HttpsError('invalid-argument', 'Senha muito fraca (mín. 6 caracteres).');
+    }
+    console.warn('manageBarberAuth:', code || (e && e.message));
+    throw new HttpsError('internal', 'Não foi possível configurar o acesso.');
+  }
 });

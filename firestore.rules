@@ -79,7 +79,7 @@ service cloud.firestore {
 
     // Link público curto: código de 6 caracteres -> UID do barbeiro (só get, sem list)
     function isOperator() {
-    return signedIn() && request.auth.uid == 'DxNbft8KjoVIxDbZaaEFhtCY99t2';
+    return signedIn() && request.auth.uid == 'pED3xfZrvdQwngJXUOeXqIl4G462';
   }
 
   match /barbers/{email} {

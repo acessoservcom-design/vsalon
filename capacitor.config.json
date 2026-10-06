@@ -3,7 +3,7 @@
   "appName": "vBarber",
   "webDir": "apk-web",
   "server": {
-    "url": "https://vbarber-app.web.app/",
+    "url": "https://vsalon.web.app/",
     "cleartext": false
   },
   "android": {
