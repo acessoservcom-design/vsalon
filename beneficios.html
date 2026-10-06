@@ -5,6 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Clube de Assinantes · vSalon</title>
   <link rel="icon" type="image/png" href="favicon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="vSalon">
+  <meta property="og:title" content="Clube de Assinantes · vSalon">
+  <meta property="og:description" content="Clube de serviços com cartão de assinante — planos recorrentes do seu salão.">
+  <meta property="og:url" content="https://vsalon.web.app/beneficios">
+  <meta property="og:image" content="https://vsalon.web.app/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Logo vSalon">
+  <meta property="og:locale" content="pt_BR">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Clube de Assinantes · vSalon">
+  <meta name="twitter:image" content="https://vsalon.web.app/og-image.png">
+  <meta name="twitter:image:alt" content="Logo vSalon">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
@@ -54,17 +68,17 @@
 
     <div id="content" class="hidden">
       <div class="hero">
-        <h1 id="heroTitle">Corte ilimitado, preço de amigo</h1>
-        <p id="heroDesc">Pare de pagar corte por corte. Assine o clube do salão e tenha direito a cortes mensais com desconto e prioridade.</p>
+        <h1 id="heroTitle">Serviço ilimitado, preço de amigo</h1>
+        <p id="heroDesc">Pare de pagar serviço por serviço. Assine o clube do salão e tenha direito a serviços mensais com desconto e prioridade.</p>
       </div>
 
       <div class="benefits">
         <h2>O que você ganha</h2>
         <ul class="benefit-list">
-          <li><span class="star">✨</span> <b>Desconto especial</b> — pague menos por corte mensal</li>
+          <li><span class="star">✨</span> <b>Desconto especial</b> — pague menos por serviço mensal</li>
           <li><span class="star">✨</span> <b>Agendamento prioritário</b> — garanta seu horário sem espera</li>
           <li><span class="star">✨</span> <b>Flexibilidade total</b> — cancela quando quiser</li>
-          <li><span class="star">✨</span> <b>Cortes que se acumulam</b> — planos com carryOver estendem seus créditos</li>
+          <li><span class="star">✨</span> <b>Serviços que se acumulam</b> — planos com carryOver estendem seus créditos</li>
           <li><span class="star">✨</span> <b>Renovação automática</b> — nunca fique de fora do seu estilo</li>
         </ul>
       </div>
@@ -153,10 +167,10 @@
       }
 
       function cycleLabel(cycle, cuts){
-        if(cycle.toLowerCase() === 'month') return ' / ' + cuts + ' cortes/mês';
-        if(cycle.toLowerCase() === 'week') return ' / ' + cuts + ' cortes/semana';
-        if(cycle.toLowerCase() === '30days') return ' / ' + cuts + ' cortes/30 dias';
-        return ' / ' + cuts + ' cortes';
+        if(cycle.toLowerCase() === 'month') return ' / ' + cuts + ' serviços/mês';
+        if(cycle.toLowerCase() === 'week') return ' / ' + cuts + ' serviços/semana';
+        if(cycle.toLowerCase() === '30days') return ' / ' + cuts + ' serviços/30 dias';
+        return ' / ' + cuts + ' serviços';
       }
 
       function renderPlans(){
@@ -169,7 +183,7 @@
         }
         empty?.classList.add('hidden');
         list.innerHTML = plans.map(p => {
-          const desc = p.cuts + ' cortes por ' + (p.cycle === 'month' ? 'mês' : (p.cycle === 'week' ? 'semana' : (p.cycle === '30days' ? '30 dias' : 'ciclo')));
+          const desc = p.cuts + ' serviços por ' + (p.cycle === 'month' ? 'mês' : (p.cycle === 'week' ? 'semana' : (p.cycle === '30days' ? '30 dias' : 'ciclo')));
           const valid = p.validityDays + ' dias de validade por ciclo' + (p.carryOver ? ' — créditos se acumulam' : '');
           return '<div class="pro"><div class="st">' + p.name + '</div>' +
             '<div class="pr">R$ ' + p.price.toFixed(2).replace('.',',') + ' <i>' + cycleLabel(p.cycle, p.cuts) + '</i></div>' +

@@ -9,13 +9,16 @@
 <meta property="og:site_name" content="vSalon">
 <meta property="og:title" content="Agendamento online">
 <meta property="og:description" content="Escolha o dia e o horário e confirme seu atendimento.">
-<meta property="og:image" content="https://vsalon.web.app/favicon.png">
-<meta property="og:image:width" content="512">
-<meta property="og:image:height" content="512">
+<meta property="og:url" content="https://vsalon.web.app/agendar">
+<meta property="og:image" content="https://vsalon.web.app/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Logo vSalon">
 <meta property="og:locale" content="pt_BR">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Agendamento online">
-<meta name="twitter:image" content="https://vsalon.web.app/icon-512.png">
+<meta name="twitter:image" content="https://vsalon.web.app/og-image.png">
+<meta name="twitter:image:alt" content="Logo vSalon">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Cormorant+Garamond:ital,wght@1,500&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
@@ -227,7 +230,7 @@
 
   <div class="card hidden" id="subCard">
     <div class="st">🎫 Clube de Assinantes ✨</div>
-    <p class="desc">Pare de pagar corte por corte. Assine o plano do salão e tenha direito a cortes mensais.</p>
+    <p class="desc">Pare de pagar serviço por serviço. Assine o plano do salão e tenha direito a serviços mensais.</p>
     <div id="subCards" class="pros"></div>
     <div class="muted hidden" id="subPlanEmpty">O salão ainda não cadastrou planos. Agende um horário avulso abaixo.</div>
   </div>
@@ -746,7 +749,7 @@ function updateMembershipBadge(){
   const due = currentMembership.nextDueDate;
   const parts = [planName, due ? 'vence em ' + due.slice(8,10) + '/' + due.slice(5,7) : ''];
   if(currentMembership.cuts != null && currentMembership.cutsIncluded != null){
-    parts.push(currentMembership.cutsUsed + '/' + currentMembership.cutsIncluded + ' cortes usados');
+    parts.push(currentMembership.cutsUsed + '/' + currentMembership.cutsIncluded + ' serviços usados');
   }
   badge.textContent = '🎫 ' + parts.join(' · ');
   badge.classList.remove('hidden');
@@ -808,7 +811,7 @@ function setupPushListener(){
     const messaging = getMessaging();
     onMessage(messaging, (payload) => {
       const title = payload.notification?.title || 'Seu plano vence hoje 💳';
-      const body = payload.notification?.body || 'Envie o comprovante do PIX para liberar seu próximo corte.';
+      const body = payload.notification?.body || 'Envie o comprovante do PIX para liberar seu próximo serviço.';
       new Notification(title, { body, tag: 'sub-reminder', requireInteraction: true });
     });
   }catch(e){
@@ -838,7 +841,7 @@ async function loadSubscriptionMemberships(){
       selServices = currentMembership.services.slice();
       const svcRow = document.getElementById('svcRow');
       if(svcRow){ renderSvc(); }
-      setTimeout(() => toast('Seus cortes do plano já estão selecionados. Escolha o dia e horário.'), 300);
+      setTimeout(() => toast('Seus serviços do plano já estão selecionados. Escolha o dia e horário.'), 300);
     }
   }
 }
@@ -857,9 +860,9 @@ function renderSubscriptionPlans(){
   empty?.classList.add('hidden');
   const now = new Date();
   const cycleLabel = (cycle, cuts) => {
-    if(cycle.toLowerCase() === 'month') return `/ ${cuts} cortes por mês`;
-    if(cycle.toLowerCase() === 'week') return `/ ${cuts} cortes por semana`;
-    if(cycle.toLowerCase() === '30days') return `/ ${cuts} cortes a cada 30 dias`;
+    if(cycle.toLowerCase() === 'month') return `/ ${cuts} serviços por mês`;
+    if(cycle.toLowerCase() === 'week') return `/ ${cuts} serviços por semana`;
+    if(cycle.toLowerCase() === '30days') return `/ ${cuts} serviços a cada 30 dias`;
     return `/ ${cuts} usos`;
   };
   const validStr = (d, carry) => {
@@ -876,7 +879,7 @@ function renderSubscriptionPlans(){
     html += `<div class="pro" data-id="${p.id}"><div class="st">${desc}</div>`;
     html += `<div class="pr">${p.price > 0 ? 'R$ ' + p.price.toFixed(2).replace('.',',') : 'A combinar'} <i class="sub-pln-fee">${cycleLabel(p.cycle, p.cuts)}</i></div>`;
     html += `<ul class="sub-plan-ul"><li><b>Preço:</b> ${p.price > 0 ? 'R$ ' + p.price.toFixed(2).replace('.',',') : 'A combinar'} por ciclo</li>`;
-    html += `<li><b>Usos:</b> ${p.cuts} cortes por ciclo</li>`;
+    html += `<li><b>Usos:</b> ${p.cuts} serviços por ciclo</li>`;
     html += `<li><b>Validade:</b> ${validStr(p, p.carryOver)}</li>`;
     if(services.length){
       html += `<li><b>Serviços incluídos:</b> ${p.services.map(s => services.find(x => x.name === s)?.name || s).join(', ')}</li>`;
@@ -893,14 +896,14 @@ function openSubModal(planId){
   const activeM = subMemberships.find(m => m.status === 'active' && m.planId === plan.id);
   const nextDue = activeM ? activeM.nextDueDate : '—';
   const cycleLabel = (cycle, cuts) => {
-    if(cycle.toLowerCase() === 'month') return `${cuts} cortes/mês`;
-    if(cycle.toLowerCase() === 'week') return `${cuts} cortes/semana`;
-    if(cycle.toLowerCase() === '30days') return `${cuts} cortes/30 dias`;
+    if(cycle.toLowerCase() === 'month') return `${cuts} serviços/mês`;
+    if(cycle.toLowerCase() === 'week') return `${cuts} serviços/semana`;
+    if(cycle.toLowerCase() === '30days') return `${cuts} serviços/30 dias`;
     return `${cuts} usos`;
   };
   const html = `<div class="sub-plan-head"><b>R$ ${plan.price.toFixed(2).replace('.',',')}</b> <span class="plan-due">${cycleLabel(plan.cycle, plan.cuts)}</span></div>`;
   html += `<div class="st" style="margin-top:8px;">O que você ganha</div>`;
-  html += `<ul class="sub-plan-ul"><li>${plan.cuts} cortes por ciclo</li>`;
+  html += `<ul class="sub-plan-ul"><li>${plan.cuts} serviços por ciclo</li>`;
   html += `<li>Validade de ${(plan.validityDays || 30)} dias a cada ciclo</li>`;
   if(plan.carryOver) html += '<li>Usos não utilizados se acumulam no próximo ciclo</li>';
   if(services.length) html += `<li>Válido para ${plan.services.map(s => services.find(x => x.name === s)?.name || s).join(', ')}</li>`;

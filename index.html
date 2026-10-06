@@ -9,7 +9,8 @@
     var standalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches)
       || window.navigator.standalone === true
       || !!window.Capacitor;
-    if(!standalone) document.documentElement.style.setProperty('--tabbar-bottom','10px');
+    if(standalone) document.documentElement.style.setProperty('--tabbar-bottom','max(8px, calc(env(safe-area-inset-bottom,0px) - 18px))');
+    else document.documentElement.style.setProperty('--tabbar-bottom','10px');
   }catch(e){}
 })();
 </script>
@@ -22,6 +23,21 @@
 <meta name="apple-mobile-web-app-title" content="vSalon">
 <link rel="apple-touch-icon" href="favicon.png">
 <link rel="icon" type="image/png" href="favicon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="vSalon">
+<meta property="og:title" content="vSalon — agendamento online e gestão do salão">
+<meta property="og:description" content="Agende em segundos, clube de assinantes e controle financeiro do salão.">
+<meta property="og:url" content="https://vsalon.web.app/">
+<meta property="og:image" content="https://vsalon.web.app/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Logo vSalon">
+<meta property="og:locale" content="pt_BR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="vSalon — agendamento online e gestão do salão">
+<meta name="twitter:description" content="Agende em segundos, clube de assinantes e controle financeiro do salão.">
+<meta name="twitter:image" content="https://vsalon.web.app/og-image.png">
+<meta name="twitter:image:alt" content="Logo vSalon">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -113,6 +129,9 @@
   .chip{background:var(--charcoal-3);border:1px solid var(--line);color:var(--brass-light);padding:9px 13px;font-family:'Jost',sans-serif;font-size:.82rem;letter-spacing:.03em;cursor:pointer;}
   .chip-svc{border-color:rgba(224,24,127,.65);background:linear-gradient(180deg,rgba(224,24,127,.20),rgba(224,24,127,.07));color:#3d1a2c;text-transform:none;letter-spacing:.02em;font-weight:700;}
   .chip-svc:active{transform:translateY(1px);}
+  .chip.sel{background:var(--brass);border-color:var(--brass);color:var(--charcoal);}
+  .ag-svcs{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px;}
+  .ag-svcs .chip{padding:8px 11px;font-size:.78rem;}
   .cats.svc-cats .cat{text-transform:none;letter-spacing:.02em;font-size:.76rem;}
   .cats.svc-cats .cat.active{background:var(--brass);color:#ffffff;font-weight:700;}
   .val .svc-inline{color:var(--brass-light);font-size:.78rem;font-style:italic;}
@@ -859,11 +878,11 @@ align-items:center;
     <div class="quickbar">
       <div class="qb-title">Lançamento rápido — hoje</div>
       <div class="qb-row">
-        <input id="quickVal" type="text" inputmode="decimal" placeholder="Valor do corte (ex: 35,00)" aria-label="Valor do corte">
+        <input id="quickVal" type="text" inputmode="decimal" placeholder="Valor do serviço (ex: 35,00)" aria-label="Valor do serviço">
         <button id="quickAddBtn" class="add-btn">+ Hoje</button>
       </div>
       <div class="qb-row qb-barb hidden" id="quickBarbWrap" style="margin-top:6px;">
-        <select id="quickBarber" class="rf-sel" aria-label="Quem fez o corte"></select>
+        <select id="quickBarber" class="rf-sel" aria-label="Quem fez o serviço"></select>
       </div>
       <div class="qb-chips-wrap">
         <div class="qb-chips" id="quickChips"></div>
@@ -977,7 +996,7 @@ align-items:center;
           <input type="text" id="recValue" inputmode="decimal" placeholder="Valor (ex: 35,00)">
           <button type="button" class="rf-add" id="recAddBtn">+ Add</button>
         </div>
-        <input type="text" id="recNote" placeholder="Observação (opcional: corte + barba)" maxlength="120">
+        <input type="text" id="recNote" placeholder="Observação (opcional: serviço + barba)" maxlength="120">
       </div>
 
       <div class="rec-section-title">Pendentes</div>
@@ -1022,7 +1041,7 @@ align-items:center;
       <div class="stats-row">
         <div class="st"><b id="statTicket">—</b><span>Ticket médio</span></div>
         <div class="st"><b id="statDaily">—</b><span>Média/dia útil</span></div>
-        <div class="st"><b id="statCuts">0</b><span>Cortes</span></div>
+        <div class="st"><b id="statCuts">0</b><span>Serviços</span></div>
       </div>
       <div class="goal-box" id="goalBox">
         <div class="goal-head">
@@ -1112,14 +1131,6 @@ align-items:center;
       <div class="chart-wrap"><canvas id="catChart" height="200" role="img" aria-label="Gráfico"></canvas></div>
       <div class="legend" id="catLegend"></div>
     </div>
-    <div class="chart-card">
-      <h3>Backup dos dados</h3>
-      <div class="backup">
-        <button id="exportBtn">Exportar (.json)</button>
-        <button id="importBtnTrigger">Importar (.json)</button>
-        <input type="file" id="importInput" accept="application/json">
-      </div>
-    </div>
     </div>
     </div>
   </div>
@@ -1137,6 +1148,7 @@ align-items:center;
         </div>
       </div>
       <input type="text" id="agNote" placeholder="Serviço/observação (opcional)" maxlength="120">
+      <div class="ag-svcs hidden" id="agSvcChips" role="group" aria-label="Serviços cadastrados"></div>
       <select id="agBarber" class="rf-sel hidden"><option value="">Qualquer profissional</option></select>
       <button type="button" class="rf-add" id="agAddBtn">+ Agendar</button>
     </div>
@@ -1181,6 +1193,11 @@ align-items:center;
           <button type="button" class="cfg-item" data-sec="secPerfil" data-kw="perfil senha email conta acesso">
             <span class="ci blue">👤</span>
             <span class="tx"><b>Perfil</b><i>E-mail, senha e acesso</i></span>
+            <span class="ch">›</span>
+          </button>
+          <button type="button" class="cfg-item" data-sec="secBackup" data-kw="backup exportar importar restaurar dados json arquivo">
+            <span class="ci green">💾</span>
+            <span class="tx"><b>Backup dos dados</b><i>Exportar e importar (.json)</i></span>
             <span class="ch">›</span>
           </button>
         </div>
@@ -1235,7 +1252,7 @@ align-items:center;
         <div class="cfg-items">
            <button type="button" class="cfg-item barber-only" data-sec="secSubscriptions" data-kw="assinatura clube plano mensal corte cartão pix recorrente" id="assBtn">
             <span class="ci teal">💳</span>
-            <span class="tx"><b>Assinaturas</b><i>Clube de cortes com cartão de assinante</i></span>
+            <span class="tx"><b>Assinaturas</b><i>Clube de serviços com cartão de assinante</i></span>
             <span class="ch">›</span>
           </button>
         </div>
@@ -1266,6 +1283,16 @@ align-items:center;
       <button type="button" class="cfg-btn" id="changePwBtn">Alterar senha</button>
     </div>
 
+    <div class="cfg-section hidden" id="secBackup">
+      <h3>Backup dos dados</h3>
+      <p class="cfg-hint">Exporte um arquivo .json com lançamentos, agendamentos e configurações — ou importe um backup para restaurar tudo em outro aparelho.</p>
+      <div class="backup">
+        <button type="button" id="exportBtn">Exportar (.json)</button>
+        <button type="button" id="importBtnTrigger">Importar (.json)</button>
+        <input type="file" id="importInput" accept="application/json">
+      </div>
+    </div>
+
     <div class="cfg-section barber-only hidden" id="secTheme">
       <h3>Aparência</h3>
       <input type="text" id="inpTitle" placeholder="Nome do salão" maxlength="40">
@@ -1287,7 +1314,7 @@ align-items:center;
     <div class="cfg-section barber-only hidden" id="secHours">
       <h3>Expediente</h3>
       <div class="daypick" id="dayPick"></div>
-      <p class="cfg-hint">Só os dias marcados ficam disponíveis para agendamento — e aparecem em Cortes e Saídas.</p>
+      <p class="cfg-hint">Só os dias marcados ficam disponíveis para agendamento — e aparecem em Lançamento e Saídas.</p>
       <div class="rf-row hours-row">
         <label>Abre <input type="time" id="hOpen"></label>
         <label>Fecha <input type="time" id="hClose"></label>
@@ -1385,8 +1412,8 @@ align-items:center;
 
       <div class="cfg-lbl">Chave PIX de recebimento</div>
       <input type="text" id="subPixKey" placeholder="Chave PIX (e-mail, telefone, CPF ou aleatória)" maxlength="100">
-      <label class="pay-sw" style="margin-top:6px"><input type="checkbox" id="subCarryOver"> Permitir carregar cortes não usados</label>
-      <p class="cfg-hint">Se desmarcado, os cortes não usados no ciclo (30 dias) são encerrados e o próximo mês começa com os créditos novos.</p>
+      <label class="pay-sw" style="margin-top:6px"><input type="checkbox" id="subCarryOver"> Permitir carregar serviços não usados</label>
+      <p class="cfg-hint">Se desmarcado, os serviços não usados no ciclo (30 dias) são encerrados e o próximo mês começa com os créditos novos.</p>
       <div class="rf-row" style="margin-top:6px">
         <label>Dia de cobrança todo mês</label>
         <select id="subDueDay"></select>
@@ -1437,7 +1464,7 @@ align-items:center;
 <div class="tabbar">
 <button class="tab-btn active" data-view="cortes">
 <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 10H2v2h12v-2zm0-4H2v2h12V6zm4 8v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM2 16h8v-2H2v2z"/></svg></span>
-<span class="lb">Produção</span>
+<span class="lb">Lançamento</span>
 </button>
   <button class="tab-btn" data-view="caixa">
     <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg></span>
@@ -2906,6 +2933,43 @@ function renderQuickChips(){
       editBtn.setAttribute('aria-label', 'Editar valores rápidos');
     }
   }
+  renderAgSvcChips();
+}
+
+function renderAgSvcChips(){
+  const el = document.getElementById('agSvcChips');
+  if(!el) return;
+  const svcList = (Array.isArray(prefs.services) ? prefs.services : []).filter(s => s && s.name);
+  el.innerHTML = '';
+  el.classList.toggle('hidden', svcList.length === 0);
+  if(!svcList.length) return;
+  const note = document.getElementById('agNote');
+  svcList.forEach(s=>{
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'chip chip-svc';
+    b.dataset.svc = s.name;
+    b.textContent = s.price > 0 ? `${s.name} · ${fmtBRLshort(s.price)}` : s.name;
+    b.addEventListener('click', ()=>{
+      const cur = String(note.value || '').split(',').map(x => x.trim()).filter(Boolean);
+      const i = cur.indexOf(s.name);
+      if(i >= 0) cur.splice(i, 1); else cur.push(s.name);
+      note.value = cur.join(', ');
+      syncAgSvcSel();
+    });
+    el.appendChild(b);
+  });
+  syncAgSvcSel();
+}
+function syncAgSvcSel(){
+  const el = document.getElementById('agSvcChips');
+  const note = document.getElementById('agNote');
+  if(!el || !note) return;
+  const picked = String(note.value || '').split(',').map(x => x.trim().toLowerCase()).filter(Boolean);
+  Array.prototype.forEach.call(el.querySelectorAll('.chip'), b=>{
+    const name = String(b.dataset.svc || '').trim().toLowerCase();
+    b.classList.toggle('sel', !!name && picked.indexOf(name) !== -1);
+  });
 }
 
 function quickAdd(explicitVal, svcName){
@@ -3096,7 +3160,7 @@ function renderDaySection(kind, key){
     if(collapsed){
       dc.textContent = items.length === 0
         ? 'vazio'
-        : (isExp ? `${items.length} ${items.length===1?'saída':'saídas'}` : `${items.length} ${items.length===1?'corte':'cortes'}`);
+        : (isExp ? `${items.length} ${items.length===1?'saída':'saídas'}` : `${items.length} ${items.length===1?'serviço':'serviços'}`);
     }
     const dn = document.createElement('span'); dn.className = 'dname'; dn.textContent = dayName;
     const dt = document.createElement('span'); dt.className = 'dtotal';
@@ -3115,7 +3179,7 @@ function renderDaySection(kind, key){
     if(items.length === 0){
       const empty = document.createElement('div');
       empty.className = 'empty';
-      empty.textContent = isExp ? 'Nenhuma saída' : 'Nenhum corte ainda';
+      empty.textContent = isExp ? 'Nenhuma saída' : 'Nenhum serviço ainda';
       dayEl.appendChild(empty);
     } else {
       const list = document.createElement('ul'); list.className = 'cuts';
@@ -3352,7 +3416,7 @@ function applyDailyFocus(grid){
     const wd = isNaN(d) ? -1 : d.getDay();
     e.textContent = (wd > -1 && !isWorkday(dayIndexInWeek(d)))
       ? 'Dia sem expediente neste período. Use ‹ › para escolher outro dia.'
-      : 'Nenhum corte registrado neste dia. Use ‹ › para navegar.';
+      : 'Nenhum serviço registrado neste dia. Use ‹ › para navegar.';
     grid.appendChild(e);
   }
 }
@@ -4094,7 +4158,7 @@ function renderReports(currentKey){
     const dt = deltaInfo(st.deltaToday, 'semana passada');
     tg.appendChild(repItem('Faturamento hoje', fmtBRL(st.today.income), dt.text, '', dt.cls));
     tg.appendChild(repItem(
-      'Cortes hoje',
+      'Serviços hoje',
       String(st.today.cuts),
       st.today.cuts > 0 ? 'ticket ' + fmtBRL(st.today.income / st.today.cuts) : 'nenhum lançamento'
     ));
@@ -4115,8 +4179,8 @@ function renderReports(currentKey){
     pg.appendChild(repItem('Entradas', fmtBRL(st.cur.income), dIn.text, '', dIn.cls));
     pg.appendChild(repItem('Saídas', fmtBRL(st.cur.expense), dOut.text, '', dOut.cls));
     pg.appendChild(repItem('Saldo', fmtBRL(st.cur.net), st.win.from.slice(8, 10) + '/' + st.win.from.slice(5, 7) + ' a ' + st.win.to.slice(8, 10) + '/' + st.win.to.slice(5, 7), st.cur.net >= 0 ? 'pos' : 'neg'));
-    pg.appendChild(repItem('Cortes', String(st.cur.cuts), st.win.n + (st.win.n === 1 ? ' semana' : ' semanas')));
-    pg.appendChild(repItem('Ticket médio', ticket, 'por corte lançado'));
+    pg.appendChild(repItem('Serviços', String(st.cur.cuts), st.win.n + (st.win.n === 1 ? ' semana' : ' semanas')));
+    pg.appendChild(repItem('Ticket médio', ticket, 'por serviço lançado'));
     pg.appendChild(repItem('Recebido no mês', fmtBRL(st.fiado.paidMonth), 'de fiado'));
   }
 
@@ -5113,7 +5177,8 @@ function cfgNorm(s){
 }
 function cfgIsOperator(){ return document.body.classList.contains('operator'); }
 function cfgVisibleItems(cat){
-  return Array.prototype.filter.call(cat.querySelectorAll('.cfg-item'), i => !(cfgIsOperator() && i.classList.contains('barber-only')));
+  return Array.prototype.filter.call(cat.querySelectorAll('.cfg-item'), i =>
+    !i.classList.contains('sub-locked') && !(cfgIsOperator() && i.classList.contains('barber-only')));
 }
 function cfgUpdateCounts(){
   document.querySelectorAll('#cfgMenu .cfg-cat').forEach(cat => {
@@ -5128,6 +5193,7 @@ function cfgFilter(){
   const q = cfgNorm(inp ? inp.value : '').trim();
   let any = false;
   document.querySelectorAll('#cfgMenu .cfg-item').forEach(it => {
+    if(it.classList.contains('sub-locked')){ it.classList.add('hidden'); return; }
     if(cfgIsOperator() && it.classList.contains('barber-only')){ it.classList.add('hidden'); return; }
     const hay = cfgNorm((it.textContent || '') + ' ' + (it.dataset.kw || ''));
     const ok = !q || hay.indexOf(q) !== -1;
@@ -6063,7 +6129,7 @@ function renderAgenda(){
       if(ap.fromMembership && ap.status === 'done'){
         const plan = subPlans.find(p => p.id === (ap.planId || ''));
         const planName = ap.planName || (plan ? plan.name : 'Plano');
-        if(!confirm('Confirmar que o corte foi realizado para "' + ap.client + '"?\n\nIsso consumirá 1 crédito do plano ' + planName + '.')){
+        if(!confirm('Confirmar que o serviço foi realizado para "' + ap.client + '"?\n\nIsso consumirá 1 crédito do plano ' + planName + '.')){
           return;
         }
         const msg = await consumeMembershipCredit(ap.membershipId, plan ? plan.cuts : (ap.cuts || 1), plan ? plan.carryOver : false);
@@ -6685,6 +6751,8 @@ document.getElementById('mcName').addEventListener('keydown', e=>{
 });
 
 document.getElementById('agAddBtn').addEventListener('click', addAppointment);
+const agNoteEl = document.getElementById('agNote');
+if(agNoteEl) agNoteEl.addEventListener('input', syncAgSvcSel);
 document.getElementById('agClient').addEventListener('keydown', e=>{ if(e.key === 'Enter') addAppointment(); });
 document.getElementById('agNote').addEventListener('keydown', e=>{ if(e.key === 'Enter') addAppointment(); });
 
@@ -6826,7 +6894,12 @@ if(tabAssin) tabAssin.classList.toggle('hidden', access.role !== 'barber');
     if(access.role === 'barber-no-sub'){
       roleNoSub = true;
       subTabBenefit = true;
-      const ab = document.getElementById('assBtn'); if(ab) ab.classList.add('hidden');
+      const ab = document.getElementById('assBtn');
+      if(ab){
+        ab.classList.add('hidden', 'sub-locked');
+        const cat = ab.closest('.cfg-cat');
+        if(cat) cat.classList.add('hidden');
+      }
       const ss = document.getElementById('secSubscriptions'); if(ss) ss.classList.add('hidden');
     }
     const cortesTab = document.querySelector('.tab-btn[data-view="cortes"]');
@@ -7092,7 +7165,7 @@ function renderSubscriptions(){
   const cutsEl0 = document.getElementById('subPlanCuts');
   if(cutsEl0 && !cutsEl0.options.length){
     cutsEl0.innerHTML = [1,2,3,4,5,6,8,10,12].map(n =>
-      '<option value="' + n + '"' + (n === 4 ? ' selected' : '') + '>' + n + (n > 1 ? ' cortes' : ' corte') + '</option>').join('');
+      '<option value="' + n + '"' + (n === 4 ? ' selected' : '') + '>' + n + (n > 1 ? ' serviços' : ' serviço') + '</option>').join('');
   }
   const validEl0 = document.getElementById('subPlanValidity');
   if(validEl0 && validEl0.options.length <= 1){
@@ -7142,7 +7215,7 @@ function renderSubscriptions(){
         const row = document.createElement('div');
         row.className = 'client-row team-row';
         const nm = document.createElement('span'); nm.className = 'cname';
-        nm.innerHTML = '<b>' + p.name + '</b> · ' + fmtBRL(p.price) + ' · ' + p.cuts + ' corte(s)';
+        nm.innerHTML = '<b>' + p.name + '</b> · ' + fmtBRL(p.price) + ' · ' + p.cuts + ' serviço(s)';
         row.appendChild(nm);
         const val = document.createElement('span'); val.className = 'pct-lbl';
         val.textContent = 'Validade ' + p.validityDays + ' dias · ' + (p.cycle === 'month' ? 'mensal' : 'anual');
@@ -7205,7 +7278,7 @@ function renderSubscriptions(){
         sub.textContent = 'Plano ' + planName + ' · ' + fmtBRL(plan ? plan.price : 0) + '/ciclo';
         main.appendChild(sub);
         const meta = document.createElement('div'); meta.className = 'ri-meta';
-        meta.textContent = 'Vence em ' + m.nextDueDate.slice(8,10) + '/' + m.nextDueDate.slice(5,7) + ' · ' + m.cutsIncluded + ' cortes';
+        meta.textContent = 'Vence em ' + m.nextDueDate.slice(8,10) + '/' + m.nextDueDate.slice(5,7) + ' · ' + m.cutsIncluded + ' serviços';
         main.appendChild(meta);
         card.appendChild(main);
         const val = document.createElement('div'); val.className = 'ri-val';
@@ -7385,7 +7458,7 @@ async function consumeMembershipCredit(membershipId, planCuts, planCarryOver){
       }
     }
     await setDoc(doc(db, 'users', currentUser.uid, SUB_MEMBERS_BASE, membershipId), { cutsUsed: m.cutsUsed, updatedAt: new Date().toISOString() }, { merge: true }).catch(()=>{});
-    return 'Corte concluído. Restam ' + (cuts - m.cutsUsed) + '/' + cuts + ' créditos no plano ' + (m.planName || '');
+    return 'Serviço concluído. Restam ' + (cuts - m.cutsUsed) + '/' + cuts + ' créditos no plano ' + (m.planName || '');
   }catch(e){
     console.error('consumeMembershipCredit falhou:', e);
     return null;
