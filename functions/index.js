@@ -236,3 +236,74 @@ exports.manageBarberAuth = onCall({ cors: true }, async (request) => {
     throw new HttpsError('internal', 'Não foi possível configurar o acesso.');
   }
 });
+
+const { ORIGIN, FALLBACK_OG, cleanCode, parseLogoDataUrl, patchShareHtml } = require('./share');
+
+async function loadShareInfo(code) {
+  const out = { title: '', tagline: '', logo: '' };
+  if (code.length !== 6) return out;
+  try {
+    const db = admin.firestore();
+    const slug = await db.doc('slugs/' + code).get();
+    const uid = slug.exists
+      ? String((slug.data() || {}).barberUid || '').replace(/[^A-Za-z0-9]/g, '').slice(0, 40)
+      : '';
+    if (!uid) return out;
+    const br = await db.doc('users/' + uid + '/public/branding').get();
+    if (!br.exists) return out;
+    const d = br.data() || {};
+    out.title = String(d.title || '').trim().slice(0, 40);
+    out.tagline = String(d.tagline || '').trim().slice(0, 60);
+    out.logo = (typeof d.logo === 'string' && d.logo.startsWith('data:image/')) ? d.logo : '';
+  } catch (e) {
+    console.error('loadShareInfo:', (e && e.message) || e);
+  }
+  return out;
+}
+
+exports.ogLogo = onRequest({ cors: false }, async (req, res) => {
+  const code = cleanCode(req.query.k);
+  try {
+    const info = await loadShareInfo(code);
+    const img = parseLogoDataUrl(info.logo);
+    if (img) {
+      res.set('Content-Type', img.type);
+      res.set('Content-Length', String(img.buf.length));
+      res.set('Cache-Control', 'public, max-age=86400');
+      return res.status(200).send(img.buf);
+    }
+  } catch (e) {
+    console.error('ogLogo:', (e && e.message) || e);
+  }
+  res.set('Cache-Control', 'public, max-age=3600');
+  return res.redirect(302, FALLBACK_OG);
+});
+
+exports.agendarPage = onRequest({ cors: false }, async (req, res) => {
+  const code = cleanCode(req.query.k);
+  const qs = String((req.originalUrl.split('?')[1] || '')).slice(0, 300);
+  const upstream = ORIGIN + '/agendar' + (qs ? '?' + qs : '');
+  try {
+    const r = await fetch(upstream, {
+      redirect: 'follow',
+      headers: { 'accept': 'text/html,application/xhtml+xml', 'user-agent': 'vSalon-Share/1.0' },
+      signal: AbortSignal.timeout(10000)
+    });
+    if (!r.ok) throw new Error('upstream ' + r.status);
+    let html = await r.text();
+    const info = await loadShareInfo(code);
+    const logoUrl = parseLogoDataUrl(info.logo) ? (ORIGIN + '/og?k=' + code) : '';
+    html = patchShareHtml(html, {
+      title: info.title,
+      tagline: info.tagline,
+      logoUrl,
+      shareUrl: ORIGIN + '/p' + (code.length === 6 ? '?k=' + code : '')
+    });
+    res.set('Content-Type', 'text/html; charset=utf-8');
+    res.set('Cache-Control', 'public, max-age=300');
+    return res.status(200).send(html);
+  } catch (e) {
+    console.error('agendarPage:', (e && e.message) || e);
+    return res.redirect(302, upstream);
+  }
+});

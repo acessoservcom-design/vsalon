@@ -27,6 +27,10 @@
       "package-lock.json"
     ],
     "cleanUrls": true,
+    "rewrites": [
+      { "source": "/p", "function": "agendarPage", "region": "us-central1" },
+      { "source": "/og", "function": "ogLogo", "region": "us-central1" }
+    ],
     "headers": [
       {
         "source": "/service-worker.js",

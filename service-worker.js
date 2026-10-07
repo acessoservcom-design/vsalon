@@ -60,7 +60,7 @@ self.addEventListener('fetch', (event) => {
   if (url.origin !== self.location.origin) return;
   if (url.pathname.endsWith('/updates.json')) return;
   if (req.mode === 'navigate' || url.pathname === '/' || url.pathname.endsWith('/index.html') || url.pathname.endsWith('/agendar.html')) {
-    const isBooking = url.pathname.includes('agendar');
+    const isBooking = url.pathname.includes('agendar') || url.pathname === '/p';
     const fallbackKey = isBooking ? './agendar.html' : './index.html';
     event.respondWith(
       fetch(req)

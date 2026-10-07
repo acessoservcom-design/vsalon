@@ -155,6 +155,7 @@
   .cuts li .val{flex:1;}
   .cuts li .desc{color:#6f656b;font-size:.8rem;display:block;}
   .cuts li .cname-inline{color:#6f656b;font-size:.85rem;}
+.cuts li .time-inline{font-size:.76rem;opacity:.6;letter-spacing:.03em;}
   .cuts li .cat-badge{display:inline-block;background:var(--charcoal-3);border:1px solid var(--line);color:#6f656b;font-size:.65rem;text-transform:uppercase;letter-spacing:.04em;padding:1px 6px;margin-right:6px;font-family:'Jost',sans-serif;}
   .cuts li .del{background:none;border:none;color:#6b6b6b;cursor:pointer;font-size:1.1rem;padding:4px 8px;}
   .cuts li .del:active{color:var(--neg);}
@@ -332,6 +333,10 @@ align-items:center;
 
   .month-card{background:var(--charcoal-2);border:1px solid var(--line);border-left:3px solid var(--brass-light);padding:12px 14px;margin-bottom:16px;}
   .month-card .mtitle{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600;letter-spacing:.02em;font-size:1.1rem;color:var(--cream);margin-bottom:8px;}
+  .month-card .mtitle-nav{display:flex;align-items:center;justify-content:center;gap:6px;border-bottom:1px solid var(--line);padding-bottom:8px;margin-bottom:10px;}
+  .month-card .mtitle-nav button{background:none;border:none;color:var(--cream);width:38px;height:30px;font-size:1.15rem;line-height:1;cursor:pointer;}
+  .month-card .mtitle-nav button:active{color:var(--brass-light);}
+  .month-card .mtitle-nav .mtitle{margin-bottom:0;flex:1;text-align:center;}
   .month-card .mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
   .month-card .mgrid .mnum{font-family:'Jost',sans-serif;font-size:1.05rem;color:var(--brass-light);}
   .month-card .mgrid .mnum.exp{color:var(--barber-red-light);}
@@ -1042,7 +1047,11 @@ align-items:center;
     <div class="cfg-section hidden" id="cxFig">
       <h3>Gráficos</h3>
     <div class="month-card">
-      <div class="mtitle" id="monthTitle">Mês</div>
+      <div class="mtitle-nav">
+        <button type="button" id="figPrevM" aria-label="Mês anterior">‹</button>
+        <div class="mtitle" id="monthTitle">Mês</div>
+        <button type="button" id="figNextM" aria-label="Próximo mês">›</button>
+      </div>
       <div class="mgrid">
         <div><div class="mnum" id="monthIncome">R$0</div><div class="mlbl">Entradas</div></div>
         <div><div class="mnum exp" id="monthExpense">R$0</div><div class="mlbl">Saídas</div></div>
@@ -1104,7 +1113,7 @@ align-items:center;
 
     <div class="chart-card">
       <h3>Horários de pico</h3>
-      <div class="chart-wrap"><canvas id="peakChart" height="200" role="img" aria-label="Agendamentos por horário"></canvas></div>
+      <div class="chart-wrap"><canvas id="peakChart" height="200" role="img" aria-label="Agendamentos e serviços por horário"></canvas></div>
       <div class="legend" id="peakLegend"></div>
     </div>
 
@@ -1917,6 +1926,14 @@ function incomeValue(v){
 function timeToMin(t){
   const m = /^([01]\d|2[0-3]):([0-5]\d)$/.exec(String(t || ''));
   return m ? (parseInt(m[1],10)*60 + parseInt(m[2],10)) : -1;
+}
+function nowHHMM(){
+  const d = new Date();
+  return String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+}
+function incomeFromAppt(r){
+  if(!r) return false;
+  return !!r.ap || /^Agendamento \d{2}\/\d{2}/.test(String(r.note || ''));
 }
 function clampPct(v, def){
   const n = parseFloat(String(v == null ? '' : v).replace(',', '.'));
@@ -2742,8 +2759,14 @@ function markPaid(id){
 
   const t = todayKeyInfo();
   const week = ensureWeek(t.key);
+  const paidEntry = { value: r.value, name: r.name, b: String(r.barberId || '').slice(0,20) };
+  if(incomeFromAppt(r)){
+    paidEntry.ap = String(r.ap || '1').slice(0,40);
+  } else {
+    paidEntry.time = nowHHMM();
+  }
   week.income[t.dayName].push(Object.assign(
-    { value: r.value, name: r.name, b: String(r.barberId || '').slice(0,20) },
+    paidEntry,
     r.svc ? { svc: String(r.svc).slice(0,120) } : {}
   ));
   const ref = { weekKey: t.key, dayName: t.dayName, index: week.income[t.dayName].length - 1 };
@@ -3008,7 +3031,7 @@ function quickAdd(explicitVal, svcName){
   }
   const t = todayKeyInfo();
   const week = ensureWeek(t.key);
-  const entry = { value: n, b: quickBarberId() };
+  const entry = { value: n, b: quickBarberId(), time: nowHHMM() };
   if(svc) entry.svc = String(svc).slice(0, 120);
   week.income[t.dayName].push(entry);
   editing = null;
@@ -3119,7 +3142,8 @@ function processAppt(ap, mode){
         paidAt: null,
         incomeRef: null,
         svc: String(ap.servico || '').slice(0,200),
-        barberId: String(ap.barberId || '').slice(0,20)
+        barberId: String(ap.barberId || '').slice(0,20),
+        ap: String(ap.id || '').slice(0,40)
       };
       receivables.push(rec);
       saveReceivable(rec);
@@ -3240,6 +3264,11 @@ function renderDaySection(kind, key){
             nm.textContent = ' · ' + item.name;
             val.appendChild(nm);
           }
+          if(item && typeof item === 'object' && item.time){
+            const tm = document.createElement('span'); tm.className = 'cname-inline time-inline';
+            tm.textContent = ' · ' + String(item.time).slice(0,5);
+            val.appendChild(tm);
+          }
           li.appendChild(idx); li.appendChild(val);
         }
         const del = document.createElement('button');
@@ -3300,27 +3329,6 @@ function renderDaySection(kind, key){
         cats.appendChild(b);
       });
       addWrap.appendChild(cats);
-    } else {
-      const svcList = (Array.isArray(prefs.services) ? prefs.services : []).filter(s => s && s.name);
-      if(prefs.entryMode === 'servico' && svcList.length){
-        if(isEditingThis && items[editing.index] && items[editing.index] && typeof items[editing.index] === 'object'){
-          daySvc = String(items[editing.index].svc || '');
-        }
-        const cats = document.createElement('div'); cats.className = 'cats svc-cats';
-        svcList.forEach(s=>{
-          const b = document.createElement('button');
-          b.type = 'button';
-          b.className = 'cat' + (s.name === daySvc ? ' active' : '');
-          b.textContent = s.price > 0 ? `${s.name} · ${fmtBRLshort(s.price)}` : s.name;
-          b.addEventListener('click', ()=>{
-            daySvc = (daySvc === s.name) ? '' : s.name;
-            cats.querySelectorAll('.cat').forEach(x => x.classList.toggle('active', x === b && daySvc === s.name));
-            if(s.price > 0) setPriceInput(valInput, s.price);
-          });
-          cats.appendChild(b);
-        });
-        addWrap.appendChild(cats);
-      }
     }
 
     const addRow = document.createElement('div'); addRow.className = 'addrow';
@@ -3381,10 +3389,12 @@ function renderDaySection(kind, key){
             if(prev.b) o.b = String(prev.b).slice(0,20);
             const svcNow = daySvc || String(prev.svc || '');
             if(svcNow) o.svc = svcNow.slice(0,120);
+            if(prev.time) o.time = String(prev.time).slice(0,5);
+            if(prev.ap) o.ap = String(prev.ap).slice(0,40);
             items[editing.index] = o;
           } else items[editing.index] = n;
         } else {
-          const entry = { value: n, b: quickBarberId() };
+          const entry = { value: n, b: quickBarberId(), time: nowHHMM() };
           if(daySvc) entry.svc = String(daySvc).slice(0,120);
           items.push(entry);
         }
@@ -3986,6 +3996,20 @@ function shiftDays(key, n){
   d.setDate(d.getDate() + n);
   return fmtKey(d);
 }
+function monthRangeFor(dayKey){
+  const d = new Date(String(dayKey) + 'T00:00:00');
+  if(isNaN(d)) return null;
+  return {
+    from: fmtKey(new Date(d.getFullYear(), d.getMonth(), 1)),
+    to: fmtKey(new Date(d.getFullYear(), d.getMonth() + 1, 0))
+  };
+}
+function shiftMonthKey(ym, delta){
+  const m = /^(\d{4})-(\d{2})$/.exec(String(ym || ''));
+  if(!m) return '';
+  const d = new Date(parseInt(m[1], 10), parseInt(m[2], 10) - 1 + (delta || 0), 1);
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+}
 function daysInclusive(from, to){
   const a = new Date(from + 'T00:00:00'), b = new Date(to + 'T00:00:00');
   if(isNaN(a) || isNaN(b)) return 0;
@@ -4343,13 +4367,13 @@ function renderReports(currentKey){
     );
   });
   chartAlt(peakCanvas, pk.peak
-    ? `Horário de pico: ${pk.peak.h}h com ${pk.peak.n} agendamento${pk.peak.n === 1 ? '' : 's'}.`
+    ? `Horário de pico: ${pk.peak.h}h com ${pk.peak.n} atendimento${pk.peak.n === 1 ? '' : 's'}.`
     : 'Sem dados suficientes ainda');
   if(peakLegend){
     peakLegend.innerHTML = '';
     peakLegend.textContent = pk.peak
-      ? `Pico às ${pk.peak.h}h · ${pk.peak.n} agendamento${pk.peak.n === 1 ? '' : 's'}`
-      : 'Nenhum agendamento no período';
+      ? `Pico às ${pk.peak.h}h · ${pk.peak.n} atendimento${pk.peak.n === 1 ? '' : 's'}`
+      : 'Nenhum agendamento ou lançamento no período';
   }
 }
 
@@ -4609,12 +4633,20 @@ function barberProduction(keys, from, to){
 
 function peakHours(from, to){
   const buckets = {};
-  appointments.forEach(a => {
-    if(!a || a.date < from || a.date > to || a.status === 'cancelled') return;
-    const m = timeToMin(a.time);
+  const addHour = t => {
+    const m = timeToMin(t);
     if(m < 0) return;
     const h = Math.floor(m / 60);
     buckets[h] = (buckets[h] || 0) + 1;
+  };
+  appointments.forEach(a => {
+    if(!a || a.date < from || a.date > to || a.status === 'cancelled') return;
+    addHour(a.time);
+  });
+  incomeEntriesInRange(from, to).forEach(v => {
+    if(!v || typeof v !== 'object') return;
+    if(v.ap) return;
+    addHour(v.time);
   });
   const hours = Object.keys(buckets).map(Number).sort((a,b) => a - b);
   if(!hours.length) return { rows: [], peak: null };
@@ -4674,8 +4706,10 @@ function workdaysInMonth(y, m, limitDay){
 }
 
 function renderMonth(currentKey){
-  const d = new Date(currentKey+'T00:00:00');
-  const monthKey = currentKey.slice(0,7);
+  const cp = customPeriod();
+  const dayKey = (cp && cp.from) ? cp.from : currentKey;
+  const d = new Date(dayKey+'T00:00:00');
+  const monthKey = dayKey.slice(0,7);
   const t = monthTotals(monthKey);
   document.getElementById('monthTitle').textContent = `${MESES[d.getMonth()]} de ${d.getFullYear()}`;
   document.getElementById('monthIncome').textContent = fmtBRLshort(t.income);
@@ -5667,7 +5701,7 @@ function fillBookLink(){
   const el = document.getElementById('bookLink');
   if(!el) return;
   el.textContent = myBookCode
-    ? (location.origin + '/agendar?k=' + myBookCode)
+    ? (location.origin + '/p?k=' + myBookCode)
     : 'Não foi possível gerar o link. Verifique a conexão.';
 }
 
@@ -6023,7 +6057,7 @@ function renderBarbeiros(){
 
     const link = document.createElement('div'); link.className = 'bb-link';
     if(b.bookingCode){
-      link.textContent = location.origin + '/agendar?k=' + b.bookingCode;
+      link.textContent = location.origin + '/p?k=' + b.bookingCode;
     } else {
       link.textContent = 'Link disponível após o 1º login do profissional';
       link.style.color = '#6f656b';
@@ -6064,7 +6098,7 @@ function renderBarbeiros(){
 
     if(b.bookingCode){
       const cp = document.createElement('button'); cp.type = 'button'; cp.textContent = 'Copiar link';
-      cp.addEventListener('click', () => copyToClipboard(location.origin + '/agendar?k=' + b.bookingCode, 'Link copiado.'));
+      cp.addEventListener('click', () => copyToClipboard(location.origin + '/p?k=' + b.bookingCode, 'Link copiado.'));
       acts.appendChild(cp);
     }
 
@@ -6485,6 +6519,25 @@ document.getElementById('periodFilter').addEventListener('click', e=>{
   syncPeriodFilter();
   renderCharts(fmtKey(currentWeekStart));
 });
+
+function shiftFigMonth(delta){
+  const win = periodWindow(fmtKey(currentWeekStart));
+  const base = (win && win.from) ? win.from : fmtKey(new Date());
+  const ym = shiftMonthKey(String(base).slice(0, 7), delta);
+  const range = ym ? monthRangeFor(ym + '-01') : null;
+  if(!range) return;
+  prefs.periodFrom = range.from;
+  prefs.periodTo = range.to;
+  savePrefs();
+  if(periodCalEl) periodCalEl.classList.add('hidden');
+  syncPeriodFilter();
+  renderMonth(fmtKey(currentWeekStart));
+  renderCharts(fmtKey(currentWeekStart));
+}
+const figPrevEl = document.getElementById('figPrevM');
+if(figPrevEl) figPrevEl.addEventListener('click', ()=> shiftFigMonth(-1));
+const figNextEl = document.getElementById('figNextM');
+if(figNextEl) figNextEl.addEventListener('click', ()=> shiftFigMonth(1));
 
 const periodCalEl = document.getElementById('periodCal');
 const periodCalBtnEl = document.getElementById('periodCalBtn');
