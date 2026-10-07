@@ -36,7 +36,7 @@
   header h1{ font-family:'Playfair Display',Georgia,serif; font-weight:600; font-size:1.45rem; letter-spacing:.02em; text-transform:uppercase; }
   header .sub{ font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:500; color:#6f656b; font-size:1rem; margin-top:4px; }
   main{ flex:1; width:100%; max-width:520px; margin:0 auto; padding:18px 14px 30px; }
-  body.bar-on main{ padding-bottom:116px; }
+  body.bar-on main{ padding-bottom:165px; }
   .card{ background:var(--charcoal-2); border:1px solid var(--line); border-left:3px solid var(--brass); border-radius:14px; padding:16px 14px; margin-bottom:14px; }
   .st{ font-family:'Jost',sans-serif; font-size:.8rem; text-transform:uppercase; letter-spacing:.1em; color:var(--brass-light); margin-bottom:10px; }
   p.desc{ font-size:.92rem; color:#6f656b; line-height:1.5; margin-bottom:14px; }
@@ -104,14 +104,14 @@
   .slots button.on{ background:linear-gradient(160deg, var(--brass-light), var(--brass)); border-color:var(--brass-light); color:#ffffff; box-shadow:0 0 14px rgba(224,24,127,.4); }
   .slots button:disabled{ opacity:.3; cursor:not-allowed; }
   .muted{ grid-column:1/-1; color:var(--muted); font-size:.85rem; text-align:center; padding:8px; }
-  .hist-row{ background:var(--charcoal-3); border:1px solid var(--line); padding:8px 10px; margin-bottom:6px; font-size:.85rem; border-radius:10px; }
-  .hist-when{ font-family:'Jost',sans-serif; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--brass-light); }
-  .hist-svc{ margin-top:2px; color:var(--cream); }
-  .hist-st{ margin-top:2px; font-size:.76rem; color:#6f656b; }
-  .hist-st.ok{ color:var(--pos); }
-  .hist-st.wait{ color:var(--brass-light); }
-  .hist-st.cx{ color:var(--error); }
-  .hist-cancel{ display:block; width:100%; margin-top:8px; background:none; border:1px solid var(--error); color:var(--error); padding:7px; font-family:'Jost',sans-serif; font-size:.74rem; letter-spacing:.08em; text-transform:uppercase; border-radius:8px; }
+  .hist-row{ background:#ffffff; border:1px solid var(--line); padding:9px 11px; margin-bottom:7px; font-size:.88rem; border-radius:10px; }
+  .hist-when{ font-family:'Jost',sans-serif; font-size:.82rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#990c55; }
+  .hist-svc{ margin-top:3px; font-weight:700; font-size:.95rem; color:var(--cream); }
+  .hist-st{ margin-top:3px; font-size:.82rem; font-weight:700; color:#5d5359; }
+  .hist-st.ok{ color:#0a6b44; }
+  .hist-st.wait{ color:#990c55; }
+  .hist-st.cx{ color:#b03024; }
+  .hist-cancel{ display:block; width:100%; margin-top:8px; background:#fff; border:1.5px solid var(--error); color:#b03024; padding:8px; font-family:'Jost',sans-serif; font-size:.8rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; border-radius:8px; }
   .hist-cancel:disabled{ opacity:.5; cursor:not-allowed; }
   .sumrow{ display:flex; gap:7px; margin-bottom:14px; }
   .sumchip{ flex:1; min-width:0; background:var(--charcoal-2); border:1px solid var(--line); border-top:2px solid var(--brass); border-radius:0 0 10px 10px; padding:8px 4px; text-align:center; }
@@ -142,11 +142,11 @@
   .proof-box p{ margin:0 0 14px; font-size:.85rem; color:#5f565b; }
   .proof-box input{ width:100%; background:var(--charcoal); border:1px solid var(--line); color:var(--cream); padding:12px; border-radius:10px; font-size:.95rem; box-sizing:border-box; margin-bottom:14px; }
   .proof-box input::placeholder{ color:#6f656b; }
-  .botbar{ position:fixed; left:0; right:0; bottom:0; z-index:50; background:rgba(60,30,45,.96); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-top:1px solid var(--line); padding:12px 14px calc(12px + env(safe-area-inset-bottom,0px)); }
+  .botbar{ position:fixed; left:0; right:0; bottom:0; z-index:50; background:rgba(255,255,255,.97); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-top:1px solid var(--line); box-shadow:0 -10px 30px rgba(36,29,34,.10); padding:12px 14px calc(12px + env(safe-area-inset-bottom,0px)); }
   .botbar .inner{ width:100%; max-width:520px; margin:0 auto; display:flex; align-items:center; gap:12px; }
   .bot-sum{ flex:1; min-width:0; }
-  .bot-line{ font-size:.86rem; color:var(--cream); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .bot-total{ font-family:'Jost',sans-serif; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--brass-light); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .bot-line{ font-size:.88rem; font-weight:700; color:#3f343b; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .bot-total{ font-family:'Jost',sans-serif; font-size:.8rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--brass-light); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .bot-cta{ background:var(--brass); color:#ffffff; border:none; border-radius:12px; padding:13px 20px; font-family:'Jost',sans-serif; font-size:.88rem; letter-spacing:.06em; text-transform:uppercase; min-height:48px; white-space:nowrap; }
   .bot-cta:disabled{ opacity:.42; cursor:not-allowed; }
   footer{ text-align:center; font-family:'Jost',sans-serif; font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:#5a5a5a; padding:16px; border-top:1px solid var(--line); }
@@ -193,6 +193,18 @@
   .sub-modal-close{ background:none; border:none; color:#6f656b; font-size:.88rem; margin-top:12px; cursor:pointer; text-decoration:underline; font-family:inherit; }
   .mem-badge{ background:linear-gradient(135deg, var(--charcoal), var(--charcoal-2)); border:1px solid var(--brass); border-radius:10px; padding:10px 12px; font-size:.85rem; color:var(--cream); margin:10px 0 6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .mem-badge .st{ color:var(--brass-light); }
+  #subCard{ position:relative; z-index:2; border:1.5px solid var(--brass); background:linear-gradient(165deg,#ffffff 0%,#fff1f8 100%); box-shadow:0 16px 36px rgba(224,24,127,.18); margin-bottom:18px; }
+  #subCard .st{ font-size:.95rem; letter-spacing:.1em; color:var(--brass); margin-bottom:8px; }
+  #subCard .desc{ color:#493c44; font-weight:700; font-size:.96rem; }
+  #subCard .pros{ gap:11px; }
+  .pro{ background:#ffffff; border:1.5px solid var(--line); border-left:4px solid var(--brass); border-radius:14px; padding:14px 14px 15px; box-shadow:0 10px 24px rgba(36,29,34,.08); }
+  .pro .st{ font-family:'Jost',sans-serif; font-size:.78rem; letter-spacing:.08em; text-transform:uppercase; color:var(--brass-light); margin-bottom:6px; }
+  .pro .pr{ font-size:1.35rem; font-weight:700; color:var(--cream); margin-bottom:6px; }
+  .pro .pr i{ font-size:.78rem; color:#6f656b; font-style:normal; font-weight:500; margin-left:6px; }
+  .pro .sub-plan-ul{ margin:8px 0 12px; color:#544a50; }
+  .btn-pro{ display:block; width:100%; background:linear-gradient(135deg,var(--brass),var(--brass-light)); color:#ffffff; border:none; padding:13px 16px; border-radius:11px; font-family:'Jost',sans-serif; font-weight:700; font-size:.9rem; letter-spacing:.06em; text-transform:uppercase; cursor:pointer; box-shadow:0 10px 22px rgba(224,24,127,.3); }
+  .btn-pro:active{ transform:translateY(1px); }
+  .btn-pro:disabled{ opacity:.45; cursor:not-allowed; box-shadow:none; }
 </style>
   <style>
     html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;}
@@ -331,7 +343,7 @@
         <button type="button" class="pay-copy" id="payCopyBtn">Copiar</button>
       </div>
       <button type="button" class="main-btn" id="sendBtn" disabled>Confirmar agendamento</button>
-      <div class="rf-row">
+      <div class="rf-row hidden" id="proofRow">
         <button type="button" class="proof-btn" id="sendProofBtn">📸 Enviar comprovante</button>
       </div>
       <div class="err" id="sendErr"></div>
@@ -342,6 +354,7 @@
     <div class="proof-box">
       <h4>Enviar comprovante</h4>
       <p>Seu comprovante do PIX será aberto no WhatsApp com os dados do agendamento. Anexe a foto do comprovante na conversa.</p>
+      <div class="pay-pix" style="margin-bottom:14px"><b>Chave PIX:</b> <span id="proofPixTxt"></span> <button type="button" class="pay-copy" id="proofCopyBtn">Copiar</button></div>
       <input type="tel" id="proofPhone" placeholder="(99) 99999-9999" inputmode="tel" maxlength="15">
       <div class="rf-row">
         <button type="button" class="main-btn" id="proofSendBtn">Abrir WhatsApp</button>
@@ -359,6 +372,7 @@
       <p class="pay-p">Pague e envie o comprovante pelo WhatsApp para confirmar seu horário.</p>
       <div class="pay-pix"><b>Chave PIX:</b> <span id="payPixTxtOk"></span></div>
       <button type="button" class="pay-copy" id="payCopyBtnOk">Copiar</button>
+      <button type="button" class="proof-btn" id="sendProofBtnOk" style="margin-top:9px">📸 Enviar comprovante</button>
     </div>
     <p>Seu agendamento está confirmado — sem esperar por resposta. Em caso de imprevisto, fale com o salão pelo WhatsApp. Você pode acompanhar seus horários logo abaixo.</p>
     <button type="button" class="link-btn" id="againBtn">Fazer outro agendamento</button>
@@ -430,6 +444,7 @@ let user = null;
 let myClient = null;
 let services = [];
 let selServices = [];
+let lastBooking = null;
 let team = [];
 let selBarber = '';
 let step = 1;
@@ -623,7 +638,10 @@ async function loadBranding(){
 function applyBranding(){
   if(branding.title){ $('bkTitle').textContent = branding.title; document.title = branding.title + ' — Agendamento'; }
   if(branding.tagline) $('bkTagline').textContent = branding.tagline;
-  if(branding.logo){ const img = $('bkLogo'); img.src = branding.logo; img.classList.remove('hidden'); }
+  if(branding.logo){
+    const img = $('bkLogo'); img.src = branding.logo; img.classList.remove('hidden');
+    const bm = document.querySelector('.brand-mark'); if(bm) bm.classList.add('hidden');
+  }
 const authLogo = $('authLogo'); if(authLogo && branding.logo) authLogo.src = branding.logo;
   applyPay();
 }
@@ -633,7 +651,9 @@ function applyPay(){
   if(box) box.classList.toggle('hidden', !on);
   const boxOk = $('payBoxOk');
   if(boxOk) boxOk.classList.toggle('hidden', !on);
-  ['payPixTxt', 'payPixTxtOk'].forEach(id => {
+  const proofRow = $('proofRow');
+  if(proofRow) proofRow.classList.toggle('hidden', !on);
+  ['payPixTxt', 'payPixTxtOk', 'proofPixTxt'].forEach(id => {
     const el = $(id);
     if(el) el.textContent = on ? branding.payPix : '';
   });
@@ -666,10 +686,19 @@ function copyPix(btn){
     fallbackCopy(txt, done);
   }
 }
-['payCopyBtn', 'payCopyBtnOk'].forEach(id => {
+['payCopyBtn', 'payCopyBtnOk', 'proofCopyBtn'].forEach(id => {
   const btn = $(id);
   if(btn) btn.addEventListener('click', ()=> copyPix(btn));
 });
+function selTotal(){
+  let total = 0;
+  selServices.forEach(nm => {
+    const s = services.filter(x => x.name === nm)[0];
+    if(s && s.price > 0) total += s.price;
+  });
+  return total;
+}
+function money(v){ return 'R$ ' + v.toFixed(2).replace('.', ','); }
 async function loadSlots(){
   try{
     const snap = await getDoc(doc(db, 'users', BARBER, 'public', 'slots'));
@@ -1105,12 +1134,8 @@ function updateBot(){
   document.body.classList.toggle('bar-on', showBar);
   if(!showBar) return;
   const n = selServices.length;
-  let total = 0;
-  selServices.forEach(nm2 => {
-    const s = services.filter(x => x.name === nm2)[0];
-    if(s && s.price > 0) total += s.price;
-  });
-  const totTxt = n ? (total > 0 ? 'R$ ' + total.toFixed(2).replace('.',',') : 'A combinar') + ' · ' + selectedDuration() + ' min' : '';
+  const total = selTotal();
+  const totTxt = n ? (total > 0 ? money(total) : 'A combinar') + ' · ' + selectedDuration() + ' min' : '';
   $('botTotal').textContent = totTxt;
   const cta = $('nextBtn');
   if(step === 1){
@@ -1372,7 +1397,7 @@ function renderSteps(){
     const parts = [];
     if(selDate) parts.push(friendlyDate(selDate) + (selTime ? ' às ' + selTime : ''));
     if(manyBarbers && selBarber) parts.push(barbeiroName(selBarber));
-    if(n) parts.push(selServices.join(', '));
+    if(n) parts.push(selServices.join(', ') + (selTotal() > 0 ? ' · ' + money(selTotal()) : ''));
     sub = parts.join(' · ') || 'Confira seus dados';
   }
   $('stepTitle').textContent = titles[step - 1];
@@ -1539,6 +1564,7 @@ $('sendBtn').addEventListener('click', async ()=>{
     const ap = {
       date: selDate, time: selTime, client: name,
       phone, note, servico: selServices.join(', ').slice(0,200), status: 'done',
+      price: selTotal(),
       requested: true, requestedBy: user.uid,
       barberId: selBarber || '', barbeiro: selBarber ? (barbeiroName(selBarber) || '') : '',
       createdAt: new Date().toISOString()
@@ -1558,7 +1584,13 @@ $('sendBtn').addEventListener('click', async ()=>{
     const d = new Date(selDate + 'T00:00:00');
     const svcTxt = selServices.length ? ' · ' + selServices.join(', ') : '';
     const bbTxt = selBarber ? ' · ' + (barbeiroName(selBarber) || '') : '';
-    $('okSum').innerHTML = `<b>${d.toLocaleDateString('pt-BR',{ weekday:'long', day:'2-digit', month:'2-digit' })}</b> às <b>${selTime}</b>${svcTxt} · ${selectedDuration()} min${bbTxt}`;
+    const priceTxt = selTotal() > 0 ? ' · <b>' + money(selTotal()) + '</b>' : '';
+    lastBooking = {
+      date: selDate, time: selTime, name,
+      servico: selServices.join(', ') || 'consulta', note,
+      price: selTotal(), barber: selBarber ? (barbeiroName(selBarber) || '') : ''
+    };
+    $('okSum').innerHTML = `<b>${d.toLocaleDateString('pt-BR',{ weekday:'long', day:'2-digit', month:'2-digit' })}</b> às <b>${selTime}</b>${svcTxt} · ${selectedDuration()} min${bbTxt}${priceTxt}`;
     loadHistory();
     show('ok');
     forceData = false;
@@ -1711,16 +1743,20 @@ function sendProof(){
   if(phone.length === 10) phone = phone.slice(0,9) + '9' + phone.slice(9);
   localStorage.setItem('vbarber.proofPhone', phone);
   closeProofModal();
-  const name = $('inName').value.trim().slice(0,80);
-  const note = $('inNote').value.trim().slice(0,120);
-  const d = selDate ? selDate.replace(/-/g,'/') : '___';
-  const t = selTime || '___';
-  const svc = selServices && selServices.length ? selServices.join(', ') : 'consulta';
-  const txt = `Olá! 👋\n\nSeus dados:\n${name}\n${d} às ${t}h\n${svc}\n${note}`.trim();
+  const b = (selDate && selTime && selServices.length) ? null : lastBooking;
+  const name = b ? b.name : $('inName').value.trim().slice(0,80);
+  const note = b ? b.note : $('inNote').value.trim().slice(0,120);
+  const d = b ? b.date.replace(/-/g,'/') : (selDate ? selDate.replace(/-/g,'/') : '___');
+  const t = b ? b.time : (selTime || '___');
+  const svc = b ? b.servico : (selServices && selServices.length ? selServices.join(', ') : 'consulta');
+  const price = b && b.price > 0 ? '\nValor: ' + money(b.price) : '';
+  const txt = `Olá! 👋\n\nSeus dados:\n${name}\n${d} às ${t}h\n${svc}${price}\n${note}`.trim();
   const msg = encodeURIComponent(txt + '\n\n📸 Segue o comprovante do PIX — aguardo confirmação do agendamento!');
   window.open('https://wa.me/55' + phone + '?text=' + msg, '_blank');
 }
 document.getElementById('sendProofBtn').addEventListener('click', openProofModal);
+const sendProofBtnOk = document.getElementById('sendProofBtnOk');
+if(sendProofBtnOk) sendProofBtnOk.addEventListener('click', openProofModal);
 document.getElementById('proofCloseBtn').addEventListener('click', closeProofModal);
 document.getElementById('proofSendBtn').addEventListener('click', sendProof);
 </script>

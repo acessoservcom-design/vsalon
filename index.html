@@ -302,11 +302,21 @@ align-items:center;
   .legend .dot{width:9px;height:9px;border-radius:2px;display:inline-block;}
   .nodata{padding:20px 10px;text-align:center;color:#6b6b6b;font-size:.85rem;font-style:italic;}
 
-  .period-filter{display:flex;gap:6px;align-items:center;margin-bottom:12px;flex-wrap:wrap;}
+  .period-filter{display:flex;gap:6px;align-items:center;margin-bottom:12px;flex-wrap:wrap;position:relative;}
   .period-filter span{font-size:.72rem;color:#6f656b;text-transform:uppercase;letter-spacing:.05em;font-family:'Jost',sans-serif;}
   .period-filter button{background:var(--charcoal-3);border:1px solid var(--line);color:#6f656b;padding:7px 12px;font-family:'Jost',sans-serif;font-size:.75rem;letter-spacing:.04em;cursor:pointer;text-transform:uppercase;}
   .period-filter button.active{border-color:var(--brass);color:var(--charcoal);background:var(--brass-light);}
   .period-filter .csv-btn{margin-left:auto;background:var(--charcoal-3);border:1px solid var(--brass);color:var(--brass-light);}
+  .period-filter .cal-btn{padding:6px 11px;font-size:.95rem;line-height:1.2;}
+  .period-filter .cal-btn.active{border-color:var(--brass);color:#ffffff;background:var(--brass-light);}
+  .period-cal{position:absolute;z-index:45;top:calc(100% + 6px);left:0;display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;background:var(--charcoal-2);border:1px solid var(--line);border-left:3px solid var(--brass);border-radius:12px;box-shadow:0 16px 36px rgba(36,29,34,.18);padding:12px 13px;}
+  .period-cal.hidden{display:none;}
+  .period-cal label{display:flex;flex-direction:column;gap:4px;font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:#6f656b;font-family:'Jost',sans-serif;}
+  .period-cal input{border:1px solid var(--line);border-radius:8px;padding:8px 9px;font-family:'Karla',sans-serif;font-size:.86rem;color:var(--cream);background:var(--charcoal);}
+  .pcal-acts{display:flex;gap:6px;}
+  .pcal-acts button{border-radius:8px;padding:9px 13px;font-family:'Jost',sans-serif;font-size:.74rem;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;border:1px solid var(--line);}
+  .pcal-ok{background:var(--brass);border-color:var(--brass);color:#ffffff;font-weight:700;}
+  .pcal-clear{background:var(--charcoal-3);color:#6f656b;}
   .chart-card.wide{grid-column:1/-1;}
   .rep-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:10px;}
   .rep-item{background:var(--charcoal);border:1px solid var(--line);padding:10px 11px;min-width:0;}
@@ -1055,10 +1065,19 @@ align-items:center;
 
     <div class="period-filter" id="periodFilter">
       <span>Período:</span>
+      <button type="button" data-w="1">1 sem</button>
       <button type="button" data-w="2">2 sem</button>
-      <button type="button" data-w="4" class="active">1 mês</button>
-      <button type="button" data-w="8">2 meses</button>
+      <button type="button" data-w="4">1 mês</button>
+      <button type="button" class="cal-btn" id="periodCalBtn" title="Escolher período personalizado" aria-label="Escolher período personalizado">📅</button>
       <button type="button" class="csv-btn" id="csvBtn">Baixar CSV</button>
+      <div class="period-cal hidden" id="periodCal">
+        <label>De<input type="date" id="periodFrom"></label>
+        <label>Até<input type="date" id="periodTo"></label>
+        <div class="pcal-acts">
+          <button type="button" class="pcal-ok" id="periodApply">Aplicar</button>
+          <button type="button" class="pcal-clear" id="periodClear">Limpar</button>
+        </div>
+      </div>
     </div>
 
     <div class="chart-card wide" id="repToday">
@@ -1594,7 +1613,7 @@ const EXPENSE_CATS = [
 const CAT_COLOR = Object.fromEntries(EXPENSE_CATS.map(c => [c.name, c.color]));
 
 let state = {};
-let prefs = { quick:[25,30,45], goal:0, workdays:[0,1,2,3,4,5,6], services:[], team:[], slotMode:'time', entryMode:'valor', histWeeks:4, payment:{req:false, pixKey:''}, hours:{open:'09:00', close:'20:00', lunchA:'', lunchB:''}, theme:{primary:'#e0187f', light:'#b31065', bg:'#faf7f8', bg2:'#ffffff', logo:'', title:'', tagline:''} };
+let prefs = { quick:[25,30,45], goal:0, workdays:[0,1,2,3,4,5,6], services:[], team:[], slotMode:'time', entryMode:'valor', histWeeks:4, periodFrom:'', periodTo:'', payment:{req:false, pixKey:''}, hours:{open:'09:00', close:'20:00', lunchA:'', lunchB:''}, theme:{primary:'#e0187f', light:'#b31065', bg:'#faf7f8', bg2:'#ffffff', logo:'', title:'', tagline:''} };
 let receivables = [];
 let clients = [];
 let appointments = [];
@@ -1905,8 +1924,9 @@ function clampPct(v, def){
   return Math.max(0, Math.min(100, Math.round(n * 10) / 10));
 }
 function sanitizePrefs(p){
-  const out = { quick:[25,30,45], goal:0, workdays:[0,1,2,3,4,5,6], services:[], team:[], slotMode:'time', entryMode:'valor', histWeeks:4, payment:{req:false, pixKey:''}, hours:{open:'09:00', close:'20:00', lunchA:'', lunchB:''}, theme:{primary:'#e0187f', light:'#b31065', bg:'#faf7f8', bg2:'#ffffff', logo:'', title:'', tagline:''} };
+  const out = { quick:[25,30,45], goal:0, workdays:[0,1,2,3,4,5,6], services:[], team:[], slotMode:'time', entryMode:'valor', histWeeks:4, periodFrom:'', periodTo:'', payment:{req:false, pixKey:''}, hours:{open:'09:00', close:'20:00', lunchA:'', lunchB:''}, theme:{primary:'#e0187f', light:'#b31065', bg:'#faf7f8', bg2:'#ffffff', logo:'', title:'', tagline:''} };
   const HHMM = /^([01]\d|2[0-3]):[0-5]\d$/;
+  const DATEKEY = /^\d{4}-\d{2}-\d{2}$/;
   if(p && typeof p === 'object'){
     if(Array.isArray(p.services)){
       out.services = p.services
@@ -1957,8 +1977,11 @@ function sanitizePrefs(p){
     }
     if(p.histWeeks != null){
       const hw = parseInt(p.histWeeks, 10);
-      if(hw === 2 || hw === 4 || hw === 8) out.histWeeks = hw;
+      if(hw === 1 || hw === 2 || hw === 4 || hw === 8) out.histWeeks = hw;
     }
+    if(typeof p.periodFrom === 'string' && DATEKEY.test(p.periodFrom)) out.periodFrom = p.periodFrom;
+    if(typeof p.periodTo === 'string' && DATEKEY.test(p.periodTo)) out.periodTo = p.periodTo;
+    if(out.periodFrom && (!out.periodTo || out.periodFrom > out.periodTo)){ out.periodFrom = ''; out.periodTo = ''; }
     if(p.theme && typeof p.theme === 'object'){
       if(/^#[0-9a-fA-F]{6}$/.test(p.theme.primary || '')) out.theme.primary = p.theme.primary;
       if(/^#[0-9a-fA-F]{6}$/.test(p.theme.light || '')) out.theme.light = p.theme.light;
@@ -3948,13 +3971,71 @@ function nodataOrDraw(canvas, hasData, drawFn){
 
 function histWeekCount(){
   const n = parseInt(prefs.histWeeks, 10);
-  return (n === 2 || n === 4 || n === 8) ? n : 4;
+  return (n === 1 || n === 2 || n === 4 || n === 8) ? n : 4;
+}
+function customPeriod(){
+  const f = String(prefs.periodFrom || '');
+  const t = String(prefs.periodTo || '');
+  if(!f || !t || f > t) return null;
+  return { from: f, to: t };
+}
+function isCustomPeriod(){ return !!customPeriod(); }
+function shiftDays(key, n){
+  const d = new Date(String(key) + 'T00:00:00');
+  if(isNaN(d)) return String(key);
+  d.setDate(d.getDate() + n);
+  return fmtKey(d);
+}
+function daysInclusive(from, to){
+  const a = new Date(from + 'T00:00:00'), b = new Date(to + 'T00:00:00');
+  if(isNaN(a) || isNaN(b)) return 0;
+  return Math.round((b - a) / 864e5) + 1;
+}
+function weekKeysBetween(from, to){
+  const keys = [];
+  const s = new Date(from + 'T00:00:00');
+  const e = new Date(to + 'T00:00:00');
+  if(isNaN(s) || isNaN(e)) return keys;
+  const start = new Date(getMonday(s));
+  let guard = 0;
+  while(start <= e && guard++ < 520){ keys.push(fmtKey(start)); start.setDate(start.getDate() + 7); }
+  return keys;
+}
+function totalsForRange(from, to){
+  let income = 0, expense = 0, cuts = 0;
+  const d = new Date(from + 'T00:00:00');
+  const e = new Date(to + 'T00:00:00');
+  if(isNaN(d) || isNaN(e)) return { income, expense, cuts, net: 0 };
+  let guard = 0;
+  while(d <= e && guard++ < 1500){
+    const t = dayTotals(fmtKey(d));
+    income += t.income; expense += t.expense; cuts += t.cuts;
+    d.setDate(d.getDate() + 1);
+  }
+  return { income, expense, cuts, net: income - expense };
+}
+function rangeWeekTotals(weekKey, from, to){
+  const out = { income:0, expense:0, cuts:0 };
+  const base = new Date(weekKey + 'T00:00:00');
+  if(isNaN(base)) return out;
+  for(let i = 0; i < 7; i++){
+    const d = new Date(base);
+    d.setDate(base.getDate() + i);
+    const dk = fmtKey(d);
+    if(dk < from || dk > to) continue;
+    const t = dayTotals(dk);
+    out.income += t.income; out.expense += t.expense; out.cuts += t.cuts;
+  }
+  return out;
 }
 function syncPeriodFilter(){
+  const cp = customPeriod();
   const n = histWeekCount();
   document.querySelectorAll('#periodFilter button[data-w]').forEach(x => {
-    x.classList.toggle('active', parseInt(x.dataset.w, 10) === n);
+    x.classList.toggle('active', !cp && parseInt(x.dataset.w, 10) === n);
   });
+  const cal = document.getElementById('periodCalBtn');
+  if(cal) cal.classList.toggle('active', !!cp);
 }
 function periodWeekKeys(currentKey){
   const keys = [];
@@ -3970,6 +4051,10 @@ function periodWeekKeys(currentKey){
 }
 
 function filteredWeekTotals(currentKey){
+  const cp = customPeriod();
+  if(cp){
+    return weekKeysBetween(cp.from, cp.to).map(k => ({ k, t: rangeWeekTotals(k, cp.from, cp.to) }));
+  }
   return periodWeekKeys(currentKey).map(k => ({k, t: weekTotals(k)}));
 }
 
@@ -4083,9 +4168,8 @@ function renderCharts(currentKey){
     ? `Saldo acumulado no período: ${fmtBRLshort(balData[balData.length-1] || 0)}.`
     : 'Sem dados suficientes ainda');
 
-  const idx = histKeys.indexOf(currentKey);
-  const prevKey = idx > 0 ? histKeys[idx-1] : null;
-  const prevTotals = prevKey ? weekTotals(prevKey) : {income:0,expense:0};
+  const prevKey = shiftDays(currentKey, -7);
+  const prevTotals = weekTotals(prevKey);
   const curTotals = weekTotals(currentKey);
   const compareCanvas = document.getElementById('compareChart');
   const hasCompare = (prevTotals.income + prevTotals.expense + curTotals.income + curTotals.expense) > 0;
@@ -4179,7 +4263,10 @@ function renderReports(currentKey){
     pg.appendChild(repItem('Entradas', fmtBRL(st.cur.income), dIn.text, '', dIn.cls));
     pg.appendChild(repItem('Saídas', fmtBRL(st.cur.expense), dOut.text, '', dOut.cls));
     pg.appendChild(repItem('Saldo', fmtBRL(st.cur.net), st.win.from.slice(8, 10) + '/' + st.win.from.slice(5, 7) + ' a ' + st.win.to.slice(8, 10) + '/' + st.win.to.slice(5, 7), st.cur.net >= 0 ? 'pos' : 'neg'));
-    pg.appendChild(repItem('Serviços', String(st.cur.cuts), st.win.n + (st.win.n === 1 ? ' semana' : ' semanas')));
+    const perLabel = st.win.custom
+      ? st.win.days + (st.win.days === 1 ? ' dia' : ' dias')
+      : st.win.n + (st.win.n === 1 ? ' semana' : ' semanas');
+    pg.appendChild(repItem('Serviços', String(st.cur.cuts), perLabel));
     pg.appendChild(repItem('Ticket médio', ticket, 'por serviço lançado'));
     pg.appendChild(repItem('Recebido no mês', fmtBRL(st.fiado.paidMonth), 'de fiado'));
   }
@@ -4330,8 +4417,9 @@ function repItem(label, value, sub, cls, subCls){
 
 function buildReportStats(currentKey){
   const win = periodWindow(currentKey);
-  const cur = totalsForKeys(win.keys);
-  const prev = totalsForKeys(win.prevKeys);
+  const custom = win.custom === true;
+  const cur = custom ? totalsForRange(win.from, win.to) : totalsForKeys(win.keys);
+  const prev = custom ? totalsForRange(win.prevFrom, win.prevTo) : totalsForKeys(win.prevKeys);
   const now = new Date();
   const todayKey = fmtKey(now);
   const td = dayTotals(todayKey);
@@ -4349,7 +4437,7 @@ function buildReportStats(currentKey){
     todayAppts: apptStats(todayKey, todayKey),
     agenda: apptStats(win.from, win.to),
     services: servicesRank(win.from, win.to),
-    barbers: barberProduction(win.keys),
+    barbers: barberProduction(win.keys, win.from, win.to),
     peak: peakHours(win.from, win.to),
     fiado: { open, paidMonth }
   };
@@ -4383,6 +4471,19 @@ function totalsForKeys(keys){
 }
 
 function periodWindow(currentKey){
+  const cp = customPeriod();
+  if(cp){
+    const keys = weekKeysBetween(cp.from, cp.to);
+    const days = daysInclusive(cp.from, cp.to);
+    const prevTo = shiftDays(cp.from, -1);
+    const prevFrom = shiftDays(prevTo, -(days - 1));
+    return {
+      n: keys.length, days, custom: true, keys,
+      from: cp.from, to: cp.to,
+      prevKeys: weekKeysBetween(prevFrom, prevTo),
+      prevFrom, prevTo
+    };
+  }
   const n = histWeekCount();
   const base = new Date(currentKey + 'T00:00:00');
   const keys = [];
@@ -4472,8 +4573,9 @@ function servicesRank(from, to){
     .slice(0, 6);
 }
 
-function barberProduction(keys){
+function barberProduction(keys, from, to){
   const rows = {};
+  const hasRange = !!from && !!to;
   (Array.isArray(prefs.team) ? prefs.team : [])
     .filter(m => m && m.name)
     .forEach(m => { rows[m.id] = { id: m.id, name: String(m.name), pct: clampPct(m.pct, 50), prod: 0 }; });
@@ -4481,13 +4583,23 @@ function barberProduction(keys){
   (keys || []).forEach(k => {
     const w = state[k];
     if(!w || !w.income) return;
-    DAY_NAMES.forEach(dn => (Array.isArray(w.income[dn]) ? w.income[dn] : []).forEach(v => {
-      const val = incomeValue(v);
-      if(!(val > 0)) return;
-      total += val;
-      const b = incomeBarber(v);
-      if(b && rows[b]) rows[b].prod += val; else unattr += val;
-    }));
+    DAY_NAMES.forEach((dn, di) => {
+      if(hasRange){
+        const d = new Date(k + 'T00:00:00');
+        if(!isNaN(d)){
+          d.setDate(d.getDate() + di);
+          const dk = fmtKey(d);
+          if(dk < from || dk > to) return;
+        }
+      }
+      (Array.isArray(w.income[dn]) ? w.income[dn] : []).forEach(v => {
+        const val = incomeValue(v);
+        if(!(val > 0)) return;
+        total += val;
+        const b = incomeBarber(v);
+        if(b && rows[b]) rows[b].prod += val; else unattr += val;
+      });
+    });
   });
   return {
     total, unattr,
@@ -6365,9 +6477,63 @@ document.getElementById('periodFilter').addEventListener('click', e=>{
   const b = e.target.closest('button[data-w]');
   if(!b) return;
   prefs.histWeeks = parseInt(b.dataset.w, 10) || 4;
+  prefs.periodFrom = '';
+  prefs.periodTo = '';
   savePrefs();
+  const cal = document.getElementById('periodCal');
+  if(cal) cal.classList.add('hidden');
   syncPeriodFilter();
   renderCharts(fmtKey(currentWeekStart));
+});
+
+const periodCalEl = document.getElementById('periodCal');
+const periodCalBtnEl = document.getElementById('periodCalBtn');
+if(periodCalBtnEl){
+  periodCalBtnEl.addEventListener('click', e=>{
+    e.stopPropagation();
+    if(!periodCalEl) return;
+    const willShow = periodCalEl.classList.contains('hidden');
+    if(willShow){
+      const win = periodWindow(fmtKey(currentWeekStart));
+      const inFrom = document.getElementById('periodFrom');
+      const inTo = document.getElementById('periodTo');
+      if(inFrom) inFrom.value = win.from;
+      if(inTo) inTo.value = win.to;
+    }
+    periodCalEl.classList.toggle('hidden', !willShow);
+  });
+}
+const periodApplyEl = document.getElementById('periodApply');
+if(periodApplyEl){
+  periodApplyEl.addEventListener('click', ()=>{
+    const f = (document.getElementById('periodFrom') || {}).value || '';
+    const t = (document.getElementById('periodTo') || {}).value || '';
+    if(!f || !t){ toast('Escolha as datas "De" e "Até".'); return; }
+    if(f > t){ toast('A data inicial deve ser anterior à final.'); return; }
+    prefs.periodFrom = f;
+    prefs.periodTo = t;
+    savePrefs();
+    if(periodCalEl) periodCalEl.classList.add('hidden');
+    syncPeriodFilter();
+    renderCharts(fmtKey(currentWeekStart));
+    toast('Período personalizado aplicado.');
+  });
+}
+const periodClearEl = document.getElementById('periodClear');
+if(periodClearEl){
+  periodClearEl.addEventListener('click', ()=>{
+    prefs.periodFrom = '';
+    prefs.periodTo = '';
+    savePrefs();
+    if(periodCalEl) periodCalEl.classList.add('hidden');
+    syncPeriodFilter();
+    renderCharts(fmtKey(currentWeekStart));
+  });
+}
+document.addEventListener('click', e=>{
+  if(!periodCalEl || periodCalEl.classList.contains('hidden')) return;
+  if(e.target.closest && (e.target.closest('#periodCal') || e.target.closest('#periodCalBtn'))) return;
+  periodCalEl.classList.add('hidden');
 });
 
 document.querySelectorAll('.tab-btn').forEach(btn=>{

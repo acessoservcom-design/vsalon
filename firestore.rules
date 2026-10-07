@@ -25,7 +25,8 @@ service cloud.firestore {
         && (!('membershipId' in d) || (d.membershipId is string && d.membershipId.size() <= 60))
         && (!('planId' in d) || (d.planId is string && d.planId.size() <= 60))
         && (!('planName' in d) || (d.planName is string && d.planName.size() <= 60))
-        && d.keys().hasOnly(['date', 'time', 'client', 'phone', 'note', 'servico', 'status', 'requested', 'requestedBy', 'createdAt', 'barberId', 'barbeiro', 'fromMembership', 'membershipId', 'planId', 'planName']);
+        && (!('price' in d) || (d.price is number && d.price >= 0 && d.price <= 1000000))
+        && d.keys().hasOnly(['date', 'time', 'client', 'phone', 'note', 'servico', 'status', 'requested', 'requestedBy', 'createdAt', 'barberId', 'barbeiro', 'fromMembership', 'membershipId', 'planId', 'planName', 'price']);
     }
 
     // Dono: acesso total aos próprios dados
